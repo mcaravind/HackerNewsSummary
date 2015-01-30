@@ -22,14 +22,19 @@ namespace EtoTest
             
 
             view.Columns.Add(new GridColumn() { HeaderText = "Test", DataCell = new TextBoxCell(0), AutoSize = true, Resizable = true, Editable = false });
-            view.Columns.Add(new GridColumn() { HeaderText = "Id", DataCell = new TextBoxCell(0), AutoSize = true, Resizable = true, Editable = false });
+            view.Columns.Add(new GridColumn() { HeaderText = "Id", DataCell = new TextBoxCell(1), AutoSize = true, Resizable = true, Editable = false });
 
             TreeGridItemCollection data = new TreeGridItemCollection();
 
-            TreeGridItem child = new TreeGridItem() { Values = new object[] { "Testing" } };
-            child.Children.Add(new TreeGridItem() { Values = new object[] { "1", "2", "3", "4" } });
+            TreeGridItem child = new TreeGridItem() { Values = new object[] { "Testing1", "Testing2" } };
+            TreeGridItem child2 = new TreeGridItem(){Values = new object[]{"Testing3","Testing4"}};
+            TreeGridItem child3 = new TreeGridItem() { Values = new object[] { "Testing3", "Testing4" } };
+            child.Children.Add(new TreeGridItem() { Values = new object[] { "1", "2" } });
+            child2.Children.Add(new TreeGridItem() { Values = new object[] { "3", "4" } });
+            child3.Children.Add(new TreeGridItem() { Values = new object[] { "5", "6" } });
             data.Add(child);
-
+            data.Add(child2);
+            child2.Children.Add(child3);
             view.DataStore = data;
 
             Content = view;
