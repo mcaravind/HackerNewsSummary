@@ -32,6 +32,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Eto">
+      <HintPath>..\..\..\..\Desktop\Eto-develop\Eto-develop\Samples\Tutorials\Tutorial3\bin\Debug\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Gtk2">
+      <HintPath>..\..\..\..\Desktop\Eto-develop\Eto-develop\Samples\Tutorials\Tutorial3\bin\Debug\Eto.Gtk2.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Mac">
+      <HintPath>..\..\..\..\Desktop\Eto-develop\Eto-develop\Samples\Tutorials\Tutorial3\bin\Debug\Eto.Mac.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.WinForms">
+      <HintPath>..\..\..\..\Desktop\Eto-develop\Eto-develop\Samples\Tutorials\Tutorial3\bin\Debug\Eto.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +62,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="HiSumDisplay.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
