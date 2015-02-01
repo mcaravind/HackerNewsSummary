@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Eto.Forms;
+using Eto.Drawing;
 
 namespace HiSum.Forms
 {
@@ -12,11 +13,11 @@ namespace HiSum.Forms
         public HiSumDisplay()
         {
             // sets the client (inner) size of the window for your content
-            this.ClientSize = new Eto.Drawing.Size(600, 400);
+            ClientSize = new Eto.Drawing.Size(600, 400);
 
-            this.Title = "Hello, Eto.Forms";
+            Title = "HiSum";
 
-            Content = new Label { Text = "Some content", VerticalAlign = VerticalAlign.Middle, HorizontalAlign = HorizontalAlign.Center };
+            
 
             TreeGridView view = new TreeGridView();
 
@@ -37,7 +38,26 @@ namespace HiSum.Forms
             child2.Children.Add(child3);
             view.DataStore = data;
 
-            Content = view;
+            Content = new TableLayout
+            {
+                Spacing = new Size(5, 5), // space between each cell
+                Padding = new Padding(10, 10, 10, 10), // space around the table's sides
+                Rows =
+				{
+					new TableRow(
+                        new Label{Text = "Input URL from Hacker News: ",Width=200},
+						new TextBox(){Width = 1000},
+                        new Button(){Text = "Go", Width = 50}
+					),
+					new TableRow(
+                        new Label(),
+						view
+					),
+					// by default, the last row & column will get scaled. This adds a row at the end to take the extra space of the form.
+					// otherwise, the above row will get scaled and stretch the TextBox/ComboBox/CheckBox to fill the remaining height.
+					new TableRow { ScaleHeight = true }
+				}
+            };
         }
     }
 }
