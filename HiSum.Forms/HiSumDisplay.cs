@@ -38,6 +38,8 @@ namespace HiSum.Forms
             data.Add(child2);
             child2.Children.Add(child3);
             view.DataStore = data;
+
+
             var textbox = new TextBox() {Width = 1000};
             var button = new Button(){Text = "Go", Width = 50};
             var tbResult = new TextArea() {Width = 1000};
@@ -48,7 +50,7 @@ namespace HiSum.Forms
                 int storyID = Convert.ToInt32(url.Split('=')[1]);
                 Reader reader = new Reader();
                 Story story = reader.GetStory(storyID);
-                List<string> top10words = story.GetTopNWords(10);
+                List<string> top10words = story.GetTopNWords(5);
                 foreach (string s in top10words)
                 {
                     tbResult.Text += s + Environment.NewLine;
