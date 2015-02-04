@@ -64,7 +64,8 @@ namespace HiSum
             string responseComment = FetchJson(commentURL);
             CommentItem commentItem = JsonConvert.DeserializeObject<CommentItem>(responseComment);
             comment.By = commentItem.by;
-            comment.Text = commentItem.text;
+            comment.Text = WebUtility.HtmlDecode(commentItem.text);
+            comment.SubtreeText = WebUtility.HtmlDecode(commentItem.text);
             comment.Parent = commentItem.parent;
             comment.Time = commentItem.time;
             comment.Comments = new List<Comment>();
@@ -74,27 +75,11 @@ namespace HiSum
                 {
                     Comment child = GetComment(kid);
                     comment.Comments.Add(child);
-                    comment.SubtreeText += comment.Text + " " + child.Text;
+                    comment.SubtreeText += " " + WebUtility.HtmlDecode(child.Text);
                 }
             }
             return comment;
         }
-
-        //private TreeNode GetChildren(int id)
-        //{
-        //    TreeNode returnNode = new TreeNode();
-        //    string commentURL = _apiURL + _comment + "/" + id + ".json";
-        //    string responseComment = FetchJson(commentURL);
-        //    CommentItem comment = JsonConvert.DeserializeObject<CommentItem>(responseComment);
-        //}
-
-        //public Item GetItem(int itemID)
-        //{
-        //    string storyURL = _apiURL + _story + "/" + itemID + ".json";
-        //    string response = FetchJson(storyURL);
-        //    Item item = JsonConvert.DeserializeObject<Item>(response);
-        //    return item;
-        //}
 
         public string FetchJson(string url)
         {

@@ -20,28 +20,29 @@ namespace HiSum.Forms
 
             
 
-            TreeGridView view = new TreeGridView();
+            TreeGridView view = new TreeGridView(){Height = 500};
 
 
-            view.Columns.Add(new GridColumn() { HeaderText = "Test", DataCell = new TextBoxCell(0), AutoSize = true, Resizable = true, Editable = false });
-            view.Columns.Add(new GridColumn() { HeaderText = "Id", DataCell = new TextBoxCell(1), AutoSize = true, Resizable = true, Editable = false });
+            view.Columns.Add(new GridColumn() { HeaderText = "Summary", DataCell = new TextBoxCell(0), AutoSize = true, Resizable = true, Editable = false });
+            
 
-            TreeGridItemCollection data = new TreeGridItemCollection();
+            
 
-            TreeGridItem child = new TreeGridItem() { Values = new object[] { "Testing1", "Testing2" } };
-            TreeGridItem child2 = new TreeGridItem() { Values = new object[] { "Testing3", "Testing4" } };
-            TreeGridItem child3 = new TreeGridItem() { Values = new object[] { "Testing3", "Testing4" } };
-            child.Children.Add(new TreeGridItem() { Values = new object[] { "1", "2" } });
-            child2.Children.Add(new TreeGridItem() { Values = new object[] { "3", "4" } });
-            child3.Children.Add(new TreeGridItem() { Values = new object[] { "5", "6" } });
-            data.Add(child);
-            data.Add(child2);
-            child2.Children.Add(child3);
-            view.DataStore = data;
+            //TreeGridItem child = new TreeGridItem() { Values = new object[] { "Testing1", "Testing2" } };
+            //TreeGridItem child2 = new TreeGridItem() { Values = new object[] { "Testing3", "Testing4" } };
+            //TreeGridItem child3 = new TreeGridItem() { Values = new object[] { "Testing3", "Testing4" } };
+            //child.Children.Add(new TreeGridItem() { Values = new object[] { "1", "2" } });
+            //child2.Children.Add(new TreeGridItem() { Values = new object[] { "3", "4" } });
+            //child3.Children.Add(new TreeGridItem() { Values = new object[] { "5", "6" } });
+            //data.Add(child);
+            //data.Add(child2);
+            //child2.Children.Add(child3);
+            //view.DataStore = data;
 
 
             var textbox = new TextBox() {Width = 1000};
-            var button = new Button(){Text = "Go", Width = 50};
+            var button = new Button(){Text = "Go", Width = 15};
+            var label = new Label() {Width = 100};
             var tbResult = new TextArea() {Width = 1000};
             
             button.Click += (sender, e) =>
@@ -50,11 +51,13 @@ namespace HiSum.Forms
                 int storyID = Convert.ToInt32(url.Split('=')[1]);
                 Reader reader = new Reader();
                 Story story = reader.GetStory(storyID);
-                List<string> top10words = story.GetTopNWords(5);
-                foreach (string s in top10words)
-                {
-                    tbResult.Text += s + Environment.NewLine;
-                }
+                //List<string> top10words = story.GetTopNWords(5);
+                //foreach (string s in top10words)
+                //{
+                //    tbResult.Text += s + Environment.NewLine;
+                //}
+                TreeGridItemCollection data = GetTree(story);
+                view.DataStore = data;
             };
             Content = new TableLayout
             {
@@ -66,11 +69,13 @@ namespace HiSum.Forms
 					new TableRow(
                         new Label{Text = "Input URL from Hacker News: ",Width=200},
 						textbox,
-                        button
+                        button,
+                        label
 					),
                     new TableRow(
                         null,
                         tbResult,
+                        null,
                         null
                         ),
 					new TableRow(
@@ -83,6 +88,47 @@ namespace HiSum.Forms
 					new TableRow { ScaleHeight = true }
 				}
             };
+        }
+
+        private TreeGridItemCollection GetTree(Story story)
+        {
+            TreeGridItemCollection data = new TreeGridItemCollection();
+            foreach (Comment comment in story.Comments)
+            {
+                TreeGridItem tgi = GetCommentTree(comment);
+                if(tgi.Tag != "empty")
+                {
+                    data.Add(tgi);
+                }
+            }
+            return data;
+        }
+
+        private TreeGridItem GetCommentTree(Comment comment)
+        {
+            List<string> top5 = comment.GetTopNWords(5);
+            
+            TreeGridItem tgi = new TreeGridItem();
+            if (top5.Count > 0)
+            {
+                string all5 = string.Empty;
+                foreach (string s in top5)
+                {
+                    all5 += s + " ";
+                }
+                tgi.Values = new object[] { all5 };
+                tgi.Children.Add(new TreeGridItem() { Values = new object[] { comment.Text } });
+                foreach (Comment commentChild in comment.Comments)
+                {
+                    TreeGridItem tgic = GetCommentTree(commentChild);
+                    tgi.Children.Add(tgic);
+                }
+            }
+            else
+            {
+                tgi.Tag = "empty";
+            }
+            return tgi;
         }
     }
 }
