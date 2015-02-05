@@ -16,12 +16,14 @@ namespace HiSum
         string _top100 { get; set; }
         string _story { get; set; }
         string _comment { get; set; }
+        string _algoliaURL { get; set; }
         public Reader()
         {
             _apiURL = "apiURL".AppSettings(defaultValue: "https://hacker-news.firebaseio.com/v0/");
             _top100 = "top100".AppSettings(defaultValue: "topstories.json");
             _story = "item".AppSettings(defaultValue: "item");
             _comment = "comment".AppSettings(defaultValue: "item");
+            _algoliaURL = "algoliaURL".AppSettings(defaultValue: "http://hn.algolia.com/api/v1/items/");
         }
 
         public List<string> GetTop100()
@@ -32,6 +34,14 @@ namespace HiSum
             //TODO:implement getting top 100 from this json
             top100URLs = response.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
             return top100URLs;
+        }
+
+        public FullStory GetStoryFull(int storyID)
+        {
+            string storyURL = _algoliaURL + storyID;
+            string response = FetchJson(storyURL);
+            FullStory fullStory = JsonConvert.DeserializeObject<FullStory>(response);
+            return fullStory;
         }
 
         public Story GetStory(int storyID)

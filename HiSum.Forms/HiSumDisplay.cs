@@ -50,14 +50,15 @@ namespace HiSum.Forms
                 string url = textbox.Text;
                 int storyID = Convert.ToInt32(url.Split('=')[1]);
                 Reader reader = new Reader();
-                Story story = reader.GetStory(storyID);
+                //Story story = reader.GetStory(storyID);
+                FullStory fullStory = reader.GetStoryFull(storyID);
                 //List<string> top10words = story.GetTopNWords(5);
                 //foreach (string s in top10words)
                 //{
                 //    tbResult.Text += s + Environment.NewLine;
                 //}
-                TreeGridItemCollection data = GetTree(story);
-                view.DataStore = data;
+                //TreeGridItemCollection data = GetTree(story);
+                //view.DataStore = data;
             };
             Content = new TableLayout
             {
@@ -117,6 +118,9 @@ namespace HiSum.Forms
                     all5 += s + " ";
                 }
                 tgi.Values = new object[] { all5 };
+                RichTextArea rta = new RichTextArea();
+                rta.Text = comment.Text;
+                
                 tgi.Children.Add(new TreeGridItem() { Values = new object[] { comment.Text } });
                 foreach (Comment commentChild in comment.Comments)
                 {
