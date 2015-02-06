@@ -52,13 +52,13 @@ namespace HiSum.Forms
                 Reader reader = new Reader();
                 //Story story = reader.GetStory(storyID);
                 FullStory fullStory = reader.GetStoryFull(storyID);
-                //List<string> top10words = story.GetTopNWords(5);
+                //List<string> top5words = fullStory.GetTopNWords(5);
                 //foreach (string s in top10words)
                 //{
                 //    tbResult.Text += s + Environment.NewLine;
                 //}
-                //TreeGridItemCollection data = GetTree(story);
-                //view.DataStore = data;
+                TreeGridItemCollection data = GetTree(fullStory);
+                view.DataStore = data;
             };
             Content = new TableLayout
             {
@@ -103,6 +103,50 @@ namespace HiSum.Forms
                 }
             }
             return data;
+        }
+
+        private TreeGridItemCollection GetTree(FullStory story)
+        {
+            TreeGridItemCollection data = new TreeGridItemCollection();
+            foreach (children child in story.children)
+            {
+                TreeGridItem tgi = GetCommentTree(child);
+                if (tgi.Tag != "empty")
+                {
+                    data.Add(tgi);
+                }
+            }
+            return data;
+        }
+
+        private TreeGridItem GetCommentTree(children child)
+        {
+            List<string> top5 = child.GetTopNWords(5);
+
+            TreeGridItem tgi = new TreeGridItem();
+            if (top5.Count > 0)
+            {
+                string all5 = string.Empty;
+                foreach (string s in top5)
+                {
+                    all5 += s + " ";
+                }
+                tgi.Values = new object[] { all5 };
+                RichTextArea rta = new RichTextArea();
+                rta.Text = child.text;
+
+                tgi.Children.Add(new TreeGridItem() { Values = new object[] { child.text } });
+                foreach (children commentchild in child.Children)
+                {
+                    TreeGridItem tgic = GetCommentTree(commentchild);
+                    tgi.Children.Add(tgic);
+                }
+            }
+            else
+            {
+                tgi.Tag = "empty";
+            }
+            return tgi;
         }
 
         private TreeGridItem GetCommentTree(Comment comment)

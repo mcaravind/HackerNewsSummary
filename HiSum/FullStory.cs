@@ -17,5 +17,16 @@ namespace HiSum
         public int point { get; set; }
         public int? parent_id { get; set; }
         public List<children> children { get; set; }
+
+        public List<string> GetTopNWords(int N)
+        {
+            List<string> topNWords = new List<string>();
+            foreach (children child in children)
+            {
+                List<string> commentTopNWords = child.GetTopNWords(N);
+                topNWords.AddRange(commentTopNWords);
+            }
+            return topNWords;
+        }
     }
 }
