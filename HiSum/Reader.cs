@@ -26,14 +26,15 @@ namespace HiSum
             _algoliaURL = "algoliaURL".AppSettings(defaultValue: "http://hn.algolia.com/api/v1/items/");
         }
 
-        public List<string> GetTop100()
+        public List<int> GetTop100()
         {
             List<string> top100URLs = new List<string>();
             string top100URL = _apiURL + _top100;
             string response = FetchJson(top100URL);
             //TODO:implement getting top 100 from this json
             top100URLs = response.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
-            return top100URLs;
+            List<int> top100 = top100URLs.ConvertAll(x => Convert.ToInt32(x));
+            return top100;
         }
 
         public FullStory GetStoryFull(int storyID)

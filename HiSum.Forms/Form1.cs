@@ -25,12 +25,12 @@ namespace HiSum.Forms
 
         private void btnTop100_Click(object sender, EventArgs e)
         {
-            Reader reader = new Reader();
-            tbResponse.Text = string.Empty;
-            foreach (var url in reader.GetTop100())
-            {
-                tbResponse.Text += url + Environment.NewLine;
-            }
+            //Reader reader = new Reader();
+            //tbResponse.Text = string.Empty;
+            //foreach (var url in reader.GetTop100())
+            //{
+            //    tbResponse.Text += url + Environment.NewLine;
+            //}
         }
 
         private void btnGetItem_Click(object sender, EventArgs e)

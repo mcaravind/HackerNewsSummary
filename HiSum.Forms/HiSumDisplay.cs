@@ -45,13 +45,14 @@ namespace HiSum.Forms
             var button = new Button(){Text = "Go", Width = 15};
             var label = new Label() {Width = 100};
             var tbResult = new TextArea() {Width = 1000};
+            var listBox = new ListBox() {Width = 400};
             
             button.Click += (sender, e) =>
             {
                 string url = textbox.Text;
                 int storyID = Convert.ToInt32(url.Split('=')[1]);
                 Reader reader = new Reader();
-                //Story story = reader.GetStory(storyID);
+                List<int> top100 = reader.GetTop100();
                 FullStory fullStory = reader.GetStoryFull(storyID);
                 //List<string> top5words = fullStory.GetTopNWords(5);
                 //foreach (string s in top10words)
