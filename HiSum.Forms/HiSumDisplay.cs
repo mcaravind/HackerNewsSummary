@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
@@ -133,9 +134,9 @@ namespace HiSum.Forms
                 }
                 tgi.Values = new object[] { all5 };
                 RichTextArea rta = new RichTextArea();
-                rta.Text = child.text;
+                rta.Text = WebUtility.HtmlDecode(child.text);
 
-                tgi.Children.Add(new TreeGridItem() { Values = new object[] { child.text } });
+                tgi.Children.Add(new TreeGridItem() { Values = new object[] {WebUtility.HtmlDecode(child.text) } });
                 foreach (children commentchild in child.Children)
                 {
                     TreeGridItem tgic = GetCommentTree(commentchild);
