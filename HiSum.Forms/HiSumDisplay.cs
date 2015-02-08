@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Runtime.Remoting.Channels;
@@ -18,57 +19,32 @@ namespace HiSum.Forms
             ClientSize = new Eto.Drawing.Size(600, 400);
 
             Title = "HiSum";
-
-            
-
             TreeGridView view = new TreeGridView(){Height = 500};
 
-
             view.Columns.Add(new GridColumn() { HeaderText = "Summary", DataCell = new TextBoxCell(0), AutoSize = true, Resizable = true, Editable = false });
-            
-
-            
-
-            //TreeGridItem child = new TreeGridItem() { Values = new object[] { "Testing1", "Testing2" } };
-            //TreeGridItem child2 = new TreeGridItem() { Values = new object[] { "Testing3", "Testing4" } };
-            //TreeGridItem child3 = new TreeGridItem() { Values = new object[] { "Testing3", "Testing4" } };
-            //child.Children.Add(new TreeGridItem() { Values = new object[] { "1", "2" } });
-            //child2.Children.Add(new TreeGridItem() { Values = new object[] { "3", "4" } });
-            //child3.Children.Add(new TreeGridItem() { Values = new object[] { "5", "6" } });
-            //data.Add(child);
-            //data.Add(child2);
-            //child2.Children.Add(child3);
-            //view.DataStore = data;
-
-
             var textbox = new TextBox() {Width = 1000};
             var button = new Button(){Text = "Go", Width = 15};
             var label = new Label() {Width = 100};
             var tbResult = new TextArea() {Width = 1000};
-            var listBox = new ListBox() {Width = 400};
             
             button.Click += (sender, e) =>
             {
-                string url = textbox.Text;
-                int storyID = Convert.ToInt32(url.Split('=')[1]);
                 Reader reader = new Reader();
                 List<int> top100 = reader.GetTop100();
-                FullStory fullStory = reader.GetStoryFull(storyID);
-                //List<string> top5words = fullStory.GetTopNWords(5);
-                //foreach (string s in top10words)
-                //{
-                //    tbResult.Text += s + Environment.NewLine;
-                //}
-                TreeGridItemCollection data = GetTree(fullStory);
+                List<FullStory> fullStories = new List<FullStory>();
+                foreach (int storyID in top100.Take(30))
+                {
+                    FullStory fullStory = reader.GetStoryFull(storyID);
+                    fullStories.Add(fullStory);
+                }
+                TreeGridItemCollection data = GetTree(fullStories);
                 view.DataStore = data;
             };
             Content = new TableLayout
             {
                 Spacing = new Size(5, 5), // space between each cell
                 Padding = new Padding(10, 10, 10, 10), // space around the table's sides
-                
-                Rows =
-				{
+                Rows = {
 					new TableRow(
                         new Label{Text = "Input URL from Hacker News: ",Width=200},
 						textbox,
@@ -107,15 +83,26 @@ namespace HiSum.Forms
             return data;
         }
 
-        private TreeGridItemCollection GetTree(FullStory story)
+        private TreeGridItemCollection GetTree(List<FullStory> stories)
         {
             TreeGridItemCollection data = new TreeGridItemCollection();
-            foreach (children child in story.children)
+            foreach (FullStory story in stories)
             {
-                TreeGridItem tgi = GetCommentTree(child);
-                if (tgi.Tag != "empty")
+                TreeGridItem tgiParent = new TreeGridItem() { Values = new object[] { WebUtility.HtmlDecode(story.title) } };
+                string all5 = string.Empty;
+                foreach (string s in story.GetTopNWords(5))
                 {
-                    data.Add(tgi);
+                    all5 += s + " ";
+                }
+                tgiParent.Children.Add(new TreeGridItem() { Values = new object[] { WebUtility.HtmlDecode(all5) } });
+                data.Add(tgiParent);
+                foreach (children child in story.children)
+                {
+                    TreeGridItem tgi = GetCommentTree(child);
+                    if (tgi.Tag != "empty")
+                    {
+                        tgiParent.Children.Add(tgi);
+                    }
                 }
             }
             return data;
