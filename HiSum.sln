@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiSum.Forms", "HiSum.Forms\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EtoTest", "EtoTest\EtoTest.csproj", "{66E64CA2-AD55-4C49-807F-98C90EE414EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HiSum.App", "HiSum.App\HiSum.App.csproj", "{BC017318-BED0-4A42-B040-99F2B581C509}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,16 @@ Global
 		{66E64CA2-AD55-4C49-807F-98C90EE414EA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{66E64CA2-AD55-4C49-807F-98C90EE414EA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{66E64CA2-AD55-4C49-807F-98C90EE414EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BC017318-BED0-4A42-B040-99F2B581C509}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
