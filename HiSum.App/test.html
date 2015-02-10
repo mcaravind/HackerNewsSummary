@@ -1,0 +1,40 @@
+﻿<!doctype html>
+<html>
+<script>
+
+    function myFunction1() {
+        console.log("CWD:" + process.cwd());
+        var path = require('path');
+        console.log("Exec path:" + path.dirname(process.execPath));
+        console.log('Node Version: ' + process.version);
+        console.log('Platform: ' + process.platform + '  Architecture: ' + process.arch);
+        var fs = require('fs');
+        console.log(fs.readdirSync('.'))
+    }
+
+    function myFunction2() {
+        console.log('Node Version: ' + process.version);
+        console.log('Platform: ' + process.platform + '  Architecture: ' + process.arch);
+
+    }
+
+    function myFunction3() {
+        dotNetFunction(10, function (error, result) {
+            if (error) alert(error.message);
+            alert('Reply:' + result);
+        });
+    }
+    
+</script>
+<script type="text/javascript" src="server.js"></script>
+<head>
+    <title>Hello World!</title>
+
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <button onclick="myFunction1()">List Dir</button>
+    <button onclick="myFunction3()">Edge - Hello</button>
+
+</body>
+</html>
