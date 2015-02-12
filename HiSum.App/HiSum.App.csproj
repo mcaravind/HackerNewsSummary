@@ -20,6 +20,8 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="app.js" />
+    <Content Include="css\layouts\email-old-ie.css" />
+    <Content Include="css\layouts\email.css" />
     <Content Include="dist\jstree.js" />
     <Content Include="dist\jstree.min.js" />
     <Content Include="dist\themes\default-dark\32px.png" />
@@ -33,7 +35,15 @@
     <Content Include="dist\themes\default\style.min.css" />
     <Content Include="dist\themes\default\throbber.gif" />
     <Content Include="dll\HiSum.dll" />
+    <Content Include="img\common\andrew-avatar.png" />
+    <Content Include="img\common\ericf-avatar.png" />
+    <Content Include="img\common\reid-avatar.png" />
+    <Content Include="img\common\tilo-avatar.png" />
+    <Content Include="img\common\yfinance-avatar.png" />
+    <Content Include="img\common\ynews-avatar.png" />
+    <Content Include="img\common\yui-avatar.png" />
     <Content Include="index.html" />
+    <Content Include="main.html" />
     <Content Include="server.js" />
     <Content Include="test.html" />
     <Content Include="web.config" />
