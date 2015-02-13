@@ -29,7 +29,15 @@
     <!--[if lt IE 9]>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
     <![endif]-->
-
+    <script type="text/javascript" src="reader.js"></script>
+    <script>
+    function myFunction3() {
+    dotNetFunction(15, function (error, result) {
+    if (error) alert(error.message);
+    alert('Reply:' + result);
+    });
+    }
+    </script>
 </head>
 <body>
 
@@ -47,10 +55,10 @@
 
                 <div class="pure-menu pure-menu-open">
                     <ul>
-                        <li><a href="#">Inbox <span class="email-count">(2)</span></a></li>
-                        <li><a href="#">Important</a></li>
-                        <li><a href="#">Sent</a></li>
-                        <li><a href="#">Drafts</a></li>
+                        <li><a href="#">Front page </a></li>
+                        <li><a href="#">Archive<span class="email-count">(2)</span></a></li>
+                        <li><a href="#">Users</a></li>
+                        <li><a href="#">WatchWords</a></li>
                         <li><a href="#">Trash</a></li>
                         <li class="pure-menu-heading">Labels</li>
                         <li><a href="#"><span class="email-label-personal"></span>Personal</a></li>
@@ -172,7 +180,7 @@
                     </div>
 
                     <div class="email-content-controls pure-u-1-2">
-                        <button class="secondary-button pure-button">Reply</button>
+                        <button onclick="myFunction3()" class="secondary-button pure-button">Reply</button>
                         <button class="secondary-button pure-button">Forward</button>
                         <button class="secondary-button pure-button">Move to</button>
                     </div>

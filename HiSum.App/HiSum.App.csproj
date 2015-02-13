@@ -44,6 +44,7 @@
     <Content Include="img\common\yui-avatar.png" />
     <Content Include="index.html" />
     <Content Include="main.html" />
+    <Content Include="reader.js" />
     <Content Include="server.js" />
     <Content Include="test.html" />
     <Content Include="web.config" />

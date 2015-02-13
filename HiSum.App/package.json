@@ -2,6 +2,6 @@
     "name": "example-app",
     "main": "main.html",
     "window": {
-        "toolbar": false
+        "toolbar": true
     }
 }
