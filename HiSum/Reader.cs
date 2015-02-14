@@ -37,6 +37,24 @@ namespace HiSum
             return top100;
         }
 
+        public async Task<object> GetTop100Stories(object input)
+        {
+            //int v = (int)input;
+            //return Helper.AddSeven(v);
+            Dictionary<int,string> top100 = new Dictionary<int, string>();
+            List<int> top100Ids = GetTop100();
+            List<StoryObj> storyObjList = new List<StoryObj>();
+            foreach (int id in top100Ids)
+            {
+                FullStory fs = GetStoryFull(id);
+                //top100[id] = fs.title;
+                StoryObj so = new StoryObj(){StoryId = id,StoryTitle = fs.title,Author = fs.author};
+                storyObjList.Add(so);
+            }
+            return storyObjList;
+        }
+
+        
         public FullStory GetStoryFull(int storyID)
         {
             string storyURL = _algoliaURL + storyID;
@@ -105,6 +123,13 @@ namespace HiSum
                 }
             }
             return returnVal;
+        }
+
+        class StoryObj
+        {
+            public int StoryId { get; set; }
+            public string StoryTitle { get; set; }
+            public string Author { get; set; }
         }
     }
 }

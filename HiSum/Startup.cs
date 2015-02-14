@@ -8,10 +8,21 @@ namespace HiSum
 {
     public class Startup
     {
-        public async Task<object> Invoke(object input)
+        //public async Task<object> Invoke(object input)
+        //{
+        //    Reader reader = new Reader();
+        //    return reader.GetTop100();
+        //}
+
+        //public async Task<object> GetTop100(object input)
+        //{
+        //    Reader reader = new Reader();
+        //    return reader.GetTop100();
+        //}
+
+        public async Task<object> GetTop100(object input)
         {
-            int v = (int)input;
-            return Helper.AddSeven(v);
+            return "testing123";
         }
     }
     static class Helper

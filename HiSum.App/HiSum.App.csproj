@@ -35,6 +35,7 @@
     <Content Include="dist\themes\default\style.min.css" />
     <Content Include="dist\themes\default\throbber.gif" />
     <Content Include="dll\HiSum.dll" />
+    <Content Include="dll\Newtonsoft.Json.dll" />
     <Content Include="img\common\andrew-avatar.png" />
     <Content Include="img\common\ericf-avatar.png" />
     <Content Include="img\common\reid-avatar.png" />
