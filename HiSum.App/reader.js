@@ -12,7 +12,7 @@ var top100Function = edge.func(
 {
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
     typeName:'HiSum.Reader',
-    methodName: 'GetTop100Stories'
+    methodName: 'GetFrontPage'
 });
 
 function GetTop100() {
