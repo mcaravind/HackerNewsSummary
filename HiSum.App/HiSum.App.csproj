@@ -44,6 +44,7 @@
     <Content Include="img\common\ynews-avatar.png" />
     <Content Include="img\common\yui-avatar.png" />
     <Content Include="index.html" />
+    <Content Include="js\async.js" />
     <Content Include="js\jsrender.js" />
     <Content Include="main.html" />
     <Content Include="reader.js" />

@@ -15,17 +15,23 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="js/jsrender.js" type="text/javascript"></script>
+    <script src="js/async.js"></script>
     <script type="text/javascript">
+        
         function displayStories() {
             var stories = [];
             top100Function(100, function (error, result) {
-                if (error) alert(error.message);
+                if (error) console.log(error);
                 result.forEach(function (entry) {
-                    console.log(entry);
                     var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1,100):'' };
                     stories.push(story);
                 });
             });
+            
+            render(stories);
+        }
+
+        function render(stories) {
             $("#list").html(
                 $("#storyTemplate").render(stories)
             );
