@@ -27,7 +27,6 @@
                     stories.push(story);
                 });
             });
-            
             render(stories);
         }
 
@@ -36,6 +35,10 @@
                 $("#storyTemplate").render(stories)
             );
         }
+
+        $(document).ready(function() {
+            $("#btnUpdate").click(displayStories);
+        });
     </script>
     
     <!--[if lte IE 8]>
@@ -70,7 +73,7 @@
             <a href="#" class="nav-menu-button">Menu</a>
 
             <div class="nav-inner">
-                <button onclick="displayStories()" class="primary-button pure-button">Update</button>
+                <button id="btnUpdate" class="primary-button pure-button">Update</button>
 
                 <div class="pure-menu pure-menu-open">
                     <ul>
