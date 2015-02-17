@@ -71,6 +71,14 @@ namespace HiSum
             return storyObjList;
         }
 
+        public async Task<object> GetStoryTopNWords(int storyid)
+        {
+            FullStory fs = GetStoryFull(storyid);
+            Dictionary<string, int> topNWords = fs.GetTopNWordsDictionary(10);
+            List<WordObj> wordObjs = topNWords.ToList().Select(x => new WordObj() {Word = x.Key, Count = x.Value}).ToList();
+            return wordObjs;
+        }
+
         public FullStory GetStoryFull(int storyID)
         {
             string storyURL = _algoliaURL + storyID;
@@ -147,6 +155,12 @@ namespace HiSum
             public string StoryTitle { get; set; }
             public string Author { get; set; }
             public string StoryText { get; set; }
+        }
+
+        class WordObj
+        {
+            public string Word { get; set; }
+            public int Count { get; set; }
         }
     }
 }

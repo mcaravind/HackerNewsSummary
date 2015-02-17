@@ -15,6 +15,13 @@ var top100Function = edge.func(
     methodName: 'GetFrontPage'
 });
 
+var summaryFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'GetStoryTopNWords'
+});
+
 function GetTop100() {
     top100Function(100, function(error, result) {
         if (error) alert(error.message);

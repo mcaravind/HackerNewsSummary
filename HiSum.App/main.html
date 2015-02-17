@@ -18,6 +18,12 @@
     <script src="js/async.js"></script>
     <script type="text/javascript">
         
+        var asyncDisplay = function() {
+            setTimeout(function() {
+                displayStories();
+            },5000);
+        }
+        
         function displayStories() {
             var stories = [];
             top100Function(100, function (error, result) {
@@ -36,8 +42,20 @@
             );
         }
 
+        function displaySummary() {
+            var summary = '';
+            summaryFunction(9058701, function(error, result) {
+                if (error) console.log(error);
+                result.forEach(function(entry) {
+                    summary += entry['Word'] + ' ' + entry['Count'] + ' ';
+                });
+            });
+            $("#summaryDiv").html(summary);
+        }
+
         $(document).ready(function() {
-            $("#btnUpdate").click(displayStories);
+            $("#btnUpdate").click(asyncDisplay);
+            $("#btnReply").click(displaySummary);
         });
     </script>
     
@@ -138,14 +156,14 @@
                         </div>
 
                         <div class="email-content-controls pure-u-1-2">
-                            <button onclick="displayStories()" class="secondary-button pure-button">Reply</button>
+                            <button id="btnReply" class="secondary-button pure-button">Reply</button>
                             <button class="secondary-button pure-button">Forward</button>
                             <button class="secondary-button pure-button">Move to</button>
                         </div>
                     </div>
 
                     <div class="email-content-body">
-
+                        <div id="summaryDiv"></div>
                         <p>
                             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                         </p>
