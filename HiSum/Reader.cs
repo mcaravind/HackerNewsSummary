@@ -31,7 +31,6 @@ namespace HiSum
             List<string> top100URLs = new List<string>();
             string top100URL = _apiURL + _top100;
             string response = FetchJson(top100URL);
-            //TODO:implement getting top 100 from this json
             top100URLs = response.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
             List<int> topN = top100URLs.ConvertAll(x => Convert.ToInt32(x)).Take(number).ToList();
             return topN;
@@ -39,15 +38,12 @@ namespace HiSum
 
         public async Task<object> GetTop100Stories(object input)
         {
-            //int v = (int)input;
-            //return Helper.AddSeven(v);
             Dictionary<int,string> top100 = new Dictionary<int, string>();
             List<int> top100Ids = GetTop100();
             List<StoryObj> storyObjList = new List<StoryObj>();
             foreach (int id in top100Ids)
             {
                 FullStory fs = GetStoryFull(id);
-                //top100[id] = fs.title;
                 StoryObj so = new StoryObj(){StoryId = id,StoryTitle = fs.title,Author = fs.author,StoryText = fs.text};
                 storyObjList.Add(so);
             }
@@ -56,8 +52,6 @@ namespace HiSum
 
         public async Task<object> GetFrontPage(object input)
         {
-            //int v = (int)input;
-            //return Helper.AddSeven(v);
             Dictionary<int, string> top100 = new Dictionary<int, string>();
             List<int> top100Ids = GetTop100(30);
             List<StoryObj> storyObjList = new List<StoryObj>();
