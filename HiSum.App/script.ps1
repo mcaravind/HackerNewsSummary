@@ -1,3 +1,5 @@
+Import-Module Pscx
+
 If (Test-Path .\app.nw) {
    Remove-Item .\app.nw
 }
