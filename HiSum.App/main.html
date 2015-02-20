@@ -63,7 +63,7 @@
             //var urltext = "<a onclick='return open('"+storyurl+"');' href='#'>Link</a>";
             var fullurl = '"' + storyurl + '"';
             var func = "onclick='openurl(" + fullurl + ")'";
-            var urltext = "<button " + func + ">Go to URL</button>";
+            var urltext = "<button class='primary-button pure-button' " + func + ">"+storyurl+"</button>";
             console.log(urltext);
             $("#storyUrlDiv").html(urltext);
         }
