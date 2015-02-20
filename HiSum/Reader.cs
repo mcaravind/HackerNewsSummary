@@ -59,7 +59,7 @@ namespace HiSum
             {
                 FullStory fs = GetStoryFull(id);
                 //top100[id] = fs.title;
-                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text };
+                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text,Url=fs.url??string.Empty };
                 storyObjList.Add(so);
             }
             return storyObjList;
@@ -149,6 +149,7 @@ namespace HiSum
             public string StoryTitle { get; set; }
             public string Author { get; set; }
             public string StoryText { get; set; }
+            public string Url { get; set; }
         }
 
         class WordObj
