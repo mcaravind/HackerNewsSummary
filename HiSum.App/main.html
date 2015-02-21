@@ -52,6 +52,7 @@
             var storyidval = parseInt($(item).attr("id"));
             var childid = "hdn" + $(item).attr("id");
             var storyurl = $("#" + childid).text();
+            var commentsurl = "https://news.ycombinator.com/item?id="+storyidval;
             var summary = '';
             summaryFunction(storyidval, function (error, result) {
                 if (error) console.log(error);
@@ -63,9 +64,13 @@
             //var urltext = "<a onclick='return open('"+storyurl+"');' href='#'>Link</a>";
             var fullurl = '"' + storyurl + '"';
             var func = "onclick='openurl(" + fullurl + ")'";
-            var urltext = "<button class='primary-button pure-button' " + func + ">"+storyurl+"</button>";
+            var urltext = "Link: <button class='primary-button pure-button' " + func + ">" + storyurl + "</button>";
+            var commentsfullurl = '"'+commentsurl+'"';
+            var commensfunc = "onclick='openurl(" + commentsfullurl + ")'";
+            var commentsurltext = "Comments: <button class='primary-button pure-button' " + commensfunc + ">" + commentsurl + "</button>";
             console.log(urltext);
             $("#storyUrlDiv").html(urltext);
+            $("#commentsUrlDiv").html(commentsurltext);
         }
 
         function openurl(url) {
@@ -158,7 +163,8 @@
                     </div>-->
 
                     <div class="email-content-body">
-                        <div id="storyUrlDiv"></div><br/>
+                        <div id="storyUrlDiv"></div>
+                        <div id="commentsUrlDiv"></div>
                         <br/>
                         <div id="summaryDiv"></div>
                         <div id="jstree">
@@ -174,7 +180,6 @@
                                 <li>Root node 2</li>
                             </ul>
                         </div>
-
                     </div>
                 </div>
             </div>
