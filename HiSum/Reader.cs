@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -58,11 +59,70 @@ namespace HiSum
             foreach (int id in top100Ids)
             {
                 FullStory fs = GetStoryFull(id);
+                int commentCount = fs.TotalComments;
                 //top100[id] = fs.title;
-                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text,Url=fs.url??string.Empty };
+                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text,Url=fs.url??string.Empty, StoryComments = commentCount };
                 storyObjList.Add(so);
             }
             return storyObjList;
+        }
+
+        public async Task<object> GetCommentTree(int storyid)
+        {
+            FullStory fs = GetStoryFull(storyid);
+            string json = GetCommentTree(fs);
+            return json;
+        }
+
+        public async Task<object> GetTagCloudTree(int storyid)
+        {
+            FullStory fs = GetStoryFull(storyid);
+            string json = GetTagCloudTree(fs);
+            return json;
+        }
+
+        string GetTagCloudTree(FullStory fs)
+        {
+            Dictionary<string,int> topNWordsRoot = fs.GetTopNWordsDictionary(10);
+            TagCloudNode tgnRoot = new TagCloudNode();
+            tgnRoot.id = fs.id;
+            tgnRoot.text = GetTagCloudFromDictionary(topNWordsRoot);
+            tgnRoot.children = new List<TagCloudNode>();
+            foreach (children child in fs.children)
+            {
+                TagCloudNode tgnChild = GetTagCloudTree(child);
+                tgnRoot.children.Add(tgnChild);
+            }
+            return JsonConvert.SerializeObject(tgnRoot) ;
+        }
+
+        TagCloudNode GetTagCloudTree(children children)
+        {
+            Dictionary<string, int> topNWordsRoot = children.GetTopNWordsDictionary(10);
+            TagCloudNode tgnRoot = new TagCloudNode();
+            tgnRoot.id = children.id;
+            tgnRoot.text = GetTagCloudFromDictionary(topNWordsRoot);
+            tgnRoot.children = new List<TagCloudNode>();
+            foreach (children child in children.Children)
+            {
+                TagCloudNode tgnChild = GetTagCloudTree(child);
+                tgnRoot.children.Add(tgnChild);
+            }
+            return tgnRoot;
+        }
+
+        string GetTagCloudFromDictionary(Dictionary<string,int> dict)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in dict)
+            {
+                int fontSize = Math.Max((item.Value/2),5);
+                sb.Append("<font size='" + fontSize + "'>");
+                sb.Append(item.Key);
+                sb.Append("</font>");
+                sb.Append("&nbsp;");
+            }
+            return sb.ToString();
         }
 
         public async Task<object> GetStoryTopNWords(int storyid)
@@ -79,6 +139,11 @@ namespace HiSum
             string response = FetchJson(storyURL);
             FullStory fullStory = JsonConvert.DeserializeObject<FullStory>(response);
             return fullStory;
+        }
+
+        string GetCommentTree(FullStory fs)
+        {
+            return fs.GetCommentTree();
         }
 
         public Story GetStory(int storyID)
@@ -150,6 +215,7 @@ namespace HiSum
             public string Author { get; set; }
             public string StoryText { get; set; }
             public string Url { get; set; }
+            public int StoryComments { get; set; }
         }
 
         class WordObj

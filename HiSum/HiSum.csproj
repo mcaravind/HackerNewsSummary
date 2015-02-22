@@ -57,6 +57,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Story.cs" />
     <Compile Include="StoryItem.cs" />
+    <Compile Include="TagCloudNode.cs" />
     <Compile Include="TreeNode.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

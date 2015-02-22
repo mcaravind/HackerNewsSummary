@@ -22,6 +22,20 @@ var summaryFunction = edge.func(
     methodName: 'GetStoryTopNWords'
 });
 
+var commentsFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'GetCommentTree'
+});
+
+var tagCloudFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'GetTagCloudTree'
+});
+
 function GetTop100() {
     top100Function(100, function(error, result) {
         if (error) alert(error.message);
