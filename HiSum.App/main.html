@@ -101,12 +101,16 @@
                 var arr = null;
                 arr = JSON.parse(result);
                 console.log(arr);
-                $("#jstree").jstree({
-                    'core': {
-                        'data': arr
-                    }
-                });
-                $('#jstree').jstree('refresh');
+                loadTree(arr);
+            });
+        }
+
+        function loadTree(arr) {
+            $("#jstree").jstree("destroy");
+            $("#jstree").jstree({
+                'core': {
+                    'data': arr
+                }
             });
         }
 

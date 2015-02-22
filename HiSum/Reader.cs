@@ -116,11 +116,16 @@ namespace HiSum
             StringBuilder sb = new StringBuilder();
             foreach (var item in dict)
             {
-                int fontSize = Math.Max((item.Value/2),5);
-                sb.Append("<font size='" + fontSize + "'>");
+                double fontSize = ((Math.Min(item.Value,10)+5)*100)/10;
+                //sb.Append("<font size='" + fontSize + "'>");
+                //sb.Append(item.Key);
+                //sb.Append("</font>");
+                //sb.Append("&nbsp;");
+                sb.Append("<span style='font-size:");
+                sb.Append(fontSize);
+                sb.Append("%'>");
                 sb.Append(item.Key);
-                sb.Append("</font>");
-                sb.Append("&nbsp;");
+                sb.Append("</span>&nbsp;");
             }
             return sb.ToString();
         }
