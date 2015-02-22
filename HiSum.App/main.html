@@ -4,11 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A layout example that shows off a responsive email layout.">
-
+    
     <title>HiSum &ndash; Hierarchical Summary for Hacker News &ndash; Pure</title>
-
-
 
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
     <link rel="stylesheet" type="text/css" href="https://rawgithub.com/tilomitra/cssextras/master/css/pure-extras.css">
@@ -16,7 +13,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <link rel="stylesheet" href="dist/themes/default/style.min.css" />
-    <!--<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>-->
     <script src="dist/jstree.min.js"></script>
     <script type="text/javascript">
         
@@ -44,9 +40,7 @@
                 $("#storyTemplate").render(stories)
             );
         }
-
         
-
         $(document).ready(function() {
             $("#btnUpdate").click(displayStories);
             
@@ -66,7 +60,6 @@
                 });
             });
             $("#summaryDiv").html(summary);
-            //var urltext = "<a onclick='return open('"+storyurl+"');' href='#'>Link</a>";
             var fullurl = '"' + storyurl + '"';
             var func = "onclick='openurl(" + fullurl + ")'";
             var urltext = "Link: <button class='primary-button pure-button' " + func + ">" + storyurl + "</button>";
@@ -77,32 +70,37 @@
             $("#storyUrlDiv").html(urltext);
             $("#commentsUrlDiv").html(commentsurltext);
 
-            //commentsFunction(storyidval, function(error, result) {
-            //    if (error) console.log('error:'+error);
-            //    var arr = JSON.parse('['+ result.toString()+']', function (prop, value) {
-            //        switch (prop) {
-            //            case "id":
-            //                this.storyid = value;
-            //                return;
-            //            default:
-            //                return value;
-            //        }
-            //    });
-            //    console.log(arr);
-            //    $("#jstree").jstree({
-            //        'core': {
-            //            'data': arr
-            //        }
-            //    });
-            //});
-
             tagCloudFunction(storyidval, function (error, result) {
                 if (error) console.log('error:' + error);
-                var arr = null;
-                arr = JSON.parse(result);
-                console.log(arr);
+                var json = result['Json'];
+                var arr = JSON.parse(json);
+                var dict = result['Comments'];
                 loadTree(arr);
+                addLoadCommentEvent(dict);
             });
+        }
+
+        function addLoadCommentEvent(dict) {
+            var textdict = {};
+            $.each(dict, function (key, value) {
+                textdict[value['Id']] = value['Text'];
+            });
+            for (var property in textdict) {
+                if (textdict.hasOwnProperty(property)) {
+                    console.log(property);
+                }
+            }
+            $('#jstree').on("select_node.jstree", function (e, data) {
+                var key = data.node.id;
+                console.log(key);
+                loadComment(textdict, key);
+            });
+        }
+
+        function loadComment(textdict,key)
+        {
+            $("#commentDiv").html('');
+            $("#commentDiv").html(textdict[key]);
         }
 
         function loadTree(arr) {
@@ -208,9 +206,9 @@
                         <div id="storyUrlDiv"></div>
                         <div id="commentsUrlDiv"></div>
                         <br/>
-                        <div id="summaryDiv"></div>
-                        <div id="jstree" style="height: 300px;overflow: scroll">
+                        <div id="jstree" style="height: 300px; overflow: scroll">
                         </div>
+                        <div id="commentDiv" style="height: 200px; overflow: scroll"></div>
                     </div>
                 </div>
             </div>

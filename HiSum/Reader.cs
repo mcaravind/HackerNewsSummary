@@ -74,11 +74,38 @@ namespace HiSum
             return json;
         }
 
+        Dictionary<int, string> GetCommentDictionary(FullStory fs)
+        {
+            Dictionary<int,string> commentDictionary = new Dictionary<int, string>();
+            foreach (children child in fs.children)
+            {
+                commentDictionary[child.id] = child.text;
+                GetCommentDictionary(child, ref commentDictionary);
+            }
+            return commentDictionary;
+        }
+
+        void GetCommentDictionary(children childlist, ref Dictionary<int, string> dict)
+        {
+            foreach (children child in childlist.Children)
+            {
+                dict[child.id] = child.text;
+                GetCommentDictionary(child, ref dict);
+            }
+        }
+
         public async Task<object> GetTagCloudTree(int storyid)
         {
             FullStory fs = GetStoryFull(storyid);
             string json = GetTagCloudTree(fs);
-            return json;
+            Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
+            List<CommentObj> comments = new List<CommentObj>();
+            foreach (var item in commentDictionary)
+            {
+                comments.Add(new CommentObj(){Id = item.Key,Text = item.Value});
+            }
+            TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments };
+            return tagCloudObj;
         }
 
         string GetTagCloudTree(FullStory fs)
@@ -117,10 +144,6 @@ namespace HiSum
             foreach (var item in dict)
             {
                 double fontSize = ((Math.Min(item.Value,10)+5)*100)/10;
-                //sb.Append("<font size='" + fontSize + "'>");
-                //sb.Append(item.Key);
-                //sb.Append("</font>");
-                //sb.Append("&nbsp;");
                 sb.Append("<span style='font-size:");
                 sb.Append(fontSize);
                 sb.Append("%'>");
@@ -227,6 +250,18 @@ namespace HiSum
         {
             public string Word { get; set; }
             public int Count { get; set; }
+        }
+
+        class TagCloudObj
+        {
+            public string Json { get; set; }
+            public List<CommentObj> Comments { get; set; }    
+        }
+
+        class CommentObj
+        {
+            public int Id { get; set; }
+            public string Text { get; set; }
         }
     }
 }
