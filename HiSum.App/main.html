@@ -48,6 +48,7 @@
         });
 
         function clicked(item) {
+            $("#commentDiv").html('');
             var storyidval = parseInt($(item).attr("id"));
             var childid = "hdn" + $(item).attr("id");
             var storyurl = $("#" + childid).text();
@@ -128,6 +129,7 @@
     <!--[if lt IE 9]>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
     <![endif]-->
+
     <script type="text/javascript" src="reader.js"></script>
     </head>
 <body>
@@ -187,30 +189,36 @@
         </script>
             <div id="main" class="pure-u-1">
                 <div class="email-content">
-                    <!--<div class="email-content-header pure-g">
-                        <div class="pure-u-1-2">
-                            <h1 class="email-content-title">Hello from Toronto</h1>
-                            <p class="email-content-subtitle">
-                                From <a>Tilo Mitra</a> at <span>3:56pm, April 3, 2012</span>
-                            </p>
-                        </div>
-
+                    <div class="email-content-header pure-g">
                         <div class="email-content-controls pure-u-1-2">
-                            <button id="btnReply" class="secondary-button pure-button">Reply</button>
-                            <button class="secondary-button pure-button">Forward</button>
-                            <button class="secondary-button pure-button">Move to</button>
+                            <button id="btnArchive" class="secondary-button pure-button">Archive</button>
                         </div>
-                    </div>-->
+                        </div>
+                        <!--<div class="email-content-header pure-g">
+            <div class="pure-u-1-2">
+                <h1 class="email-content-title">Hello from Toronto</h1>
+                <p class="email-content-subtitle">
+                    From <a>Tilo Mitra</a> at <span>3:56pm, April 3, 2012</span>
+                </p>
+            </div>
 
-                    <div class="email-content-body">
-                        <div id="storyUrlDiv"></div>
-                        <div id="commentsUrlDiv"></div>
-                        <br/>
-                        <div id="jstree" style="height: 300px; overflow: scroll">
+            <div class="email-content-controls pure-u-1-2">
+                <button id="btnReply" class="secondary-button pure-button">Reply</button>
+                <button class="secondary-button pure-button">Forward</button>
+                <button class="secondary-button pure-button">Move to</button>
+            </div>
+        </div>-->
+
+                        <div class="email-content-body">
+                            <div id="storyUrlDiv"></div>
+                            <div id="commentsUrlDiv"></div>
+                            <br />
+                            <div id="jstree" style="width: 800px; height: 250px; overflow: scroll">&nbsp;</div>
+                            <div id="commentDiv" style="width: 800px; height: 200px; overflow: scroll">
+                                &nbsp;
+                            </div>
                         </div>
-                        <div id="commentDiv" style="height: 200px; overflow: scroll"></div>
                     </div>
-                </div>
             </div>
         </div>
 
