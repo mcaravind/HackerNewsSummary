@@ -35,8 +35,7 @@ namespace HiSum
 
         public int GetChildCount(children childrenlist)
         {
-            if (childrenlist.Children.Count == 0) return 1;
-            int counter = 0;
+            int counter = string.IsNullOrWhiteSpace(childrenlist.text)?0:1;
             foreach (children child in childrenlist.Children)
             {
                 counter += GetChildCount(child);

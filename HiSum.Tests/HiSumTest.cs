@@ -24,5 +24,12 @@ namespace HiSum.Tests
             Reader reader = new Reader();
             Task<object> result = reader.GetTagCloudTree(9117028);
         }
+
+        [TestMethod]
+        public void GetCount()
+        {
+            Reader reader = new Reader();
+            int count = reader.GetStoryCommentCount(9112885);
+        }
     }
 }

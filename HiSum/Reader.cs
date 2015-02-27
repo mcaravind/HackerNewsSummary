@@ -169,6 +169,12 @@ namespace HiSum
             return fullStory;
         }
 
+        public int GetStoryCommentCount(int storyID)
+        {
+            FullStory fs = GetStoryFull(storyID);
+            return fs.TotalComments;
+        }
+
         public Story GetStory(int storyID)
         {
             string storyURL = _apiURL + _story + "/" + storyID + ".json";
