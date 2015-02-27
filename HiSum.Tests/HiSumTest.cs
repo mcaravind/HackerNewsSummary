@@ -19,17 +19,10 @@ namespace HiSum.Tests
         }
 
         [TestMethod]
-        public void TestGetComments()
-        {
-            Reader reader = new Reader();
-            Task<object> result = reader.GetCommentTree(9082077);
-        }
-
-        [TestMethod]
         public void TestGetTagCloudTree()
         {
             Reader reader = new Reader();
-            Task<object> result = reader.GetTagCloudTree(9086751);
+            Task<object> result = reader.GetTagCloudTree(9117028);
         }
     }
 }

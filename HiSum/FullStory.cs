@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using NLTKSharp;
 
 namespace HiSum
 {
@@ -63,6 +65,7 @@ namespace HiSum
         public Dictionary<string, int> GetTopNWordsDictionary(int N)
         {
             string[] stopWords = { "he", "his", "which", "want", "do", "would", "more", "like", "you", "your", "very", "me", "get", "has", "i", "over", "could", "have", "what", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with" };
+            string[] ignoreWords = {"*"};
             string[] allWords;
             Dictionary<string, int> wordCount = new Dictionary<string, int>();
             StringBuilder sbFullText = new StringBuilder();
@@ -72,22 +75,39 @@ namespace HiSum
                 sbFullText.Append(" ");
             }
             string tagLess = Util.StripTagsCharArray(sbFullText.ToString());
+            string urlLess = Regex.Replace(tagLess, 
+                @"((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", 
+                string.Empty);
             wordCount = new Dictionary<string, int>();
-            string[] separators = { " ", "." };
-            allWords = tagLess.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            string[] separators = { " ", ".",",",";","-","(",")","[","]" };
+            allWords = urlLess.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            
+            Dictionary<string, string> stemParent = new Dictionary<string, string>();
             foreach (string word in allWords)
             {
-                if (stopWords.Contains(word.ToLower())) continue;
-                if (!wordCount.ContainsKey(word))
+                string stemmed = Stemmer.GetStem(word);
+                if (stemParent.ContainsKey(stemmed))
                 {
-                    wordCount[word] = 1;
+                    if (stemParent[stemmed].Length < word.Length)
+                    {
+                        stemParent[stemmed] = word;
+                    }
                 }
                 else
                 {
-                    wordCount[word] += 1;
+                    stemParent[stemmed] = word;
+                }
+                if (stopWords.Contains(stemmed.ToLower())) continue;
+                if (!wordCount.ContainsKey(stemmed)&&!ignoreWords.Contains(stemmed))
+                {
+                    wordCount[stemmed] = 1;
+                }
+                else
+                {
+                    wordCount[stemmed] += 1;
                 }
             }
-            wordCount = wordCount.OrderByDescending(x => x.Value).Take(N).ToDictionary(kvp=>kvp.Key,kvp=>kvp.Value);
+            wordCount = wordCount.OrderByDescending(x => x.Value).Take(N).ToDictionary(kvp=>stemParent[kvp.Key],kvp=>kvp.Value);
             return wordCount;
         } 
 

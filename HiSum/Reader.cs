@@ -18,6 +18,7 @@ namespace HiSum
         string _story { get; set; }
         string _comment { get; set; }
         string _algoliaURL { get; set; }
+        
         public Reader()
         {
             _apiURL = "apiURL".AppSettings(defaultValue: "https://hacker-news.firebaseio.com/v0/");
@@ -39,7 +40,6 @@ namespace HiSum
 
         public async Task<object> GetTop100Stories(object input)
         {
-            Dictionary<int,string> top100 = new Dictionary<int, string>();
             List<int> top100Ids = GetTop100();
             List<StoryObj> storyObjList = new List<StoryObj>();
             foreach (int id in top100Ids)
@@ -53,26 +53,38 @@ namespace HiSum
 
         public async Task<object> GetFrontPage(object input)
         {
-            Dictionary<int, string> top100 = new Dictionary<int, string>();
             List<int> top100Ids = GetTop100(30);
             List<StoryObj> storyObjList = new List<StoryObj>();
             foreach (int id in top100Ids)
             {
                 FullStory fs = GetStoryFull(id);
                 int commentCount = fs.TotalComments;
-                //top100[id] = fs.title;
                 StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text,Url=fs.url??string.Empty, StoryComments = commentCount };
                 storyObjList.Add(so);
             }
             return storyObjList;
         }
 
-        public async Task<object> GetCommentTree(int storyid)
+        public async Task<object> GetTagCloudTree(int storyid)
         {
             FullStory fs = GetStoryFull(storyid);
-            string json = GetCommentTree(fs);
-            return json;
+            string json = GetTagCloudTree(fs);
+            Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
+            List<CommentObj> comments = new List<CommentObj>();
+            foreach (var item in commentDictionary)
+            {
+                comments.Add(new CommentObj() { Id = item.Key, Text = item.Value });
+            }
+            TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments };
+            return tagCloudObj;
         }
+
+        //public async Task<object> GetCommentTree(int storyid)
+        //{
+        //    FullStory fs = GetStoryFull(storyid);
+        //    string json = GetCommentTree(fs);
+        //    return json;
+        //}
 
         Dictionary<int, string> GetCommentDictionary(FullStory fs)
         {
@@ -94,19 +106,7 @@ namespace HiSum
             }
         }
 
-        public async Task<object> GetTagCloudTree(int storyid)
-        {
-            FullStory fs = GetStoryFull(storyid);
-            string json = GetTagCloudTree(fs);
-            Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
-            List<CommentObj> comments = new List<CommentObj>();
-            foreach (var item in commentDictionary)
-            {
-                comments.Add(new CommentObj(){Id = item.Key,Text = item.Value});
-            }
-            TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments };
-            return tagCloudObj;
-        }
+        
 
         string GetTagCloudTree(FullStory fs)
         {
@@ -167,11 +167,6 @@ namespace HiSum
             string response = FetchJson(storyURL);
             FullStory fullStory = JsonConvert.DeserializeObject<FullStory>(response);
             return fullStory;
-        }
-
-        string GetCommentTree(FullStory fs)
-        {
-            return fs.GetCommentTree();
         }
 
         public Story GetStory(int storyID)
