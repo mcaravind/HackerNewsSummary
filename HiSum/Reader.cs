@@ -13,25 +13,25 @@ namespace HiSum
 {
     public class Reader
     {
-        string _apiURL { get; set; }
-        string _top100 { get; set; }
-        string _story { get; set; }
-        string _comment { get; set; }
-        string _algoliaURL { get; set; }
+        //string _apiURL { get; set; }
+        //string _top100 { get; set; }
+        //string _story { get; set; }
+        //string _comment { get; set; }
+        //string _algoliaURL { get; set; }
         
         public Reader()
         {
-            _apiURL = "apiURL".AppSettings(defaultValue: "https://hacker-news.firebaseio.com/v0/");
-            _top100 = "top100".AppSettings(defaultValue: "topstories.json");
-            _story = "item".AppSettings(defaultValue: "item");
-            _comment = "comment".AppSettings(defaultValue: "item");
-            _algoliaURL = "algoliaURL".AppSettings(defaultValue: "http://hn.algolia.com/api/v1/items/");
+            //_apiURL = 
+            //_top100 = 
+            //_story = 
+            //_comment = 
+            //_algoliaURL = 
         }
 
         public List<int> GetTop100(int number = 100)
         {
             List<string> top100URLs = new List<string>();
-            string top100URL = _apiURL + _top100;
+            string top100URL = Globals.ApiUrl + Globals.Top100;
             string response = FetchJson(top100URL);
             top100URLs = response.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
             List<int> topN = top100URLs.ConvertAll(x => Convert.ToInt32(x)).Take(number).ToList();
@@ -163,7 +163,7 @@ namespace HiSum
 
         public FullStory GetStoryFull(int storyID)
         {
-            string storyURL = _algoliaURL + storyID;
+            string storyURL = Globals.AlgoliaUrl + storyID;
             string response = FetchJson(storyURL);
             FullStory fullStory = JsonConvert.DeserializeObject<FullStory>(response);
             return fullStory;
@@ -177,7 +177,7 @@ namespace HiSum
 
         public Story GetStory(int storyID)
         {
-            string storyURL = _apiURL + _story + "/" + storyID + ".json";
+            string storyURL = Globals.ApiUrl + Globals.Story + "/" + storyID + ".json";
             string response = FetchJson(storyURL);
             StoryItem storyItem = JsonConvert.DeserializeObject<StoryItem>(response);
             Story story = new Story()
@@ -201,7 +201,7 @@ namespace HiSum
         private Comment GetComment(int id)
         {
             Comment comment = new Comment();
-            string commentURL = _apiURL + _comment + "/" + id + ".json";
+            string commentURL = Globals.ApiUrl + Globals.Comment + "/" + id + ".json";
             string responseComment = FetchJson(commentURL);
             CommentItem commentItem = JsonConvert.DeserializeObject<CommentItem>(responseComment);
             comment.By = commentItem.by;
