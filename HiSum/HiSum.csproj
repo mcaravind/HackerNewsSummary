@@ -52,6 +52,7 @@
     <Compile Include="CommentItem.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FullStory.cs" />
+    <Compile Include="FullStoryFactory.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reader.cs" />

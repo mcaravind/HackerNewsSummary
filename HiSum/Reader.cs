@@ -13,26 +13,11 @@ namespace HiSum
 {
     public class Reader
     {
-        //string _apiURL { get; set; }
-        //string _top100 { get; set; }
-        //string _story { get; set; }
-        //string _comment { get; set; }
-        //string _algoliaURL { get; set; }
-        
-        public Reader()
-        {
-            //_apiURL = 
-            //_top100 = 
-            //_story = 
-            //_comment = 
-            //_algoliaURL = 
-        }
-
         public List<int> GetTop100(int number = 100)
         {
             List<string> top100URLs = new List<string>();
             string top100URL = Globals.ApiUrl + Globals.Top100;
-            string response = FetchJson(top100URL);
+            string response = Util.FetchJson(top100URL);
             top100URLs = response.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
             List<int> topN = top100URLs.ConvertAll(x => Convert.ToInt32(x)).Take(number).ToList();
             return topN;
@@ -44,7 +29,7 @@ namespace HiSum
             List<StoryObj> storyObjList = new List<StoryObj>();
             foreach (int id in top100Ids)
             {
-                FullStory fs = GetStoryFull(id);
+                FullStory fs = FullStoryFactory.GetFullStory(id); 
                 StoryObj so = new StoryObj(){StoryId = id,StoryTitle = fs.title,Author = fs.author,StoryText = fs.text};
                 storyObjList.Add(so);
             }
@@ -57,7 +42,7 @@ namespace HiSum
             List<StoryObj> storyObjList = new List<StoryObj>();
             foreach (int id in top100Ids)
             {
-                FullStory fs = GetStoryFull(id);
+                FullStory fs = FullStoryFactory.GetFullStory(id);
                 int commentCount = fs.TotalComments;
                 StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text,Url=fs.url??string.Empty, StoryComments = commentCount };
                 storyObjList.Add(so);
@@ -67,8 +52,8 @@ namespace HiSum
 
         public async Task<object> GetTagCloudTree(int storyid)
         {
-            FullStory fs = GetStoryFull(storyid);
-            string json = GetTagCloudTree(fs);
+            FullStory fs = FullStoryFactory.GetFullStory(storyid);
+            string json = fs.GetTagCloudTree();
             Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
             List<CommentObj> comments = new List<CommentObj>();
             foreach (var item in commentDictionary)
@@ -78,13 +63,6 @@ namespace HiSum
             TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments };
             return tagCloudObj;
         }
-
-        //public async Task<object> GetCommentTree(int storyid)
-        //{
-        //    FullStory fs = GetStoryFull(storyid);
-        //    string json = GetCommentTree(fs);
-        //    return json;
-        //}
 
         Dictionary<int, string> GetCommentDictionary(FullStory fs)
         {
@@ -106,135 +84,18 @@ namespace HiSum
             }
         }
 
-        
-
-        string GetTagCloudTree(FullStory fs)
-        {
-            Dictionary<string,int> topNWordsRoot = fs.GetTopNWordsDictionary(10);
-            TagCloudNode tgnRoot = new TagCloudNode();
-            tgnRoot.id = fs.id;
-            tgnRoot.text = GetTagCloudFromDictionary(topNWordsRoot);
-            tgnRoot.children = new List<TagCloudNode>();
-            foreach (children child in fs.children)
-            {
-                TagCloudNode tgnChild = GetTagCloudTree(child);
-                tgnRoot.children.Add(tgnChild);
-            }
-            return JsonConvert.SerializeObject(tgnRoot) ;
-        }
-
-        TagCloudNode GetTagCloudTree(children children)
-        {
-            Dictionary<string, int> topNWordsRoot = children.GetTopNWordsDictionary(10);
-            TagCloudNode tgnRoot = new TagCloudNode();
-            tgnRoot.id = children.id;
-            tgnRoot.text = GetTagCloudFromDictionary(topNWordsRoot);
-            tgnRoot.children = new List<TagCloudNode>();
-            foreach (children child in children.Children)
-            {
-                TagCloudNode tgnChild = GetTagCloudTree(child);
-                tgnRoot.children.Add(tgnChild);
-            }
-            return tgnRoot;
-        }
-
-        string GetTagCloudFromDictionary(Dictionary<string,int> dict)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var item in dict)
-            {
-                double fontSize = ((Math.Min(item.Value,10)+5)*100)/10;
-                sb.Append("<span style='font-size:");
-                sb.Append(fontSize);
-                sb.Append("%'>");
-                sb.Append(item.Key);
-                sb.Append("</span>&nbsp;");
-            }
-            return sb.ToString();
-        }
-
         public async Task<object> GetStoryTopNWords(int storyid)
         {
-            FullStory fs = GetStoryFull(storyid);
+            FullStory fs = FullStoryFactory.GetFullStory(storyid);
             Dictionary<string, int> topNWords = fs.GetTopNWordsDictionary(10);
             List<WordObj> wordObjs = topNWords.ToList().Select(x => new WordObj() {Word = x.Key, Count = x.Value}).ToList();
             return wordObjs;
         }
 
-        public FullStory GetStoryFull(int storyID)
-        {
-            string storyURL = Globals.AlgoliaUrl + storyID;
-            string response = FetchJson(storyURL);
-            FullStory fullStory = JsonConvert.DeserializeObject<FullStory>(response);
-            return fullStory;
-        }
-
         public int GetStoryCommentCount(int storyID)
         {
-            FullStory fs = GetStoryFull(storyID);
+            FullStory fs = FullStoryFactory.GetFullStory(storyID);
             return fs.TotalComments;
-        }
-
-        public Story GetStory(int storyID)
-        {
-            string storyURL = Globals.ApiUrl + Globals.Story + "/" + storyID + ".json";
-            string response = FetchJson(storyURL);
-            StoryItem storyItem = JsonConvert.DeserializeObject<StoryItem>(response);
-            Story story = new Story()
-            {
-                By = storyItem.by,
-                Id = storyItem.id,
-                Score = storyItem.score,
-                Time = storyItem.time,
-                Title = storyItem.title,
-                Url = storyItem.url
-            };
-            story.Comments = new List<Comment>();
-            foreach (int kid in storyItem.kids)
-            {
-                Comment comment = GetComment(kid);
-                story.Comments.Add(comment);
-            }
-            return story;
-        }
-
-        private Comment GetComment(int id)
-        {
-            Comment comment = new Comment();
-            string commentURL = Globals.ApiUrl + Globals.Comment + "/" + id + ".json";
-            string responseComment = FetchJson(commentURL);
-            CommentItem commentItem = JsonConvert.DeserializeObject<CommentItem>(responseComment);
-            comment.By = commentItem.by;
-            comment.Text = WebUtility.HtmlDecode(commentItem.text);
-            comment.SubtreeText = WebUtility.HtmlDecode(commentItem.text);
-            comment.Parent = commentItem.parent;
-            comment.Time = commentItem.time;
-            comment.Comments = new List<Comment>();
-            if (commentItem.kids != null)
-            {
-                foreach (int kid in commentItem.kids)
-                {
-                    Comment child = GetComment(kid);
-                    comment.Comments.Add(child);
-                    comment.SubtreeText += " " + WebUtility.HtmlDecode(child.Text);
-                }
-            }
-            return comment;
-        }
-
-        public string FetchJson(string url)
-        {
-            string returnVal = string.Empty;
-            WebRequest request = WebRequest.Create(url);
-            using (WebResponse response = request.GetResponse())
-            {
-                Stream dataStream = response.GetResponseStream();
-                using (StreamReader reader = new StreamReader(dataStream))
-                {
-                    returnVal = reader.ReadToEnd();
-                }
-            }
-            return returnVal;
         }
 
         class StoryObj

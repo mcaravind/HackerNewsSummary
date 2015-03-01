@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +38,21 @@ namespace HiSum
                 }
             }
             return new string(array, 0, arrayIndex);
+        }
+
+        public static string FetchJson(string url)
+        {
+            string returnVal = string.Empty;
+            WebRequest request = WebRequest.Create(url);
+            using (WebResponse response = request.GetResponse())
+            {
+                Stream dataStream = response.GetResponseStream();
+                using (StreamReader reader = new StreamReader(dataStream))
+                {
+                    returnVal = reader.ReadToEnd();
+                }
+            }
+            return returnVal;
         }
     }
 }
