@@ -61,22 +61,6 @@ namespace HiSum
             return commentTree;
         }
 
-        //public FullStory(int storyID)
-        //{
-        //    string storyURL = Globals.AlgoliaUrl + storyID;
-        //    string response = Util.FetchJson(storyURL);
-        //    FullStory fullStory = JsonConvert.DeserializeObject<FullStory>(response);
-        //    this.id = fullStory.id;
-        //    this.point = fullStory.point;
-        //    this.created_at = fullStory.created_at;
-        //    this.author = fullStory.author;
-        //    this.text = fullStory.text;
-        //    this.title = fullStory.title;
-        //    this.url = fullStory.url;
-        //    this.parent_id = fullStory.parent_id;
-        //    this.children = fullStory.children;
-        //}
-
         public string GetTagCloudTree()
         {
             FullStory fs = this;
