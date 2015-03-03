@@ -22,7 +22,7 @@ namespace HiSum.Tests
         public void TestGetTagCloudTree()
         {
             Reader reader = new Reader();
-            Task<object> result = reader.GetTagCloudTree(9117028);
+            Task<object> result = reader.GetTagCloudTree(9132815);
         }
 
         [TestMethod]

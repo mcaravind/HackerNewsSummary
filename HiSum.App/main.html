@@ -71,14 +71,32 @@
             $("#storyUrlDiv").html(urltext);
             $("#commentsUrlDiv").html(commentsurltext);
 
-            tagCloudFunction(storyidval, function (error, result) {
-                if (error) console.log('error:' + error);
-                var json = result['Json'];
-                var arr = JSON.parse(json);
-                var dict = result['Comments'];
-                loadTree(arr);
-                addLoadCommentEvent(dict);
-            });
+            try {
+                tagCloudFunction(storyidval, function (error, result) {
+                    if (error) console.log('error:' + error);
+                    var json = result['Json'];
+                    // preserve newlines, etc - use valid JSON
+                    json = json.replace(/\\n/g, "\\n")
+                                   .replace(/\\'/g, "\\'")
+                                   .replace(/\\"/g, '\\"')
+                                   .replace(/\\&/g, "\\&")
+                                   .replace(/\\r/g, "\\r")
+                                   .replace(/\\t/g, "\\t")
+                                   .replace(/\\b/g, "\\b")
+                                   .replace(/\\f/g, "\\f");
+                    // remove non-printable and other non-valid JSON chars
+                    json = json.replace(/[\u0000-\u0019]+/g, "");
+                    //console.log(json);
+                    var arr = JSON.parse(json);
+                    var dict = result['Comments'];
+                    loadTree(arr);
+                    addLoadCommentEvent(dict);
+                });
+            } catch (ex) {
+                console.log(ex);
+            }
+
+            
         }
 
         function addLoadCommentEvent(dict) {

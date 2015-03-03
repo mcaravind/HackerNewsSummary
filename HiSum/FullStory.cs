@@ -124,32 +124,39 @@ namespace HiSum
                 @"((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", 
                 string.Empty);
             wordCount = new Dictionary<string, int>();
-            string[] separators = { " ", ".",",",";","-","(",")","[","]" };
+            string[] separators = { " ", ".",",",";","-","(",")","[","]","*","#","$","%","\"" };
             allWords = urlLess.Split(separators, StringSplitOptions.RemoveEmptyEntries);
             
             Dictionary<string, string> stemParent = new Dictionary<string, string>();
             foreach (string word in allWords)
             {
-                string stemmed = Stemmer.GetStem(word);
-                if (stemParent.ContainsKey(stemmed))
+                try
                 {
-                    if (stemParent[stemmed].Length < word.Length)
+                    string stemmed = Stemmer.GetStem(word);
+                    if (stemParent.ContainsKey(stemmed))
+                    {
+                        if (stemParent[stemmed].Length < word.Length)
+                        {
+                            stemParent[stemmed] = word;
+                        }
+                    }
+                    else
                     {
                         stemParent[stemmed] = word;
                     }
+                    if (stopWords.Contains(stemmed.ToLower())) continue;
+                    if (!wordCount.ContainsKey(stemmed) && !ignoreWords.Contains(stemmed))
+                    {
+                        wordCount[stemmed] = 1;
+                    }
+                    else
+                    {
+                        wordCount[stemmed] += 1;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    stemParent[stemmed] = word;
-                }
-                if (stopWords.Contains(stemmed.ToLower())) continue;
-                if (!wordCount.ContainsKey(stemmed)&&!ignoreWords.Contains(stemmed))
-                {
-                    wordCount[stemmed] = 1;
-                }
-                else
-                {
-                    wordCount[stemmed] += 1;
+                    Console.WriteLine(ex.ToString());
                 }
             }
             wordCount = wordCount.OrderByDescending(x => x.Value).Take(N).ToDictionary(kvp=>stemParent[kvp.Key],kvp=>kvp.Value);
