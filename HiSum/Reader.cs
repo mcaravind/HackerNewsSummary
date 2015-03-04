@@ -20,7 +20,8 @@ namespace HiSum
             {
                 FullStory fs = FullStoryFactory.GetFullStory(id);
                 int commentCount = fs.TotalComments;
-                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? string.Empty, StoryComments = commentCount };
+                string commentUrl = "https://news.ycombinator.com/item?id=" + id;
+                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl,CommentUrl = commentUrl,StoryComments = commentCount };
                 storyObjList.Add(so);
             }
             catch (Exception ex)
@@ -46,8 +47,9 @@ namespace HiSum
             List<StoryObj> storyObjList = new List<StoryObj>();
             foreach (int id in top100Ids)
             {
-                FullStory fs = FullStoryFactory.GetFullStory(id); 
-                StoryObj so = new StoryObj(){StoryId = id,StoryTitle = fs.title,Author = fs.author,StoryText = fs.text};
+                FullStory fs = FullStoryFactory.GetFullStory(id);
+                string commentUrl = "https://news.ycombinator.com/item?id=" + id;
+                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl };
                 storyObjList.Add(so);
             }
             return storyObjList;
@@ -63,7 +65,8 @@ namespace HiSum
                 {
                     FullStory fs = FullStoryFactory.GetFullStory(id);
                     int commentCount = fs.TotalComments;
-                    StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? string.Empty, StoryComments = commentCount };
+                    string commentUrl = "https://news.ycombinator.com/item?id=" + id;
+                    StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl,StoryComments = commentCount };
                     storyObjList.Add(so);
                 }
                 catch (Exception ex)
@@ -133,6 +136,7 @@ namespace HiSum
             public string Author { get; set; }
             public string StoryText { get; set; }
             public string Url { get; set; }
+            public string CommentUrl { get; set; }
             public int StoryComments { get; set; }
         }
 

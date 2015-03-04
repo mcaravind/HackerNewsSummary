@@ -20,8 +20,11 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="app.js" />
+    <Content Include="css\layouts\blog-old-ie.css" />
+    <Content Include="css\layouts\blog.css" />
     <Content Include="css\layouts\email-old-ie.css" />
     <Content Include="css\layouts\email.css" />
+    <Content Include="css\layouts\menus.css" />
     <Content Include="dist\jstree.js" />
     <Content Include="dist\jstree.min.js" />
     <Content Include="dist\themes\default-dark\32px.png" />
