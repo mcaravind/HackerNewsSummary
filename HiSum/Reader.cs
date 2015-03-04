@@ -13,14 +13,31 @@ namespace HiSum
 {
     public class Reader
     {
-        public List<int> GetTop100(int number = 100)
+        public async Task<Object> GetStory(int id)
         {
-            List<string> top100URLs = new List<string>();
-            string top100URL = Globals.ApiUrl + Globals.Top100;
-            string response = Util.FetchJson(top100URL);
-            top100URLs = response.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
-            List<int> topN = top100URLs.ConvertAll(x => Convert.ToInt32(x)).Take(number).ToList();
-            return topN;
+            List<StoryObj> storyObjList = new List<StoryObj>();
+            try
+            {
+                FullStory fs = FullStoryFactory.GetFullStory(id);
+                int commentCount = fs.TotalComments;
+                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? string.Empty, StoryComments = commentCount };
+                storyObjList.Add(so);
+            }
+            catch (Exception ex)
+            {
+                //Sometimes algolia api throws an error, just move
+                //on to the next item
+                Console.WriteLine(ex.ToString());
+            }
+            return storyObjList;
+        }
+
+        public async Task<object> GetStoryTopNWords(int storyid)
+        {
+            FullStory fs = FullStoryFactory.GetFullStory(storyid);
+            Dictionary<string, int> topNWords = fs.GetTopNWordsDictionary(10);
+            List<WordObj> wordObjs = topNWords.ToList().Select(x => new WordObj() { Word = x.Key, Count = x.Value }).ToList();
+            return wordObjs;
         }
 
         public async Task<object> GetTop100Stories(object input)
@@ -42,10 +59,19 @@ namespace HiSum
             List<StoryObj> storyObjList = new List<StoryObj>();
             foreach (int id in top100Ids)
             {
-                FullStory fs = FullStoryFactory.GetFullStory(id);
-                int commentCount = fs.TotalComments;
-                StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text,Url=fs.url??string.Empty, StoryComments = commentCount };
-                storyObjList.Add(so);
+                try
+                {
+                    FullStory fs = FullStoryFactory.GetFullStory(id);
+                    int commentCount = fs.TotalComments;
+                    StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? string.Empty, StoryComments = commentCount };
+                    storyObjList.Add(so);
+                }
+                catch (Exception ex)
+                {
+                    //Sometimes algolia api throws an error, just move
+                    //on to the next item
+                    Console.WriteLine(ex.ToString());
+                }
             }
             return storyObjList;
         }
@@ -62,6 +88,16 @@ namespace HiSum
             }
             TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments };
             return tagCloudObj;
+        }
+
+        public List<int> GetTop100(int number = 100)
+        {
+            List<string> top100URLs = new List<string>();
+            string top100URL = Globals.ApiUrl + Globals.Top100;
+            string response = Util.FetchJson(top100URL);
+            top100URLs = response.Replace("[", string.Empty).Replace("]", string.Empty).Split(',').ToList();
+            List<int> topN = top100URLs.ConvertAll(x => Convert.ToInt32(x)).Take(number).ToList();
+            return topN;
         }
 
         Dictionary<int, string> GetCommentDictionary(FullStory fs)
@@ -83,15 +119,7 @@ namespace HiSum
                 GetCommentDictionary(child, ref dict);
             }
         }
-
-        public async Task<object> GetStoryTopNWords(int storyid)
-        {
-            FullStory fs = FullStoryFactory.GetFullStory(storyid);
-            Dictionary<string, int> topNWords = fs.GetTopNWordsDictionary(10);
-            List<WordObj> wordObjs = topNWords.ToList().Select(x => new WordObj() {Word = x.Key, Count = x.Value}).ToList();
-            return wordObjs;
-        }
-
+        
         public int GetStoryCommentCount(int storyID)
         {
             FullStory fs = FullStoryFactory.GetFullStory(storyID);
