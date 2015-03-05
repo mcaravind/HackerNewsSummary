@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -24,6 +25,14 @@ namespace HiSum
         [JsonIgnore]
         public int? parent_id { get; set; }
         public List<children> children { get; set; }
+        string[] stopWords = { "he", "his", "which", "want", "do", "would", "more", "like", "you", "your", "very", "me", "get", "has", "i", "over", "could", "have", "what", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with" };
+
+        public Dictionary<string, HashSet<int>> WordIDMapping
+        {
+            get { return GetWordIDMapping(); }
+        }
+
+        
 
         public int TotalComments
         {
@@ -31,6 +40,105 @@ namespace HiSum
                 int count = GetStoryCommentCount();
                 return count;
             }
+        }
+
+        /*
+         * This method sentence-tokenizes all top level comments
+         * The best sentences are those where the words in the sentence
+         * occur in the most number of subtree items within the current
+         * top level comment
+         */
+        public List<string> GetTopSentences(int N)
+        {
+            List<string> topSentences = new List<string>();
+            Dictionary<string,double> sentenceScores = new Dictionary<string, double>();
+            foreach (children child in children)
+            {
+                Dictionary<string, HashSet<int>> wordIDMapping = GetWordIDMapping(child);
+                string text = child.text;
+                List<string> currSentences = SentenceTokenizer.Tokenize(Util.StripTagsCharArray(text));
+                string bestSentence = currSentences[0];
+                double currMax = double.MinValue;
+                foreach (string sentence in currSentences)
+                {
+                    
+                    string[] allWords = GetAllWords(sentence);
+                    bool goodSentence = (allWords.Length>2)&& (stopWords.Where(x => !allWords.Contains(x.ToLower())).Count() > 2);
+                    if (goodSentence)
+                    {
+                        int totalIDCount = 0;
+                        foreach (string word in allWords)
+                        {
+                            if (!stopWords.Contains(word.ToLower()))
+                            {
+                                HashSet<int> idsContainingWord = wordIDMapping[Stemmer.GetStem(word)];
+                                totalIDCount += idsContainingWord.Count;
+                            }
+                        }
+                        double avgScore = (totalIDCount * 1.0) / allWords.Length;
+                        if (avgScore > currMax)
+                        {
+                            currMax = avgScore;
+                            bestSentence = sentence;
+                        }
+                    }
+                }
+                sentenceScores[bestSentence] = currMax;
+            }
+            topSentences = sentenceScores.OrderByDescending(x => x.Value).Take(N).Select(x=>x.Key).ToList();
+            return topSentences;
+        }
+
+        Dictionary<string, HashSet<int>> GetWordIDMapping()
+        {
+            Dictionary<string, HashSet<int>> wordIDMapping = new Dictionary<string, HashSet<int>>();
+            foreach (children child in children)
+            {
+                Dictionary<string, HashSet<int>> mapping = GetWordIDMapping(child);
+                foreach (var kvp in mapping)
+                {
+                    if (wordIDMapping.ContainsKey(kvp.Key))
+                    {
+                        wordIDMapping[kvp.Key].UnionWith(kvp.Value);
+                    }
+                    else
+                    {
+                        wordIDMapping[kvp.Key] = kvp.Value;
+                    }
+                }
+            }
+            return wordIDMapping;
+        }
+
+        Dictionary<string, HashSet<int>> GetWordIDMapping(children child)
+        {
+            Dictionary<string, HashSet<int>> wordIDMapping = new Dictionary<string, HashSet<int>>();
+            string[] allWords = GetAllWords(child.text);
+            foreach (string word in allWords)
+            {
+                string stem = Stemmer.GetStem(word);
+                if (!wordIDMapping.ContainsKey(stem))
+                {
+                    wordIDMapping[stem] = new HashSet<int>();
+                }
+                wordIDMapping[stem].Add(child.id);
+            }
+            foreach (children childitem in child.Children)
+            {
+                Dictionary<string, HashSet<int>> mapping = GetWordIDMapping(childitem);
+                foreach (var kvp in mapping)
+                {
+                    if (wordIDMapping.ContainsKey(kvp.Key))
+                    {
+                        wordIDMapping[kvp.Key].UnionWith(kvp.Value);
+                    }
+                    else
+                    {
+                        wordIDMapping[kvp.Key] = kvp.Value;
+                    }
+                }
+            }
+            return wordIDMapping;
         }
 
         public int GetChildCount(children childrenlist)
@@ -107,11 +215,21 @@ namespace HiSum
             return sb.ToString();
         }
 
+        string[] GetAllWords(string text)
+        {
+            string tagLess = Util.StripTagsCharArray(text);
+            string urlLess = Regex.Replace(tagLess,
+                @"((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)",
+                string.Empty);
+            string[] separators = { " ", ".", ",", ";", "-", "(", ")", "[", "]", "*", "#", "$", "%", "\"","?","!",":" };
+            string[] allWords = urlLess.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            return allWords;
+        }
+
         public Dictionary<string, int> GetTopNWordsDictionary(int N)
         {
-            string[] stopWords = { "he", "his", "which", "want", "do", "would", "more", "like", "you", "your", "very", "me", "get", "has", "i", "over", "could", "have", "what", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with" };
             string[] ignoreWords = {"*"};
-            string[] allWords;
+            
             Dictionary<string, int> wordCount = new Dictionary<string, int>();
             StringBuilder sbFullText = new StringBuilder();
             foreach (children child in this.children)
@@ -119,13 +237,9 @@ namespace HiSum
                 sbFullText.Append(child.SubtreeText);
                 sbFullText.Append(" ");
             }
-            string tagLess = Util.StripTagsCharArray(sbFullText.ToString());
-            string urlLess = Regex.Replace(tagLess, 
-                @"((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)", 
-                string.Empty);
+            string[] allWords = GetAllWords(sbFullText.ToString());
             wordCount = new Dictionary<string, int>();
-            string[] separators = { " ", ".",",",";","-","(",")","[","]","*","#","$","%","\"" };
-            allWords = urlLess.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            
             
             Dictionary<string, string> stemParent = new Dictionary<string, string>();
             foreach (string word in allWords)
@@ -165,7 +279,6 @@ namespace HiSum
 
         public List<string> GetTopNWords(int N)
         {
-            string[] stopWords = { "he", "his", "which", "want", "do", "would", "more", "like", "you", "your", "very", "me", "get", "has", "i", "over", "could", "have", "what", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with" };
             string[] allWords;
             Dictionary<string, int> wordCount = new Dictionary<string, int>();
             List<string> topNWords = new List<string>();
