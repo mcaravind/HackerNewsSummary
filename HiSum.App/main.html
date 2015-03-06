@@ -31,6 +31,39 @@
         li {
             display: inline;
         }
+
+        blockquote {
+            font-family: Georgia, serif;
+            font-size: 18px;
+            font-style: italic;
+            /*width: 400px;*/
+            margin: 0.25em 0;
+            padding: 0.25em 40px;
+            line-height: 1.45;
+            position: relative;
+            color: #383838;
+        }
+
+            blockquote:before {
+                display: block;
+                content: "\201C";
+                font-size: 80px;
+                position: absolute;
+                left: -20px;
+                top: -20px;
+                color: #7a7a7a;
+            }
+
+            blockquote cite {
+                color: #999999;
+                font-size: 14px;
+                display: block;
+                margin-top: 5px;
+            }
+
+                blockquote cite:before {
+                    content: "\2014 \2009";
+                }
     </style>
     <script src="js/jsrender.js" type="text/javascript"></script>
     <script src="js/async.js"></script>
@@ -107,14 +140,14 @@
             var childid = "hdn" + $(item).attr("id");
             var storyurl = $("#" + childid).text();
             var commentsurl = "https://news.ycombinator.com/item?id=" + storyidval;
-            var summary = '';
-            summaryFunction(storyidval, function (error, result) {
-                if (error) console.log(error);
-                result.forEach(function (entry) {
-                    summary += entry['Word'] + ' ' + entry['Count'] + ' ';
-                });
-            });
-            $("#summaryDiv").html(summary);
+            //var summary = '';
+            //summaryFunction(storyidval, function (error, result) {
+            //    if (error) console.log(error);
+            //    result.forEach(function (entry) {
+            //        summary += entry['Word'] + ' ' + entry['Count'] + ' ';
+            //    });
+            //});
+            //$("#summaryDiv").html(summary);
             try {
                 tagCloudFunction(storyidval, function (error, result) {
                     if (error) console.log('error:' + error);
@@ -133,12 +166,24 @@
                     //console.log(json);
                     var arr = JSON.parse(json);
                     var dict = result['Comments'];
+                    var sentences = result['Sentences'];
+                    console.log(sentences);
+                    loadSentences(sentences);
                     loadTree(arr);
                     addLoadCommentEvent(dict);
                 });
             } catch (ex) {
                 alert(ex);
             }
+        }
+
+        function loadSentences(sentences) {
+            $("#sentencesDiv").html('');
+            $.each(sentences, function (key, value) {
+                console.log(value['Sentence']);
+                var sentenceHtml = "<blockquote>" + value['Sentence'] + "</blockquote>";
+                $("#sentencesDiv").append(sentenceHtml);
+            });
         }
 
         function addLoadCommentEvent(dict) {
@@ -324,11 +369,21 @@
                 </div>-->
 
                 <div class="email-content-body">
-                    <br />
-                    <div id="jstree" style="width: 800px; height: 250px; overflow: scroll">&nbsp;</div>
-                    <div id="commentDiv" style="width: 800px; height: 200px; overflow: scroll">
-                        &nbsp;
-                    </div>
+                    <br/>
+                    <div class="pure-g">
+                        <div class="pure-u-10-24">
+                            <div id="sentencesDiv" style="width: 500px; height: 600px;white-space: pre-wrap">
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div class="pure-u-2-24"></div>
+                        <div class="pure-u-11-24">
+                            <div id="jstree" style="width: 500px; height: 250px; overflow-x: auto; ">&nbsp;</div>
+                            <div id="commentDiv" style="width: 500px; height: 250px; overflow-x: auto; ">
+                                &nbsp;
+                            </div>
+                        </div>
+                        </div>
                 </div>
             </div>
         </div>

@@ -54,36 +54,43 @@ namespace HiSum
             Dictionary<string,double> sentenceScores = new Dictionary<string, double>();
             foreach (children child in children)
             {
-                Dictionary<string, HashSet<int>> wordIDMapping = GetWordIDMapping(child);
-                string text = child.text;
-                List<string> currSentences = SentenceTokenizer.Tokenize(Util.StripTagsCharArray(text));
-                string bestSentence = currSentences[0];
-                double currMax = double.MinValue;
-                foreach (string sentence in currSentences)
+                try
                 {
-                    
-                    string[] allWords = GetAllWords(sentence);
-                    bool goodSentence = (allWords.Length>2)&& (stopWords.Where(x => !allWords.Contains(x.ToLower())).Count() > 2);
-                    if (goodSentence)
+                    Dictionary<string, HashSet<int>> wordIDMapping = GetWordIDMapping(child);
+                    string text = child.text;
+                    List<string> currSentences = SentenceTokenizer.Tokenize(Util.StripTagsCharArray(text));
+                    string bestSentence = currSentences[0];
+                    double currMax = double.MinValue;
+                    foreach (string sentence in currSentences)
                     {
-                        int totalIDCount = 0;
-                        foreach (string word in allWords)
+
+                        string[] allWords = GetAllWords(sentence);
+                        bool goodSentence = (allWords.Length > 2) && (stopWords.Where(x => !allWords.Contains(x.ToLower())).Count() > 2);
+                        if (goodSentence)
                         {
-                            if (!stopWords.Contains(word.ToLower()))
+                            int totalIDCount = 0;
+                            foreach (string word in allWords)
                             {
-                                HashSet<int> idsContainingWord = wordIDMapping[Stemmer.GetStem(word)];
-                                totalIDCount += idsContainingWord.Count;
+                                if (!stopWords.Contains(word.ToLower()))
+                                {
+                                    HashSet<int> idsContainingWord = wordIDMapping[Stemmer.GetStem(word)];
+                                    totalIDCount += idsContainingWord.Count;
+                                }
+                            }
+                            double avgScore = (totalIDCount * 1.0) / allWords.Length;
+                            if (avgScore > currMax)
+                            {
+                                currMax = avgScore;
+                                bestSentence = sentence;
                             }
                         }
-                        double avgScore = (totalIDCount * 1.0) / allWords.Length;
-                        if (avgScore > currMax)
-                        {
-                            currMax = avgScore;
-                            bestSentence = sentence;
-                        }
                     }
+                    sentenceScores[bestSentence] = currMax;
                 }
-                sentenceScores[bestSentence] = currMax;
+                catch (Exception ex)
+                {
+                    
+                }
             }
             topSentences = sentenceScores.OrderByDescending(x => x.Value).Take(N).Select(x=>x.Key).ToList();
             return topSentences;
@@ -221,7 +228,7 @@ namespace HiSum
             string urlLess = Regex.Replace(tagLess,
                 @"((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)",
                 string.Empty);
-            string[] separators = { " ", ".", ",", ";", "-", "(", ")", "[", "]", "*", "#", "$", "%", "\"","?","!",":" };
+            string[] separators = { " ", ".", ",", ";", "-", "(", ")", "[", "]", "*", "#", "$", "%", "\"","?","!",":","\n","\r" };
             string[] allWords = urlLess.Split(separators, StringSplitOptions.RemoveEmptyEntries);
             return allWords;
         }

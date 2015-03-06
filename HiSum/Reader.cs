@@ -85,11 +85,17 @@ namespace HiSum
             string json = fs.GetTagCloudTree();
             Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
             List<CommentObj> comments = new List<CommentObj>();
+            List<string> topSentences = fs.GetTopSentences(5);
+            List<SentenceObj> TopSentences = new List<SentenceObj>();
+            foreach (string sentence in topSentences)
+            {
+                TopSentences.Add(new SentenceObj(){Sentence = sentence});
+            }
             foreach (var item in commentDictionary)
             {
                 comments.Add(new CommentObj() { Id = item.Key, Text = item.Value });
             }
-            TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments };
+            TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments,Sentences = TopSentences};
             return tagCloudObj;
         }
 
@@ -149,7 +155,14 @@ namespace HiSum
         class TagCloudObj
         {
             public string Json { get; set; }
-            public List<CommentObj> Comments { get; set; }    
+            public List<CommentObj> Comments { get; set; }
+            public List<SentenceObj> Sentences { get; set; } 
+        }
+
+        class SentenceObj
+        {
+            public string Sentence { get; set; }
+            public string Author { get; set; }
         }
 
         class CommentObj

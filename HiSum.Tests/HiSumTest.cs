@@ -15,7 +15,7 @@ namespace HiSum.Tests
         [TestMethod]
         public void TestGetTopSentences()
         {
-            FullStory fs = FullStoryFactory.GetFullStory(9144862);
+            FullStory fs = FullStoryFactory.GetFullStory(9154960);
             //Dictionary<string, HashSet<int>> wordMapping = fs.WordIDMapping;
             List<string> top5Sentences = fs.GetTopSentences(5);
             Assert.AreEqual(top5Sentences.Count > 1, true);
