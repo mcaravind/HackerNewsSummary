@@ -30,7 +30,8 @@ namespace HiSum
                 return GetSubtree(this);
             }
         }
-
+        [JsonIgnore]
+        public List<HashSet<int>> ChildIDList { get; set; } 
         private string GetSubtree(children node)
         {
             string subtreeText = WebUtility.HtmlDecode(node.text);

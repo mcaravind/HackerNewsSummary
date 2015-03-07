@@ -11,6 +11,15 @@ namespace HiSum.Tests
     [TestClass]
     public class HiSumTest
     {
+        [TestMethod]
+        public void TestGetAnchorWords()
+        {
+            FullStory fs = FullStoryFactory.GetFullStory(9158141);
+            //Dictionary<string, HashSet<int>> wordMapping = fs.WordIDMapping;
+            List<string> top5Sentences = fs.GetAnchorWords(10);//fs.GetTopSentences(5);
+            Assert.AreEqual(top5Sentences.Count > 1, true);
+        }
+
 
         [TestMethod]
         public void TestGetTopSentences()

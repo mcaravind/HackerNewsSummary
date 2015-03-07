@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -27,12 +28,12 @@ namespace HiSum
         public List<children> children { get; set; }
         string[] stopWords = { "he", "his", "which", "want", "do", "would", "more", "like", "you", "your", "very", "me", "get", "has", "i", "over", "could", "have", "what", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with" };
 
+        private List<children> NodeList; 
+
         public Dictionary<string, HashSet<int>> WordIDMapping
         {
             get { return GetWordIDMapping(); }
         }
-
-        
 
         public int TotalComments
         {
@@ -121,8 +122,11 @@ namespace HiSum
         {
             Dictionary<string, HashSet<int>> wordIDMapping = new Dictionary<string, HashSet<int>>();
             string[] allWords = GetAllWords(child.text);
+            
             foreach (string word in allWords)
             {
+                if(stopWords.Contains(word.ToLower())) continue;
+                if (word.Length < 3) continue;
                 string stem = Stemmer.GetStem(word);
                 if (!wordIDMapping.ContainsKey(stem))
                 {
@@ -146,6 +150,36 @@ namespace HiSum
                 }
             }
             return wordIDMapping;
+        }
+
+        private Dictionary<string, string> GetStemParentDictionary(string[] allWords)
+        {
+            Dictionary<string,string> stemParentDictionary = new Dictionary<string, string>();
+            foreach (string word in allWords)
+            {
+                string stem = Stemmer.GetStem(word);
+                if (stemParentDictionary.ContainsKey(stem))
+                {
+                    if (word.Length > stemParentDictionary[stem].Length)
+                    {
+                        stemParentDictionary[stem] = word;
+                    }
+                }
+                else
+                {
+                    stemParentDictionary[stem] = word;
+                }
+            }
+            return stemParentDictionary;
+        } 
+
+        private void PopulateNodeList(children child)
+        {
+            NodeList.Add(child);
+            foreach (children childnode in child.Children)
+            {
+                PopulateNodeList(childnode);
+            }
         }
 
         public int GetChildCount(children childrenlist)
@@ -224,6 +258,7 @@ namespace HiSum
 
         string[] GetAllWords(string text)
         {
+            text = WebUtility.HtmlDecode(text);
             string tagLess = Util.StripTagsCharArray(text);
             string urlLess = Regex.Replace(tagLess,
                 @"((http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)",
@@ -232,6 +267,98 @@ namespace HiSum
             string[] allWords = urlLess.Split(separators, StringSplitOptions.RemoveEmptyEntries);
             return allWords;
         }
+
+        public List<string> GetAnchorWords(int N)
+        {
+            StringBuilder sbAllWords = new StringBuilder();
+            foreach (children child in children)
+            {
+                sbAllWords.Append(child.SubtreeText);
+                sbAllWords.Append(" ");
+            }
+            string[] allWords = GetAllWords(sbAllWords.ToString());
+            Dictionary<string, string> stemParentDictionary = GetStemParentDictionary(allWords);
+            List<string> anchorWords = new List<string>();
+            children rootNode = new children();
+            List<HashSet<int>> rootChildIDs = new List<HashSet<int>>();
+            foreach (children child in children)
+            {
+                GetChildIDHashSetList(child);
+                HashSet<int> currChildIDs = new HashSet<int>();
+                currChildIDs.Add(child.id);
+                foreach (var item in child.ChildIDList)
+                {
+                    currChildIDs.UnionWith(item);
+                }
+                rootChildIDs.Add(currChildIDs);
+            }
+            rootNode.ChildIDList = rootChildIDs;
+            NodeList = new List<children>();
+            NodeList.Add(rootNode);
+            foreach (children child in children)
+            {
+                PopulateNodeList(child);
+            }
+            Dictionary<string, HashSet<int>> wordIDMapping = GetWordIDMapping();
+            //Dictionary<string, double> WordTreeScore = new Dictionary<string, double>();
+            Dictionary<string,List<children>> WordLCAList = new Dictionary<string, List<children>>();
+            foreach (var kvp in wordIDMapping)
+            {
+                List<children> currLCAList = new List<children>();
+                int numLCAs = 0;
+                foreach (children node in NodeList)
+                {
+                    
+                    int numBranchesWithWord = 0;
+                    foreach (var childIDBranch in node.ChildIDList)
+                    {
+                        if (childIDBranch.Intersect(kvp.Value).Count() > 0)
+                        {
+                            numBranchesWithWord += 1;
+                        }
+                    }
+                    if ((numBranchesWithWord==1 && node.ChildIDList.Count==1)|| numBranchesWithWord > 1)
+                    {
+                        currLCAList.Add(node);
+                    }
+                }
+                WordLCAList[stemParentDictionary.ContainsKey(kvp.Key)? stemParentDictionary[kvp.Key]:kvp.Key] = currLCAList;
+            }
+            anchorWords = WordLCAList.OrderByDescending(x => x.Value.Count).Select(x => x.Key).Take(N).ToList();
+            return anchorWords;
+        }
+
+        private void GetChildIDHashSetList(children node)
+        {
+            node.ChildIDList = GetChildIDList(node);
+            foreach (children child in node.Children)
+            {
+                GetChildIDHashSetList(child);
+            }
+        }
+
+        private List<HashSet<int>> GetChildIDList(children node)
+        {
+            List<HashSet<int>> myChildren = new List<HashSet<int>>();
+            foreach (children child in node.Children)
+            {
+                HashSet<int> idList = GetChildIDs(child);
+                myChildren.Add(idList);
+            }
+            return myChildren;
+        }
+
+        private HashSet<int> GetChildIDs(children childnode)
+        {
+            HashSet<int> childIDs = new HashSet<int>();
+            childIDs.Add(childnode.id);
+            foreach (children child in childnode.Children)
+            {
+                childIDs.Add(child.id);
+                childIDs.UnionWith(GetChildIDs(child));
+            }
+            return childIDs;
+        } 
 
         public Dictionary<string, int> GetTopNWordsDictionary(int N)
         {
