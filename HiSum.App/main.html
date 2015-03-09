@@ -130,24 +130,16 @@
             } catch (ex) {
                 console.log(ex.toString());
             }
-
-
         }
 
-        function clicked(item) {
-            $("#commentDiv").html('');
-            var storyidval = parseInt($(item).attr("id"));
-            var childid = "hdn" + $(item).attr("id");
-            var storyurl = $("#" + childid).text();
-            var commentsurl = "https://news.ycombinator.com/item?id=" + storyidval;
-            //var summary = '';
-            //summaryFunction(storyidval, function (error, result) {
-            //    if (error) console.log(error);
-            //    result.forEach(function (entry) {
-            //        summary += entry['Word'] + ' ' + entry['Count'] + ' ';
-            //    });
-            //});
-            //$("#summaryDiv").html(summary);
+        function loadStoryOnRefresh() {
+            var storyidval = parseInt($("#hdnStoryId").html());
+            loadStory(storyidval);
+        }
+
+        function loadStory(storyidval) {
+            //var childid = "hdn" + $(item).attr("id");
+            console.log(storyidval);
             try {
                 tagCloudFunction(storyidval, function (error, result) {
                     if (error) console.log('error:' + error);
@@ -175,6 +167,13 @@
             } catch (ex) {
                 alert(ex);
             }
+        }
+
+        function clicked(item) {
+            $("#commentDiv").html('');
+            var storyidval = parseInt($(item).attr("id"));
+            $("#hdnStoryId").html(storyidval);
+            loadStory(storyidval);
         }
 
         function loadSentences(sentences) {
@@ -350,6 +349,8 @@
                 <div class="email-content-header pure-g">
 
                     <div class="email-content-controls pure-u-1-2">
+                        <div id="hdnStoryId" style="display:none"></div>
+                        <button id="btnRefreshStory" class="secondary-button" onclick="loadStoryOnRefresh();">Refresh</button>
                         <button id="btnArchive" class="secondary-button pure-button">Archive</button>
                     </div>
                 </div>
@@ -378,7 +379,7 @@
                         </div>
                         <div class="pure-u-2-24"></div>
                         <div class="pure-u-11-24">
-                            <div id="jstree" style="width: 500px; height: 250px; overflow-x: auto; ">&nbsp;</div>
+                            <div id="jstree" style="width: 500px; height: 250px; overflow-x: auto;">&nbsp;</div>
                             <div id="commentDiv" style="width: 500px; height: 250px; overflow-x: auto; ">
                                 &nbsp;
                             </div>
