@@ -88,6 +88,24 @@
             render(stories);
         }
 
+        function displayArchive() {
+            var stories = [];
+            getArchiveFunction(100, function (error, result) {
+                try {
+                    if (error) console.log(error);
+                    console.log(result);
+                    result.forEach(function (entry) {
+                        var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
+                        stories.push(story);
+                    });
+                } catch (ex) {
+                    alert(ex.toString());
+                }
+            });
+            render(stories);
+        }
+
+
         function render(stories) {
             $("#stories").html(
                 $("#storyTemplate").render(stories)
@@ -135,6 +153,11 @@
         function loadStoryOnRefresh() {
             var storyidval = parseInt($("#hdnStoryId").html());
             loadStory(storyidval);
+        }
+
+        function archiveStory() {
+            var storyidval = parseInt($("#hdnStoryId").html());
+            archive(storyidval);
         }
 
         function loadStory(storyidval) {
@@ -258,7 +281,7 @@
                     <ul>
 
                         <li><a href="#">Stories</a></li>
-                        <li><a href="#">Archive<span class="email-count">(2)</span></a></li>
+                        <li><a href="#" onclick="displayArchive();">Archive<span class="email-count">(2)</span></a></li>
                         <li><a href="#">Users</a></li>
                         <li><a href="#">WatchWords</a></li>
                         <li><a href="#">Trash</a></li>
@@ -351,7 +374,7 @@
                     <div class="email-content-controls pure-u-1-2">
                         <div id="hdnStoryId" style="display:none"></div>
                         <button id="btnRefreshStory" class="secondary-button" onclick="loadStoryOnRefresh();">Refresh</button>
-                        <button id="btnArchive" class="secondary-button pure-button">Archive</button>
+                        <button id="btnArchive" class="secondary-button pure-button" onclick="archiveStory();">Archive</button>
                     </div>
                 </div>
                 <!--<div class="email-content-header pure-g">

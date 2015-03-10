@@ -29,6 +29,20 @@ var summaryFunction = edge.func(
     methodName: 'GetStoryTopNWords'
 });
 
+var archiveFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'ArchiveStory'
+});
+
+var getArchiveFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'GetArchivedStories'
+});
+
 //var commentsFunction = edge.func(
 //{
 //    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
@@ -42,6 +56,21 @@ var tagCloudFunction = edge.func(
     typeName: 'HiSum.Reader',
     methodName: 'GetTagCloudTree'
 });
+
+//function getArchive() {
+//    console.log("inside");
+//    getArchiveFunction(10, function (error, result) {
+//        if (error) alert(error.message);
+//        console.log(result);
+//    });
+//}
+
+function archive(id) {
+    archiveFunction(id, function (error, result) {
+        if (error) alert(error.message);
+        console.log(result);
+    });
+}
 
 function GetTop100() {
     top100Function(100, function(error, result) {

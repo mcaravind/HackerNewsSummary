@@ -13,6 +13,44 @@ namespace HiSum
 {
     public class Reader
     {
+        public async Task<object> ArchiveStory(int id)
+        {
+            try
+            {
+                FullStory fs = FullStoryFactory.GetFullStory(id);
+                Directory.CreateDirectory("archive");
+                string fileName = Path.Combine("archive", id + ".json");
+                File.WriteAllText(fileName, JsonConvert.SerializeObject(fs));
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+            return string.Empty;
+        }
+
+        public async Task<object> GetArchivedStories(int id)
+        {
+            try
+            {
+                string[] files = System.IO.Directory.GetFiles("archive", "*.json");
+                List<StoryObj> storyObjList = new List<StoryObj>();
+                foreach (string file in files)
+                {
+                    string fileText = File.ReadAllText(file);
+                    FullStory fs = JsonConvert.DeserializeObject<FullStory>(fileText);
+                    string commentUrl = "https://news.ycombinator.com/item?id=" + fs.id;
+                    StoryObj so = new StoryObj() { StoryId = fs.id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl };
+                    storyObjList.Add(so);
+                }
+                return storyObjList;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+
         public async Task<Object> GetStory(int id)
         {
             List<StoryObj> storyObjList = new List<StoryObj>();
