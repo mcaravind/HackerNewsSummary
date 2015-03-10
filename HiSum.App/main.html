@@ -102,14 +102,28 @@
                     alert(ex.toString());
                 }
             });
-            render(stories);
+            renderArchive(stories);
         }
 
+        function renderArchive(stories) {
+            $("#archiveStories").html(
+                $("#archiveStoryTemplate").render(stories)
+            );
+            $("#stories").hide();
+            $("#archiveStories").show();
+        }
+
+        function showStories() {
+            $("#stories").show();
+            $("#archiveStories").hide();
+        }
 
         function render(stories) {
             $("#stories").html(
                 $("#storyTemplate").render(stories)
             );
+            $("#stories").show();
+            $("#archiveStories").hide();
         }
 
         function renderSingleStory(stories) {
@@ -280,8 +294,8 @@
                 <div class="pure-menu pure-menu-open">
                     <ul>
 
-                        <li><a href="#">Stories</a></li>
-                        <li><a href="#" onclick="displayArchive();">Archive<span class="email-count">(2)</span></a></li>
+                        <li><a href="#" onclick="showStories();">Stories</a></li>
+                        <li><a href="#" onclick="displayArchive();">Archive</a></li>
                         <li><a href="#">Users</a></li>
                         <li><a href="#">WatchWords</a></li>
                         <li><a href="#">Trash</a></li>
@@ -318,6 +332,9 @@
 
             </div>
             <div id="stories">
+
+            </div>
+            <div id="archiveStories">
 
             </div>
         </div>
@@ -364,6 +381,27 @@
             </div>
         </script>
 
+        <script id="archiveStoryTemplate" type="text/x-jsrender">
+
+            <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
+                <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
+                <div class="pure-u-3-4">
+                    <h5 class="email-name">{{>author}}</h5><span class="pure-badge-info">{{>count}}</span>
+                    <h4 class="email-subject">{{>title}}</h4>
+                    <p class="email-desc">{{>text}}</p>
+                    <div>
+                        <ul>
+                            <li>
+                                <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Link</button>
+                            </li>
+                            <li>
+                                <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Comments</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </script>
 
 
         <div id="main" class="pure-u-1">

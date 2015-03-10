@@ -40,7 +40,7 @@ namespace HiSum
                     string fileText = File.ReadAllText(file);
                     FullStory fs = JsonConvert.DeserializeObject<FullStory>(fileText);
                     string commentUrl = "https://news.ycombinator.com/item?id=" + fs.id;
-                    StoryObj so = new StoryObj() { StoryId = fs.id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl };
+                    StoryObj so = new StoryObj() { StoryId = fs.id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = fs.TotalComments };
                     storyObjList.Add(so);
                 }
                 return storyObjList;

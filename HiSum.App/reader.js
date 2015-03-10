@@ -1,12 +1,5 @@
 ﻿var edge = require('edge');
 var path = require('path');
-//var dotNetFunction = edge.func({ assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll', methodName: 'GetTop100' });
-//function myFunction3() {
-//    dotNetFunction(10, function (error, result) {
-//        if (error) alert(error.message);
-//        alert('Reply:' + result);
-//    });
-//}
 
 var top100Function = edge.func(
 {
@@ -43,27 +36,12 @@ var getArchiveFunction = edge.func(
     methodName: 'GetArchivedStories'
 });
 
-//var commentsFunction = edge.func(
-//{
-//    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
-//    typeName: 'HiSum.Reader',
-//    methodName: 'GetCommentTree'
-//});
-
 var tagCloudFunction = edge.func(
 {
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
     typeName: 'HiSum.Reader',
     methodName: 'GetTagCloudTree'
 });
-
-//function getArchive() {
-//    console.log("inside");
-//    getArchiveFunction(10, function (error, result) {
-//        if (error) alert(error.message);
-//        console.log(result);
-//    });
-//}
 
 function archive(id) {
     archiveFunction(id, function (error, result) {
