@@ -13,7 +13,7 @@ namespace HiSum
         public int id { get; set; }
         [JsonIgnore]
         public DateTime created_at { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public string author { get; set; }
         public string text { get; set; }
         [JsonIgnore]

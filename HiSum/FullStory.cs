@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -49,10 +50,12 @@ namespace HiSum
          * occur in the most number of subtree items within the current
          * top level comment
          */
-        public List<string> GetTopSentences(int N)
+        public List<SentenceObj> GetTopSentences(int N)
         {
+            List<SentenceObj> topSentenceObjs = new List<SentenceObj>();
             List<string> topSentences = new List<string>();
             Dictionary<string,double> sentenceScores = new Dictionary<string, double>();
+            Dictionary<string,string> sentenceAuthors = new Dictionary<string, string>();
             foreach (children child in children)
             {
                 try
@@ -87,14 +90,20 @@ namespace HiSum
                         }
                     }
                     sentenceScores[bestSentence] = currMax;
+                    sentenceAuthors[bestSentence] = child.author;
                 }
                 catch (Exception ex)
                 {
                     
                 }
             }
-            topSentences = sentenceScores.OrderByDescending(x => x.Value).Take(N).Select(x=>x.Key).ToList();
-            return topSentences;
+            topSentences = sentenceScores.OrderByDescending(x => x.Value).Take(N).Where(y=>!string.IsNullOrWhiteSpace(y.Key)).Select(x=>x.Key).ToList();
+            foreach (var sent in topSentences)
+            {
+                SentenceObj sentenceObj = new SentenceObj() { Author = sentenceAuthors[sent], Sentence = sent };
+                topSentenceObjs.Add(sentenceObj);   
+            }
+            return topSentenceObjs;
         }
 
         Dictionary<string, HashSet<int>> GetWordIDMapping()
