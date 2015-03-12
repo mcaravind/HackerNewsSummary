@@ -12,6 +12,13 @@ namespace HiSum.Tests
     public class HiSumTest
     {
         [TestMethod]
+        public void GetArchive()
+        {
+            Reader reader = new Reader();
+            var archives = reader.GetArchivedStories(1);
+        }
+
+        [TestMethod]
         public void TestGetAnchorWords()
         {
             FullStory fs = FullStoryFactory.GetFullStory(9163782);

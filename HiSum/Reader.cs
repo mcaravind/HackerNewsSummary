@@ -18,6 +18,7 @@ namespace HiSum
             try
             {
                 FullStory fs = FullStoryFactory.GetFullStory(id);
+                fs.ArchivedOn = DateTime.Now;
                 Directory.CreateDirectory("archive");
                 string fileName = Path.Combine("archive", id + ".json");
                 File.WriteAllText(fileName, JsonConvert.SerializeObject(fs));
@@ -33,17 +34,18 @@ namespace HiSum
         {
             try
             {
-                string[] files = System.IO.Directory.GetFiles("archive", "*.json");
+                string[] files =
+                    Directory.GetFiles("archive","*.json");
                 List<StoryObj> storyObjList = new List<StoryObj>();
                 foreach (string file in files)
                 {
                     string fileText = File.ReadAllText(file);
                     FullStory fs = JsonConvert.DeserializeObject<FullStory>(fileText);
                     string commentUrl = "https://news.ycombinator.com/item?id=" + fs.id;
-                    StoryObj so = new StoryObj() { StoryId = fs.id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = fs.TotalComments };
+                    StoryObj so = new StoryObj() { StoryId = fs.id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = fs.TotalComments,ArchivedOn = fs.ArchivedOn};
                     storyObjList.Add(so);
                 }
-                return storyObjList;
+                return storyObjList.OrderByDescending(x=>x.ArchivedOn).ToList();
             }
             catch (Exception ex)
             {
@@ -183,6 +185,7 @@ namespace HiSum
             public string Url { get; set; }
             public string CommentUrl { get; set; }
             public int StoryComments { get; set; }
+            public DateTime ArchivedOn { get; set; }
         }
 
         class WordObj
