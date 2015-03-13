@@ -39,6 +39,15 @@
     <Content Include="dist\themes\default\throbber.gif" />
     <Content Include="dll\HiSum.dll" />
     <Content Include="dll\Newtonsoft.Json.dll" />
+    <Content Include="fancytree.html" />
+    <Content Include="fancytree\jquery-ui.custom.js" />
+    <Content Include="fancytree\jquery.fancytree.js" />
+    <Content Include="fancytree\jquery.js" />
+    <Content Include="fancytree\prettify.css" />
+    <Content Include="fancytree\prettify.js" />
+    <Content Include="fancytree\sample.css" />
+    <Content Include="fancytree\sample.js" />
+    <Content Include="fancytree\ui.fancytree.css" />
     <Content Include="img\common\andrew-avatar.png" />
     <Content Include="img\common\ericf-avatar.png" />
     <Content Include="img\common\reid-avatar.png" />

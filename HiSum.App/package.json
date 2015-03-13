@@ -1,6 +1,6 @@
 ﻿{
     "name": "example-app",
-    "main": "main.html",
+    "main": "fancytree.html",
     "window": {
         "toolbar": true
     }
