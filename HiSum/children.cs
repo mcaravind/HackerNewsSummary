@@ -12,8 +12,16 @@ namespace HiSum
     {
         public int id { get; set; }
         [JsonIgnore]
+        public int key {
+            get { return id; }
+            }
+        [JsonIgnore]
+        public string title
+        {
+            get { return text; }
+        }
+        [JsonIgnore]
         public DateTime created_at { get; set; }
-        //[JsonIgnore]
         public string author { get; set; }
         public string text { get; set; }
         [JsonIgnore]

@@ -14,11 +14,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <link rel="stylesheet" href="dist/themes/default/style.min.css" />
     <script src="dist/jstree.min.js"></script>
-    <script type="text/javascript">
 
-
-
-    </script>
     <style>
         ul {
             float: left;
@@ -183,13 +179,13 @@
                     var json = result['Json'];
                     // preserve newlines, etc - use valid JSON
                     json = json.replace(/\\n/g, "\\n")
-                                   .replace(/\\'/g, "\\'")
-                                   .replace(/\\"/g, '\\"')
-                                   .replace(/\\&/g, "\\&")
-                                   .replace(/\\r/g, "\\r")
-                                   .replace(/\\t/g, "\\t")
-                                   .replace(/\\b/g, "\\b")
-                                   .replace(/\\f/g, "\\f");
+                        .replace(/\\'/g, "\\'")
+                        .replace(/\\"/g, '\\"')
+                        .replace(/\\&/g, "\\&")
+                        .replace(/\\r/g, "\\r")
+                        .replace(/\\t/g, "\\t")
+                        .replace(/\\b/g, "\\b")
+                        .replace(/\\f/g, "\\f");
                     // remove non-printable and other non-valid JSON chars
                     json = json.replace(/[\u0000-\u0019]+/g, "");
                     //console.log(json);
@@ -217,7 +213,7 @@
             $("#sentencesDiv").html('');
             $.each(sentences, function (key, value) {
                 console.log(value['Sentence']);
-                var sentenceHtml = "<blockquote>" + value['Sentence'] +"<cite>"+value['Author']+ "</cite></blockquote>";
+                var sentenceHtml = "<blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote>";
                 $("#sentencesDiv").append(sentenceHtml);
             });
         }
@@ -427,7 +423,7 @@
                 </div>-->
 
                 <div class="email-content-body">
-                    <br/>
+                    <br />
                     <div class="pure-g">
                         <div class="pure-u-10-24">
                             <div id="sentencesDiv" style="width: 500px; height: 600px;white-space: pre-wrap">
@@ -437,11 +433,11 @@
                         <div class="pure-u-2-24"></div>
                         <div class="pure-u-11-24">
                             <div id="jstree" style="width: 500px; height: 250px; overflow-x: auto;">&nbsp;</div>
-                            <div id="commentDiv" style="width: 500px; height: 250px; overflow-x: auto; ">
+                            <div id="commentDiv" style="width: 500px; height: 250px; overflow-x: auto;">
                                 &nbsp;
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
