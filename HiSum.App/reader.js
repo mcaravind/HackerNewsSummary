@@ -40,7 +40,7 @@ var tagCloudFunction = edge.func(
 {
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
     typeName: 'HiSum.Reader',
-    methodName: 'GetTagCloudTree'
+    methodName: 'GetFullStory'
 });
 
 function archive(id) {

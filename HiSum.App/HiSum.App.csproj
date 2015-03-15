@@ -47,7 +47,10 @@
     <Content Include="fancytree\prettify.js" />
     <Content Include="fancytree\sample.css" />
     <Content Include="fancytree\sample.js" />
-    <Content Include="fancytree\ui.fancytree.css" />
+    <Content Include="fancytree\skin-win7\icons.gif" />
+    <Content Include="fancytree\skin-win7\loading.gif" />
+    <Content Include="fancytree\skin-win7\ui.fancytree.css" />
+    <Content Include="fancytree\skin-win7\ui.fancytree.min.css" />
     <Content Include="img\common\andrew-avatar.png" />
     <Content Include="img\common\ericf-avatar.png" />
     <Content Include="img\common\reid-avatar.png" />
@@ -70,6 +73,7 @@
   <ItemGroup>
     <Content Include="package.json" />
     <Content Include="script.ps1" />
+    <Content Include="fancytree\skin-win7\ui.fancytree.less" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

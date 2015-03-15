@@ -119,25 +119,19 @@ namespace HiSum
             return storyObjList;
         }
 
-        public async Task<object> GetTagCloudTree(int storyid)
+        public async Task<object> GetFullStory(int storyid)
         {
             FullStory fs = FullStoryFactory.GetFullStory(storyid);
             string json = fs.GetTagCloudTree();
             Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
             List<CommentObj> comments = new List<CommentObj>();
             List<SentenceObj> topSentenceObjs = fs.GetTopSentences(5);
-            //List<string> topSentences = fs.GetTopSentences(5);
-            //List<SentenceObj> TopSentences = new List<SentenceObj>();
-            //foreach (string sentence in topSentences)
-            //{
-            //    TopSentences.Add(new SentenceObj(){Sentence = sentence});
-            //}
             foreach (var item in commentDictionary)
             {
                 comments.Add(new CommentObj() { Id = item.Key, Text = item.Value });
             }
-            TagCloudObj tagCloudObj = new TagCloudObj() { Json = json, Comments = comments,Sentences = topSentenceObjs};
-            return tagCloudObj;
+            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, Comments = comments,Sentences = topSentenceObjs};
+            return fullStoryObj;
         }
 
         public List<int> GetTop100(int number = 100)
@@ -194,7 +188,7 @@ namespace HiSum
             public int Count { get; set; }
         }
 
-        class TagCloudObj
+        class FullStoryObj
         {
             public string Json { get; set; }
             public List<CommentObj> Comments { get; set; }

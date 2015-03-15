@@ -79,8 +79,11 @@ namespace HiSum
                             {
                                 if (!stopWords.Contains(word.ToLower()))
                                 {
-                                    HashSet<int> idsContainingWord = wordIDMapping[Stemmer.GetStem(word)];
-                                    totalIDCount += idsContainingWord.Count;
+                                    if (wordIDMapping.ContainsKey(word))
+                                    {
+                                        HashSet<int> idsContainingWord = wordIDMapping[Stemmer.GetStem(word)];
+                                        totalIDCount += idsContainingWord.Count;
+                                    }
                                 }
                             }
                             double avgScore = (totalIDCount * 1.0) / allWords.Length;
