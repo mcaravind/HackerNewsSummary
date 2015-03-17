@@ -1,0 +1,85 @@
+/*
+
+Example CSS file for creating tabs using tabs.js.
+Created by Rob Allen (rob at akrabat dot com)
+Based on the CSS code from Silverorange Labs at :
+http://labs.silverorange.com/archives/2003/september/simplecsstabs
+
+*/
+
+.tab-content {
+	border: 1px solid #666;
+	background: white; /*#FFF3B3;*/
+	color: black;
+	padding: 0.5em;
+}
+
+
+.tab-header {
+	position: relative;
+	height: 3em;
+	width: 50em; /* a width is required for Opera, older Mozilla browsers, and Konqueror browsers */
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
+
+.tab-header ul.tab-list {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	bottom: -1px;
+	width: 50em; /* a width is required for Opera, older Mozilla browsers, and Konqueror browsers */
+}
+
+.tab-header ul.tab-list li  {
+	display: inline;
+	list-style: none;
+	margin: 0;
+}
+
+.tab-header ul.tab-list a,.tab-header ul.tab-list span,.tab-header ul.tab-list a.tab-active {
+	width: 8em;
+	display: block;
+	float: left;
+	padding: 4px 0;
+	margin: 1px 2px 0 0;
+	text-align: center;
+	font-family: tahoma, verdana, sans-serif;
+	font-size: 85%;
+	text-decoration: none;
+	color: #333;
+}
+
+.tab-header ul.tab-list span,.tab-header ul.tab-list a.tab-active,.tab-header ul.tab-list a.tab-active:hover {
+	border-top: 1px solid #666;
+	border-left: 1px solid #666;
+	border-right: 1px solid #666;
+	border-bottom: none;
+	background: #99F;
+	color: black;
+	padding-bottom: 6px;
+	margin-top: 0;
+}
+
+/* a link in a background tab */
+.tab-header ul.tab-list a {
+	background: #ddd;
+	border-top: 1px solid #AAA;
+	border-left: 1px solid #AAA;
+	border-right: 1px solid #AAA;
+	border-bottom: none;
+}
+
+/* hover on a background tab */
+.tab-header ul.tab-list a:hover {
+	margin-top: 0;
+	border-color: #666;
+	background: #bbb;
+	color: black;
+	padding-bottom: 5px;
+}
+
+.tab  /* the heading that became the li */
+{
+	display: none;
+}

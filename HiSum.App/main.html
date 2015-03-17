@@ -9,14 +9,31 @@
     
     
 <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/menus-min.css">
     <link rel="stylesheet" type="text/css" href="https://rawgithub.com/tilomitra/cssextras/master/css/pure-extras.css">
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/menus-min.css">
     <link rel="stylesheet" href="css/layouts/menus.css" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-<link rel="stylesheet" href="dist/themes/default/style.min.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <script src="dist/jstree.min.js"></script>
+<script src="js/tabs.js"></script>
+    <link rel="stylesheet" href="css/tabs.css"/>
+    <style>
+        .button-xsmall {
+            font-size: 60%;
+        }
+
+        .button-small {
+            font-size: 85%;
+        }
+
+        .button-large {
+            font-size: 110%;
+        }
+
+        .button-xlarge {
+            font-size: 125%;
+        }
+    </style>
 
 <style>
     ul {
@@ -78,16 +95,7 @@
 <script src="fancytree/jquery-ui.custom.js" type="text/javascript"></script>
 <link href="fancytree/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
 <script src="fancytree/jquery.fancytree.js" type="text/javascript"></script>-->
-
-    <script>
-    $(function () {
-        $("#tabs").tabs();
-    });
-    </script>
 <script type="text/javascript">
-        $(function () {
-            $.jstree.defaults.core.data = true;
-        });
         function displayStories() {
             var stories = [];
             top100Function(100, function (error, result) {
@@ -213,7 +221,6 @@
                     var sentences = result['Sentences'];
                     console.log(sentences);
                     loadSentences(sentences);
-                    loadTree(arr);
                     addLoadCommentEvent(dict);
                 });
             } catch (ex) {
@@ -247,25 +254,11 @@
                     console.log(property);
                 }
             }
-            $('#jstree').on("select_node.jstree", function (e, data) {
-                var key = data.node.id;
-                console.log(key);
-                loadComment(textdict, key);
-            });
         }
 
         function loadComment(textdict, key) {
             $("#commentDiv").html('');
             $("#commentDiv").html(textdict[key]);
-        }
-
-        function loadTree(arr) {
-            $("#jstree").jstree("destroy");
-            $("#jstree").jstree({
-                'core': {
-                    'data': arr
-                }
-            });
         }
 
         function openurl(url) {
@@ -335,7 +328,7 @@
                     <fieldset>
                         <legend>Get Individual story</legend>
                         <input id="inputStoryId" type="email" placeholder="Type URL from HackerNews" value="https://news.ycombinator.com/item?id=7568675">
-                        <button type="submit" class="pure-button pure-button-primary" onclick=" getStory(); ">Get Story</button>
+                        <button type="submit" class="button-small pure-button" onclick=" getStory(); ">Get Story</button>
                     </fieldset>
                 </form>
             </div>
@@ -353,17 +346,23 @@
 
             <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
-                <div class="pure-u-3-4">
+                <div class="pure-u-7-8">
                     <h5 class="email-name">{{>author}}</h5><span class="pure-badge-info">{{>count}}</span>
                     <h4 class="email-subject">{{>title}}</h4>
                     <p class="email-desc">{{>text}}</p>
                     <div>
                         <ul>
                             <li>
-                                <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Link</button>
+                                <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Link</button>
                             </li>
                             <li>
-                                <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Comments</button>
+                                <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
+                            </li>
+                            <li>
+                                <button id="btnRefreshStory" class="button-xsmall pure-button" onclick=" loadStoryOnRefresh(); ">Refresh</button>
+                            </li>
+                            <li>
+                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
                             </li>
                         </ul>
                     </div>
@@ -374,17 +373,23 @@
 
             <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
-                <div class="pure-u-3-4">
+                <div class="pure-u-7-8">
                     <h5 class="email-name">{{>author}}</h5><span class="pure-badge-info">{{>count}}</span>
                     <h4 class="email-subject">{{>title}}</h4>
                     <p class="email-desc">{{>text}}</p>
                     <div>
                         <ul>
                             <li>
-                                <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Link</button>
+                                <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Link</button>
                             </li>
                             <li>
-                                <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Comments</button>
+                                <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
+                            </li>
+                            <li>
+                                <button id="btnRefreshStory" class="button-xsmall pure-button" onclick=" loadStoryOnRefresh(); ">Refresh</button>
+                            </li>
+                            <li>
+                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
                             </li>
                         </ul>
                     </div>
@@ -396,17 +401,23 @@
 
             <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
-                <div class="pure-u-3-4">
+                <div class="pure-u-7-8">
                     <h5 class="email-name">{{>author}}</h5><span class="pure-badge-info">{{>count}}</span>
                     <h4 class="email-subject">{{>title}}</h4>
                     <p class="email-desc">{{>text}}</p>
                     <div>
                         <ul>
                             <li>
-                                <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Link</button>
+                                <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Link</button>
                             </li>
                             <li>
-                                <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="pure-button pure-button-primary">Comments</button>
+                                <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
+                            </li>
+                            <li>
+                                <button id="btnRefreshStory" class="button-xsmall pure-button" onclick=" loadStoryOnRefresh(); ">Refresh</button>
+                            </li>
+                            <li>
+                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
                             </li>
                         </ul>
                     </div>
@@ -416,26 +427,8 @@
 
 
         <div id="main" class="pure-u-1">
-            <div class="content">
-                <div class="pure-menu pure-menu-horizontal">
-                    <ul class="pure-menu-list">
-                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">News</a></li>
-                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">Sports</a></li>
-                        <li class="pure-menu-item"><a href="#" class="pure-menu-link">Finance</a></li>
-                    </ul>
-                </div>
-            </div>
             <div class="email-content">
-
-                <div class="email-content-header pure-g">
-
-
-                    <div class="email-content-controls pure-u-1-2">
-                        <div id="hdnStoryId" style="display: none"></div>
-                        <button id="btnRefreshStory" class="secondary-button" onclick=" loadStoryOnRefresh(); ">Refresh</button>
-                        <button id="btnArchive" class="secondary-button pure-button" onclick=" archiveStory(); ">Archive</button>
-                    </div>
-                </div>
+                <div id="hdnStoryId" style="display: none"></div>
                 <!--<div class="email-content-header pure-g">
                     <div class="pure-u-1-2">
                         <h1 class="email-content-title">Hello from Toronto</h1>
@@ -453,23 +446,25 @@
 
                 <div class="email-content-body">
                     <br/>
-
+                    <div>
+                        <button class="pure-button pure-button-primary">Summary</button>
+                        <button class="pure-button pure-button-primary">Users</button>
+                        <button class="pure-button pure-button-primary">Keywords</button>
+                    </div>
+                    <br/>
                     <div class="pure-g">
-                        <div class="pure-u-10-24">
-                            <div id="sentencesDiv" style="width: 500px; height: 600px; white-space: pre-wrap">
+                        <div class="pure-u-1-24"></div>
+                        <div class="pure-u-22-24">
+                            <div id="sentencesDiv" style="height: 600px; white-space: pre-wrap">
                                 &nbsp;
+                            </div>
+                            <div id="treeDiv">
+                                
                             </div>
                         </div>
-                        <div class="pure-u-2-24"></div>
-                        <div class="pure-u-11-24">
-                            <div id="jstree" style="width: 500px; height: 250px; overflow-x: auto;">&nbsp;</div>
-                            <div id="commentDiv" style="width: 500px; height: 250px; overflow-x: auto;">
-                                &nbsp;
-                            </div>
-
+                        <div class="pure-u-1-24"></div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

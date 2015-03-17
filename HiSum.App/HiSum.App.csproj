@@ -25,18 +25,7 @@
     <Content Include="css\layouts\email-old-ie.css" />
     <Content Include="css\layouts\email.css" />
     <Content Include="css\layouts\menus.css" />
-    <Content Include="dist\jstree.js" />
-    <Content Include="dist\jstree.min.js" />
-    <Content Include="dist\themes\default-dark\32px.png" />
-    <Content Include="dist\themes\default-dark\40px.png" />
-    <Content Include="dist\themes\default-dark\style.css" />
-    <Content Include="dist\themes\default-dark\style.min.css" />
-    <Content Include="dist\themes\default-dark\throbber.gif" />
-    <Content Include="dist\themes\default\32px.png" />
-    <Content Include="dist\themes\default\40px.png" />
-    <Content Include="dist\themes\default\style.css" />
-    <Content Include="dist\themes\default\style.min.css" />
-    <Content Include="dist\themes\default\throbber.gif" />
+    <Content Include="css\tabs.css" />
     <Content Include="dll\HiSum.dll" />
     <Content Include="dll\Newtonsoft.Json.dll" />
     <Content Include="fancytree.html" />
@@ -61,6 +50,7 @@
     <Content Include="index.html" />
     <Content Include="js\async.js" />
     <Content Include="js\jsrender.js" />
+    <Content Include="js\tabs.js" />
     <Content Include="main.html" />
     <Content Include="reader.js" />
     <Content Include="server.js" />

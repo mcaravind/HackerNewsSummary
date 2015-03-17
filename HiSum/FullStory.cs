@@ -230,7 +230,7 @@ namespace HiSum
             Dictionary<string, int> topNWordsRoot = fs.GetTopNWordsDictionary(10);
             TagCloudNode tgnRoot = new TagCloudNode();
             tgnRoot.id = fs.id;
-            tgnRoot.text = GetTagCloudFromDictionary(topNWordsRoot);
+            tgnRoot.text = fs.text;GetTagCloudFromDictionary(topNWordsRoot);
             tgnRoot.children = new List<TagCloudNode>();
             foreach (children child in fs.children)
             {
@@ -245,7 +245,7 @@ namespace HiSum
             Dictionary<string, int> topNWordsRoot = children.GetTopNWordsDictionary(10);
             TagCloudNode tgnRoot = new TagCloudNode();
             tgnRoot.id = children.id;
-            tgnRoot.text = GetTagCloudFromDictionary(topNWordsRoot);
+            tgnRoot.text = children.text;GetTagCloudFromDictionary(topNWordsRoot);
             tgnRoot.children = new List<TagCloudNode>();
             foreach (children child in children.Children)
             {
