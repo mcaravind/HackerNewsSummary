@@ -10,6 +10,8 @@ namespace HiSum
     {
         public int id { get; set; }
         public string text { get; set; }
+        public string title { get; set; }
+        public int key { get; set; }
         public List<TagCloudNode> children { get; set; } 
     }
 }

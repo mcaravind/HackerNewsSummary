@@ -5,18 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>HiSum &ndash; Hierarchical Summary for Hacker News &ndash; Pure</title>
-
-    
-    
-<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
-<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/menus-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/menus-min.css">
     <link rel="stylesheet" type="text/css" href="https://rawgithub.com/tilomitra/cssextras/master/css/pure-extras.css">
     <link rel="stylesheet" href="css/layouts/menus.css" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script src="js/tabs.js"></script>
-    <link rel="stylesheet" href="css/tabs.css"/>
+    <script src="js/tabs.js"></script>
+<link rel="stylesheet" href="css/tabs.css"/>
+<style type="text/css">
+    span.fancytree-node > span.fancytree-title { white-space: pre; }
+     span.fancytree-node.custom1 > span.fancytree-title {
+         color: maroon;
+         font-family: "Audiowide";
+     }
+</style>
     <style>
         .button-xsmall {
             font-size: 60%;
@@ -35,67 +39,55 @@
         }
     </style>
 
-<style>
-    ul {
-        float: left;
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        list-style-type: none;
-    }
+    <style>
+        blockquote {
+            font-family: Georgia, serif;
+            font-size: 18px;
+            font-style: italic;
+            /*width: 400px;*/
+            margin: 0.25em 0;
+            padding: 0.25em 40px;
+            line-height: 1.45;
+            position: relative;
+            color: #383838;
+        }
 
-    li {
-        display: inline;
-    }
+        blockquote:before {
+            display: block;
+            content: "\201C";
+            font-size: 80px;
+            position: absolute;
+            left: -20px;
+            top: -20px;
+            color: #7a7a7a;
+        }
 
-    blockquote {
-        font-family: Georgia, serif;
-        font-size: 18px;
-        font-style: italic;
-        /*width: 400px;*/
-        margin: 0.25em 0;
-        padding: 0.25em 40px;
-        line-height: 1.45;
-        position: relative;
-        color: #383838;
-    }
+        blockquote cite {
+            color: #999999;
+            font-size: 14px;
+            display: block;
+            margin-top: 5px;
+        }
 
-    blockquote:before {
-        display: block;
-        content: "\201C";
-        font-size: 80px;
-        position: absolute;
-        left: -20px;
-        top: -20px;
-        color: #7a7a7a;
-    }
-
-    blockquote cite {
-        color: #999999;
-        font-size: 14px;
-        display: block;
-        margin-top: 5px;
-    }
-
-    blockquote cite:before {
-        content: "\2014 \2009";
-    }
-</style>
+        blockquote cite:before {
+            content: "\2014 \2009";
+        }
+    </style>
 
     <!--<script type="text/javascript">
         $(function () {
             // using default options
-            $("#tree").fancytree();
+            $("#treeDiv").fancytree();
         });
     </script>-->
 
     <script src="js/jsrender.js" type="text/javascript"></script>
-<script src="js/async.js"></script>
-<!--<script src="fancytree/jquery.js" type="text/javascript"></script>
-<script src="fancytree/jquery-ui.custom.js" type="text/javascript"></script>
-<link href="fancytree/skin-win7/ui.fancytree.css" rel="stylesheet" type="text/css">
-<script src="fancytree/jquery.fancytree.js" type="text/javascript"></script>-->
-<script type="text/javascript">
+    <script src="js/async.js"></script>
+    <!--<script src="fancytree/jquery.js" type="text/javascript"></script>-->
+    <script src="fancytree/jquery-ui.custom.js" type="text/javascript"></script>
+    <link href="fancytree/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css">
+<script src="fancytree/jquery.fancytree.js" type="text/javascript"></script>
+    <script type="text/javascript">
         function displayStories() {
             var stories = [];
             top100Function(100, function (error, result) {
@@ -163,15 +155,11 @@
             try {
                 var stories = [];
                 var storytext = $('#inputStoryId').val();
-                console.log(storytext);
                 var storyidtext = storytext.split('=')[1];
-                console.log(storyidtext);
                 var storyidval = parseInt(storyidtext);
-                console.log('storyid = ' + storyidval);
                 storyFunction(storyidval, function (error, result) {
                     try {
                         if (error) console.log(error);
-                        console.log(result);
                         result.forEach(function (entry) {
                             //var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'] };
                             var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
@@ -199,7 +187,6 @@
 
         function loadStory(storyidval) {
             //var childid = "hdn" + $(item).attr("id");
-            console.log(storyidval);
             try {
                 tagCloudFunction(storyidval, function (error, result) {
                     if (error) console.log('error:' + error);
@@ -219,12 +206,25 @@
                     var arr = JSON.parse(json);
                     var dict = result['Comments'];
                     var sentences = result['Sentences'];
-                    console.log(sentences);
                     loadSentences(sentences);
+                    loadTree(arr);
                     addLoadCommentEvent(dict);
                 });
             } catch (ex) {
                 alert(ex);
+            }
+        }
+
+        function loadTree(tree) {
+            console.log(tree);
+            try {
+                var tree1 = $("#treeDiv").fancytree('getTree');
+                tree1.reload(tree);
+            } catch (ex) {
+                //console.log(ex);
+                $("#treeDiv").fancytree({
+                    source:tree
+                });
             }
         }
 
@@ -237,8 +237,7 @@
 
         function loadSentences(sentences) {
             $("#sentencesDiv").html('');
-            $.each(sentences, function (key, value) {
-                console.log(value['Sentence']);
+            $.each(sentences, function (key, value) {                
                 var sentenceHtml = "<blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote>";
                 $("#sentencesDiv").append(sentenceHtml);
             });
@@ -251,7 +250,7 @@
             });
             for (var property in textdict) {
                 if (textdict.hasOwnProperty(property)) {
-                    console.log(property);
+                    
                 }
             }
         }
@@ -262,7 +261,6 @@
         }
 
         function openurl(url) {
-            console.log(url);
             var gui = require('nw.gui');
             gui.Shell.openExternal(url);
             if (!e) var e = window.event;
@@ -285,13 +283,6 @@
     <script type="text/javascript" src="reader.js"></script>
 </head>
 <body>
-
-
-
-
-
-
-
     <div id="layout" class="content pure-g">
         <div id="nav" class="pure-u">
             <a href="#" class="nav-menu-button">Menu</a>
@@ -311,8 +302,6 @@
                 </div>
             </div>
         </div>
-
-
         <div id="list" class="pure-u-1">
             <!--<div class="email-item email-item-selected pure-g">
                 <div class="pure-u-3-4">
@@ -343,7 +332,6 @@
             </div>
         </div>
         <script id="individualStoryTemplate" type="text/x-jsrender">
-
             <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
                 <div class="pure-u-7-8">
@@ -351,6 +339,19 @@
                     <h4 class="email-subject">{{>title}}</h4>
                     <p class="email-desc">{{>text}}</p>
                     <div>
+                        <style scoped>
+                            ul {
+                                float: left;
+                                width: 100%;
+                                padding: 0;
+                                margin: 0;
+                                list-style-type: none;
+                            }
+
+                            li {
+                                display: inline;
+                            }
+                        </style>
                         <ul>
                             <li>
                                 <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Link</button>
@@ -378,6 +379,20 @@
                     <h4 class="email-subject">{{>title}}</h4>
                     <p class="email-desc">{{>text}}</p>
                     <div>
+                        <style scoped>
+                            ul {
+                                float: left;
+                                width: 100%;
+                                padding: 0;
+                                margin: 0;
+                                list-style-type: none;
+                            }
+
+                            li {
+                                display: inline;
+                            }
+                        </style>
+
                         <ul>
                             <li>
                                 <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Link</button>
@@ -406,6 +421,20 @@
                     <h4 class="email-subject">{{>title}}</h4>
                     <p class="email-desc">{{>text}}</p>
                     <div>
+                        <style scoped>
+                            ul {
+                                float: left;
+                                width: 100%;
+                                padding: 0;
+                                margin: 0;
+                                list-style-type: none;
+                            }
+
+                            li {
+                                display: inline;
+                            }
+                        </style>
+
                         <ul>
                             <li>
                                 <button onclick='openurl({{>storyurlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Link</button>
@@ -424,8 +453,6 @@
                 </div>
             </div>
         </script>
-
-
         <div id="main" class="pure-u-1">
             <div class="email-content">
                 <div id="hdnStoryId" style="display: none"></div>
@@ -443,27 +470,26 @@
                         <button class="secondary-button pure-button">Move to</button>
                     </div>
                 </div>-->
-
                 <div class="email-content-body">
-                    <br/>
+                    <br />
                     <div>
                         <button class="pure-button pure-button-primary">Summary</button>
                         <button class="pure-button pure-button-primary">Users</button>
                         <button class="pure-button pure-button-primary">Keywords</button>
                     </div>
-                    <br/>
+                    <br />
                     <div class="pure-g">
                         <div class="pure-u-1-24"></div>
                         <div class="pure-u-22-24">
-                            <div id="sentencesDiv" style="height: 600px; white-space: pre-wrap">
+                            <div id="sentencesDiv" style="height: 380px; white-space: pre-wrap">
                                 &nbsp;
                             </div>
-                            <div id="treeDiv">
-                                
+                            <div id="treeContainer" style="height: 300px;overflow: auto">
+                                <div id="treeDiv">
+                                </div>
                             </div>
                         </div>
                         <div class="pure-u-1-24"></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -511,11 +537,5 @@
             }, 'a[href="#"]');
         });
     </script>
-
-
-
-
-
-
 </body>
 </html>

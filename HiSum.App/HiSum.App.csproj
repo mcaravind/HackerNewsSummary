@@ -40,6 +40,13 @@
     <Content Include="fancytree\skin-win7\loading.gif" />
     <Content Include="fancytree\skin-win7\ui.fancytree.css" />
     <Content Include="fancytree\skin-win7\ui.fancytree.min.css" />
+    <Content Include="fancytree\skin-xp\icons-rtl.gif" />
+    <Content Include="fancytree\skin-xp\icons.gif" />
+    <Content Include="fancytree\skin-xp\loading.gif" />
+    <Content Include="fancytree\skin-xp\ui.fancytree.css" />
+    <Content Include="fancytree\skin-xp\ui.fancytree.min.css" />
+    <Content Include="fancytree\skin-xp\vline-rtl.gif" />
+    <Content Include="fancytree\skin-xp\vline.gif" />
     <Content Include="img\common\andrew-avatar.png" />
     <Content Include="img\common\ericf-avatar.png" />
     <Content Include="img\common\reid-avatar.png" />
@@ -64,6 +71,7 @@
     <Content Include="package.json" />
     <Content Include="script.ps1" />
     <Content Include="fancytree\skin-win7\ui.fancytree.less" />
+    <Content Include="fancytree\skin-xp\ui.fancytree.less" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

@@ -11,11 +11,9 @@ namespace HiSum
     public class children
     {
         public int id { get; set; }
-        [JsonIgnore]
         public int key {
             get { return id; }
             }
-        [JsonIgnore]
         public string title
         {
             get { return text; }
