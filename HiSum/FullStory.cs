@@ -16,14 +16,12 @@ namespace HiSum
     public class FullStory
     {
         public int id { get; set; }
-        [JsonIgnore]
         public DateTime created_at { get; set; }
         public string author { get; set; }
         public string title { get; set; }
         public string url { get; set; }
         public string text { get; set; }
-        [JsonIgnore]
-        public int point { get; set; }
+        public int points { get; set; }
         [JsonIgnore]
         public int? parent_id { get; set; }
         [JsonIgnore]
@@ -235,6 +233,10 @@ namespace HiSum
             tgnRoot.title = fs.title;
             GetTagCloudFromDictionary(topNWordsRoot);
             tgnRoot.children = new List<TagCloudNode>();
+            //sort like HN
+            fs.children =
+                fs.children.OrderByDescending(x => (x.score - 1)/Math.Pow((DateTime.Now.Subtract(x.created_at).TotalHours+2),1.5))
+                    .ToList();
             foreach (children child in fs.children)
             {
                 TagCloudNode tgnChild = GetTagCloudTree(child);

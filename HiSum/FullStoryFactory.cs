@@ -11,10 +11,21 @@ namespace HiSum
     {
         public static FullStory GetFullStory(int storyID)
         {
-            string storyURL = Globals.AlgoliaUrl + storyID;
-            string response = Util.FetchJson(storyURL);
-            FullStory fullStory = JsonConvert.DeserializeObject<FullStory>(response);
-            return fullStory;
+            FullStory fs = new FullStory();
+            try
+            {
+                string storyURL = Globals.AlgoliaUrl + storyID;
+                string response = Util.FetchJson(storyURL);
+                string strToReplace = @"""points"":null";
+                string strReplaceWith = @"""points"":0";
+                response = response.Replace(strToReplace, strReplaceWith);
+                fs = JsonConvert.DeserializeObject<FullStory>(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return fs;
         }
     }
 }

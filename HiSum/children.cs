@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -18,14 +19,12 @@ namespace HiSum
         {
             get { return text; }
         }
-        [JsonIgnore]
         public DateTime created_at { get; set; }
         public string author { get; set; }
         public string text { get; set; }
-        [JsonIgnore]
-        public int? points { get; set; }
-        [JsonIgnore]
         public int parent_id { get; set; }
+        [JsonProperty(PropertyName = "points")]
+        public int score { get; set; }
         [JsonProperty(PropertyName = "children")]
         public List<children> Children { get; set; }
         [JsonIgnore]

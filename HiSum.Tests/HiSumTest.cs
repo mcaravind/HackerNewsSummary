@@ -58,7 +58,7 @@ namespace HiSum.Tests
         public void TestGetTagCloudTree()
         {
             Reader reader = new Reader();
-            Task<object> result = reader.GetFullStory(9132815);
+            Task<object> result = reader.GetFullStory(9220468);
         }
 
         [TestMethod]
