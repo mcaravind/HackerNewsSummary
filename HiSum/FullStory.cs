@@ -50,12 +50,14 @@ namespace HiSum
          * occur in the most number of subtree items within the current
          * top level comment
          */
-        public List<SentenceObj> GetTopSentences(int N)
+        public List<SentenceObj> GetTopSentences(int N, int storyId)
         {
             List<SentenceObj> topSentenceObjs = new List<SentenceObj>();
             List<string> topSentences = new List<string>();
             Dictionary<string,double> sentenceScores = new Dictionary<string, double>();
             Dictionary<string,string> sentenceAuthors = new Dictionary<string, string>();
+            Dictionary<string,string> sentenceCommentTrees = new Dictionary<string, string>();
+            Dictionary<string,int> sentenceIds = new Dictionary<string, int>();
             foreach (children child in children)
             {
                 try
@@ -94,6 +96,8 @@ namespace HiSum
                     }
                     sentenceScores[bestSentence] = currMax;
                     sentenceAuthors[bestSentence] = child.author;
+                    sentenceCommentTrees[bestSentence] = JsonConvert.SerializeObject(GetCommentTreeString(child));
+                    sentenceIds[bestSentence] = child.id;
                 }
                 catch (Exception ex)
                 {
@@ -103,7 +107,10 @@ namespace HiSum
             topSentences = sentenceScores.OrderByDescending(x => x.Value).Take(N).Where(y=>!string.IsNullOrWhiteSpace(y.Key)).Select(x=>x.Key).ToList();
             foreach (var sent in topSentences)
             {
-                SentenceObj sentenceObj = new SentenceObj() { Author = sentenceAuthors[sent], Sentence = sent };
+                SentenceObj sentenceObj = new SentenceObj()
+                {
+                    Author = sentenceAuthors[sent], Sentence = sent, SentenceCommentTree = sentenceCommentTrees[sent],Id = sentenceIds[sent],StoryId = storyId
+                };
                 topSentenceObjs.Add(sentenceObj);   
             }
             return topSentenceObjs;
@@ -222,7 +229,7 @@ namespace HiSum
             return commentTree;
         }
 
-        public string GetTagCloudTree()
+        public string GetCommentTreeString()
         {
             FullStory fs = this;
             Dictionary<string, int> topNWordsRoot = fs.GetTopNWordsDictionary(10);
@@ -239,13 +246,16 @@ namespace HiSum
                     .ToList();
             foreach (children child in fs.children)
             {
-                TagCloudNode tgnChild = GetTagCloudTree(child);
-                tgnRoot.children.Add(tgnChild);
+                if (!string.IsNullOrWhiteSpace(child.SubtreeText))
+                {
+                    TagCloudNode tgnChild = GetCommentTreeString(child);
+                    tgnRoot.children.Add(tgnChild);
+                }
             }
             return JsonConvert.SerializeObject(tgnRoot);
         }
 
-        TagCloudNode GetTagCloudTree(children children)
+        public TagCloudNode GetCommentTreeString(children children)
         {
             Dictionary<string, int> topNWordsRoot = children.GetTopNWordsDictionary(10);
             TagCloudNode tgnRoot = new TagCloudNode();
@@ -257,8 +267,11 @@ namespace HiSum
             tgnRoot.children = new List<TagCloudNode>();
             foreach (children child in children.Children)
             {
-                TagCloudNode tgnChild = GetTagCloudTree(child);
-                tgnRoot.children.Add(tgnChild);
+                if (!string.IsNullOrWhiteSpace(child.SubtreeText))
+                {
+                    TagCloudNode tgnChild = GetCommentTreeString(child);
+                    tgnRoot.children.Add(tgnChild);
+                }
             }
             return tgnRoot;
         }

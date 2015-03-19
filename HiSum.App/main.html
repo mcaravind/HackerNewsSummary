@@ -230,25 +230,30 @@
         archive(storyidval);
     }
 
+    function getTreeFromJson(json) {
+        // preserve newlines, etc - use valid JSON
+        json = json.replace(/\\n/g, "\\n")
+            .replace(/\\'/g, "\\'")
+            .replace(/\\"/g, '\\"')
+            .replace(/\\&/g, "\\&")
+            .replace(/\\r/g, "\\r")
+            .replace(/\\t/g, "\\t")
+            .replace(/\\b/g, "\\b")
+            .replace(/\\f/g, "\\f");
+        // remove non-printable and other non-valid JSON chars
+        json = json.replace(/[\u0000-\u0019]+/g, "");
+        //console.log(json);
+        var arr = JSON.parse(json);
+        return arr;
+    }
+
     function loadStory(storyidval) {
         //var childid = "hdn" + $(item).attr("id");
         try {
             tagCloudFunction(storyidval, function (error, result) {
                 if (error) console.log('error:' + error);
                 var json = result['Json'];
-                // preserve newlines, etc - use valid JSON
-                json = json.replace(/\\n/g, "\\n")
-                    .replace(/\\'/g, "\\'")
-                    .replace(/\\"/g, '\\"')
-                    .replace(/\\&/g, "\\&")
-                    .replace(/\\r/g, "\\r")
-                    .replace(/\\t/g, "\\t")
-                    .replace(/\\b/g, "\\b")
-                    .replace(/\\f/g, "\\f");
-                // remove non-printable and other non-valid JSON chars
-                json = json.replace(/[\u0000-\u0019]+/g, "");
-                //console.log(json);
-                var arr = JSON.parse(json);
+                var arr = getTreeFromJson(json);
                 var dict = result['Comments'];
                 var sentences = result['Sentences'];
                 loadSentences(sentences);
@@ -280,11 +285,25 @@
         loadStory(storyidval);
     }
 
+    function loadSentenceTree(item) {
+        var idtuple = $(item).attr("id");
+        //var sentenceId = parseInt($(item).attr("id").split(":")[0]);
+        //var storyId = parseInt($(item).attr("id").split(":")[1]);
+        sentenceCommentTreeFunction(idtuple, function(error, result) {
+            var treestr = result;
+            var tree = JSON.parse(treestr);
+            console.log(tree);
+            loadTree(tree);
+        });
+    }
+
     function loadSentences(sentences) {
         $("#sentencesDiv").html('');
-        $.each(sentences, function (key, value) {                
-            var sentenceHtml = "<blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote>";
+        var k = 1;
+        $.each(sentences, function (key, value) {
+            var sentenceHtml = "<div id='"+value['Id']+":"+value['StoryId']+"' onclick='loadSentenceTree(this);'><div id='hidden" +k+"' style='display: none;'>"+value['SentenceCommentTree']+"</div><blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote></div>";
             $("#sentencesDiv").append(sentenceHtml);
+            k++;
         });
     }
 

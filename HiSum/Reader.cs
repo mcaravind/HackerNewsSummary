@@ -119,13 +119,25 @@ namespace HiSum
             return storyObjList;
         }
 
+        public async Task<object> GetCommentTreeForId(string idTuple)
+        {
+            string sStoryId = idTuple.Split(':')[1];
+            string sNodeId = idTuple.Split(':')[0];
+            int storyid = Convert.ToInt32(sStoryId);
+            int nodeid = Convert.ToInt32(sNodeId);
+            FullStory fs = FullStoryFactory.GetFullStory(storyid);
+            children child = fs.GetNodeById(nodeid);
+            TagCloudNode tgn = fs.GetCommentTreeString(child);
+            return JsonConvert.SerializeObject(tgn);
+        }
+
         public async Task<object> GetFullStory(int storyid)
         {
             FullStory fs = FullStoryFactory.GetFullStory(storyid);
-            string json = fs.GetTagCloudTree();
+            string json = fs.GetCommentTreeString();
             Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
             List<CommentObj> comments = new List<CommentObj>();
-            List<SentenceObj> topSentenceObjs = fs.GetTopSentences(5);
+            List<SentenceObj> topSentenceObjs = fs.GetTopSentences(5,storyid);
             foreach (var item in commentDictionary)
             {
                 comments.Add(new CommentObj() { Id = item.Key, Text = item.Value });

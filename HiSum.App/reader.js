@@ -43,6 +43,13 @@ var tagCloudFunction = edge.func(
     methodName: 'GetFullStory'
 });
 
+var sentenceCommentTreeFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'GetCommentTreeForId'
+});
+
 function archive(id) {
     archiveFunction(id, function (error, result) {
         if (error) alert(error.message);

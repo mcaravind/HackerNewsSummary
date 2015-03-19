@@ -10,5 +10,8 @@ namespace HiSum
     {
         public string Sentence { get; set; }
         public string Author { get; set; }
+        public string SentenceCommentTree { get; set; }
+        public int Id { get; set; }
+        public int StoryId { get; set; }
     }
 }
