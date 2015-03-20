@@ -33,8 +33,8 @@ namespace HiSum.Tests
         [TestMethod]
         public void TestGetTopSentences()
         {
-            FullStory fs = FullStoryFactory.GetFullStory(8197102);
-            //Dictionary<string, HashSet<int>> wordMapping = fs.WordIDMapping;
+            FullStory fs = FullStoryFactory.GetFullStory(9231386);
+            Dictionary<string, HashSet<int>> wordMapping = fs.WordIDMapping;
             List<SentenceObj> top5Sentences = fs.GetTopSentences(5);
             Assert.AreEqual(top5Sentences.Count > 1, true);
         }
@@ -59,6 +59,13 @@ namespace HiSum.Tests
         {
             Reader reader = new Reader();
             Task<object> result = reader.GetFullStory(9220468);
+        }
+
+        [TestMethod]
+        public void TestGetSentenceTree()
+        {
+            Reader reader = new Reader();
+            Task<object> result = reader.GetCommentTreeForId("8870648:8870479");
         }
 
         [TestMethod]

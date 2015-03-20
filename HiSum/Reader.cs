@@ -137,7 +137,7 @@ namespace HiSum
             string json = fs.GetCommentTreeString();
             Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
             List<CommentObj> comments = new List<CommentObj>();
-            List<SentenceObj> topSentenceObjs = fs.GetTopSentences(5,storyid);
+            List<SentenceObj> topSentenceObjs = fs.GetTopSentences(5);
             foreach (var item in commentDictionary)
             {
                 comments.Add(new CommentObj() { Id = item.Key, Text = item.Value });

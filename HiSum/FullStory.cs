@@ -50,7 +50,7 @@ namespace HiSum
          * occur in the most number of subtree items within the current
          * top level comment
          */
-        public List<SentenceObj> GetTopSentences(int N, int storyId)
+        public List<SentenceObj> GetTopSentences(int N)
         {
             List<SentenceObj> topSentenceObjs = new List<SentenceObj>();
             List<string> topSentences = new List<string>();
@@ -74,19 +74,22 @@ namespace HiSum
                         bool goodSentence = (allWords.Length > 2) && (stopWords.Where(x => !allWords.Contains(x.ToLower())).Count() > 2);
                         if (goodSentence)
                         {
+                            double weightedScore = 0;
                             int totalIDCount = 0;
                             foreach (string word in allWords)
                             {
                                 if (!stopWords.Contains(word.ToLower()))
                                 {
-                                    if (wordIDMapping.ContainsKey(word))
+                                    string stemmedWord = Stemmer.GetStem(word);
+                                    if (wordIDMapping.ContainsKey(stemmedWord))
                                     {
-                                        HashSet<int> idsContainingWord = wordIDMapping[Stemmer.GetStem(word)];
+                                        HashSet<int> idsContainingWord = wordIDMapping[stemmedWord];
                                         totalIDCount += idsContainingWord.Count;
+                                        weightedScore += idsContainingWord.Count * 1.0/(CommonWords.GetFrequency(word) + 1);
                                     }
                                 }
                             }
-                            double avgScore = (totalIDCount * 1.0) / allWords.Length;
+                            double avgScore = weightedScore / allWords.Length;
                             if (avgScore > currMax)
                             {
                                 currMax = avgScore;
@@ -109,7 +112,7 @@ namespace HiSum
             {
                 SentenceObj sentenceObj = new SentenceObj()
                 {
-                    Author = sentenceAuthors[sent], Sentence = sent, SentenceCommentTree = sentenceCommentTrees[sent],Id = sentenceIds[sent],StoryId = storyId
+                    Author = sentenceAuthors[sent], Sentence = sent, SentenceCommentTree = sentenceCommentTrees[sent],Id = sentenceIds[sent],StoryId = this.id
                 };
                 topSentenceObjs.Add(sentenceObj);   
             }
@@ -262,7 +265,7 @@ namespace HiSum
             tgnRoot.id = children.id;
             tgnRoot.key = children.key;
             tgnRoot.text = children.text;
-            tgnRoot.title = children.text;
+            tgnRoot.title = "<cite>"+children.author+":</cite>"+children.text;
             GetTagCloudFromDictionary(topNWordsRoot);
             tgnRoot.children = new List<TagCloudNode>();
             foreach (children child in children.Children)
