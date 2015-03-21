@@ -244,9 +244,10 @@ namespace HiSum
             GetTagCloudFromDictionary(topNWordsRoot);
             tgnRoot.children = new List<TagCloudNode>();
             //sort like HN
-            fs.children =
-                fs.children.OrderByDescending(x => (x.score - 1)/Math.Pow((DateTime.Now.Subtract(x.created_at).TotalHours+2),1.5))
-                    .ToList();
+            //fs.children =
+            //    fs.children.OrderByDescending(x => (x.score - 1)/Math.Pow((DateTime.Now.Subtract(x.created_at).TotalHours+2),1.5))
+            //        .ToList();
+            fs.children = fs.children.OrderByDescending(x => x.created_at).ToList();
             foreach (children child in fs.children)
             {
                 if (!string.IsNullOrWhiteSpace(child.SubtreeText))
@@ -268,6 +269,7 @@ namespace HiSum
             tgnRoot.title = "<cite>"+children.author+":</cite>"+children.text;
             GetTagCloudFromDictionary(topNWordsRoot);
             tgnRoot.children = new List<TagCloudNode>();
+            children.Children = children.Children.OrderByDescending(x => x.created_at).ToList();
             foreach (children child in children.Children)
             {
                 if (!string.IsNullOrWhiteSpace(child.SubtreeText))
