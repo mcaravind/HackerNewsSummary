@@ -114,7 +114,24 @@
 <script src="fancytree/jquery.fancytree.js" type="text/javascript"></script>
 <script type="text/javascript">
     
+    function displaySentencesDiv() {
+        $("#sentencesDiv").show();
+        $("#usersDiv").hide();
+        $("#keywordsDiv").hide();
+    }
     
+    function displayUsersDiv() {
+        $("#sentencesDiv").hide();
+        $("#usersDiv").show();
+        $("#keywordsDiv").hide();
+    }
+
+    function displayKeywordsDiv() {
+        $("#sentencesDiv").hide();
+        $("#usersDiv").hide();
+        $("#keywordsDiv").show();
+    }
+
     function enableLinks() {
         // Load native UI library
         var nw = require('nw.gui');
@@ -177,6 +194,7 @@
         $("#stories").hide();
         $("#individualStories").hide();
         $("#archiveStories").show();
+        $("#storyButtons").show();
     }
 
     function showStories() {
@@ -191,12 +209,14 @@
         );
         $("#stories").show();
         $("#archiveStories").hide();
+        $("#storyButtons").show();
     }
 
     function renderSingleStory(stories) {
         $("#individualStories").prepend(
             $("#individualStoryTemplate").render(stories)
         );
+        $("#storyButtons").show();
     }
 
     $(document).ready(function () {
@@ -297,6 +317,14 @@
         var storyidval = parseInt($(item).attr("id"));
         $("#hdnStoryId").html(storyidval);
         loadStory(storyidval);
+        $("#list").children("div").children("div").each(function () {
+            var element = $(this);
+            console.log("inside the list div for div = "+element.attr("id"));
+            if (element.hasClass("email-item-selected")) {
+                element.removeClass("email-item-selected");
+            }
+        });
+        $(item).addClass("email-item-selected");
     }
 
     function loadSentenceTree(item) {
@@ -322,7 +350,7 @@
         $("#sentencesDiv").html('');
         var k = 1;
         $.each(sentences, function (key, value) {
-            var sentenceHtml = "<div id='"+value['Id']+":"+value['StoryId']+"' onclick='loadSentenceTree(this);'><div id='hidden" +k+"' style='display: none;'>"+value['SentenceCommentTree']+"</div><blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote></div>";
+            var sentenceHtml = "<div style='word-wrap: break-word;' id='" + value['Id'] + ":" + value['StoryId'] + "' onclick='loadSentenceTree(this);'><div id='hidden" + k + "' style='display: none;'>" + value['SentenceCommentTree'] + "</div><blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote></div>";
             $("#sentencesDiv").append(sentenceHtml);
             k++;
         });
@@ -417,7 +445,7 @@
             </div>
         </div>
         <script id="individualStoryTemplate" type="text/x-jsrender">
-            <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
+            <div id={{>storyid}} class="email-item pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
                 <div class="pure-u-7-8">
                     <h5 class="email-name">{{>author}}</h5><span class="pure-badge-info">{{>count}}</span>
@@ -457,7 +485,7 @@
         </script>
         <script id="storyTemplate" type="text/x-jsrender">
 
-            <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
+            <div id={{>storyid}} class="email-item pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
                 <div class="pure-u-7-8">
                     <h5 class="email-name">{{>author}}</h5><span class="pure-badge-info">{{>count}}</span>
@@ -499,7 +527,7 @@
 
         <script id="archiveStoryTemplate" type="text/x-jsrender">
 
-            <div id={{>storyid}} class="email-item email-item-selected pure-g" onclick="clicked(this);">
+            <div id={{>storyid}} class="email-item pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
                 <div class="pure-u-7-8">
                     <h5 class="email-name">{{>author}}</h5><span class="pure-badge-info">{{>count}}</span>
@@ -557,26 +585,30 @@
                 </div>-->
                 <div class="email-content-body">
                     <br />
-                    <div>
-                        <button class="pure-button pure-button-primary">Summary</button>
-                        <button class="pure-button pure-button-primary">Users</button>
-                        <button class="pure-button pure-button-primary">Keywords</button>
+                    <div id="storyButtons" style="display:none;">
+                        <button onclick="displaySentencesDiv();" class="button-small pure-button pure-button-primary">Summary</button>
+                        <button onclick="displayUsersDiv();" class="button-small pure-button pure-button-primary">Users</button>
+                        <button onclick="displayKeywordsDiv();" class="button-small pure-button pure-button-primary">Keywords</button>
                     </div>
                     <br />
                     <div class="pure-g">
+                        <div class="pure-u-12-24">
+                            <!--<div id="sentencesDiv" style="white-space: pre-wrap; overflow: auto">-->
+                            <div id="sentencesDiv">
+                            </div>    
+                            <div id="usersDiv">
+
+                            </div>                        
+                            <div id="keywordsDiv"></div>
+                        </div>
                         <div class="pure-u-1-24"></div>
-                        <div class="pure-u-22-24">
-                            <div id="sentencesDiv" style="height: 370px; white-space: pre-wrap; overflow: auto">
-                                &nbsp;
-                            </div>
-                            <br/>
-                            <div id="treeContainer" style="height: 300px;overflow: auto">
+                        <div class="pure-u-11-24">
+                            <div id="treeContainer" style="overflow: auto">
                                 <div id="treeDiv">
                                 </div>
                             </div>
                         </div>
-                        <div class="pure-u-1-24"></div>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
