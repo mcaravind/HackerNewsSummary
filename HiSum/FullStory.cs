@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -35,6 +36,8 @@ namespace HiSum
         {
             get { return GetWordIDMapping(); }
         }
+
+        Dictionary<string, List<CommentObj>> UserComments { get; set; } 
 
         public int TotalComments
         {
@@ -259,6 +262,40 @@ namespace HiSum
             return JsonConvert.SerializeObject(tgnRoot);
         }
 
+        public IEnumerable <KeyValuePair<string, List<CommentObj>>> GetUserComments()
+        {
+            UserComments = new Dictionary<string, List<CommentObj>>();
+            foreach (children childNode in children)
+            {
+                try
+                {
+                    LoadUserComments(childNode);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                } 
+            }
+            var sortedDict = from entry in UserComments orderby entry.Key select entry;
+            return sortedDict;
+        }
+
+        void LoadUserComments(children child)
+        {
+            if (!string.IsNullOrWhiteSpace(child.author))
+            {
+                if (!UserComments.ContainsKey(child.author))
+                {
+                    UserComments[child.author] = new List<CommentObj>();
+                }
+                UserComments[child.author].Add(new CommentObj() { Id = child.id, Text = child.text });
+            }
+            foreach (children childNode in child.Children)
+            {
+                LoadUserComments(childNode);
+            }
+        }
+
         public TagCloudNode GetCommentTreeString(children children)
         {
             Dictionary<string, int> topNWordsRoot = children.GetTopNWordsDictionary(10);
@@ -266,7 +303,10 @@ namespace HiSum
             tgnRoot.id = children.id;
             tgnRoot.key = children.key;
             tgnRoot.text = children.text;
-            tgnRoot.title = "<cite>"+children.author+":</cite>"+children.text;
+            bool isOP = author == children.author;
+            string citePre = isOP ? "<cite class='op'>" : "<cite>";
+            string citePost = ":</cite>";
+            tgnRoot.title = citePre+children.author+ citePost+children.text;
             GetTagCloudFromDictionary(topNWordsRoot);
             tgnRoot.children = new List<TagCloudNode>();
             children.Children = children.Children.OrderByDescending(x => x.created_at).ToList();

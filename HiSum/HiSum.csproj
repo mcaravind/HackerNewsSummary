@@ -50,6 +50,7 @@
     <Compile Include="children.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="CommentItem.cs" />
+    <Compile Include="CommentObj.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FullStory.cs" />
     <Compile Include="FullStoryFactory.cs" />

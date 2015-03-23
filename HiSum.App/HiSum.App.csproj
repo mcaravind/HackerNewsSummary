@@ -28,6 +28,7 @@
     <Content Include="css\tabs.css" />
     <Content Include="dll\HiSum.dll" />
     <Content Include="dll\Newtonsoft.Json.dll" />
+    <Content Include="edgeclient.js" />
     <Content Include="fancytree.html" />
     <Content Include="fancytree\jquery-ui.custom.js" />
     <Content Include="fancytree\jquery.fancytree.js" />

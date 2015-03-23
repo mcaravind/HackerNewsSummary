@@ -40,6 +40,14 @@ namespace HiSum.Tests
         }
 
         [TestMethod]
+        public void TestGetTopStory()
+        {
+            Reader r = new Reader();
+            object result =  r.GetFullStory(9231386);
+            Assert.AreNotEqual(result, null);
+        }
+
+        [TestMethod]
         public void TestGetMapping()
         {
             FullStory fs = FullStoryFactory.GetFullStory(9148746);

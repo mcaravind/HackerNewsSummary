@@ -13,7 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="js/tabs.js"></script>
-<link rel="stylesheet" href="css/tabs.css"/>
+    <link rel="stylesheet" href="css/tabs.css" />
 
     <style>
         .button-xsmall {
@@ -35,23 +35,31 @@
 
 <style>
     cite {
-            color: #999999;
-            font-size: 12px;
-            display: block;
-            margin-top: 5px;
-        }
+        color: #999999;
+        font-size: 12px;
+        display: block;
+        margin-top: 5px;
+    }
 
-        blockquote {
-         font-family: Georgia, serif;
-         font-size: 16px;
-         font-style: italic;
-         /*width: 400px;*/
-         margin: 0.25em 0;
-         padding: 0.25em 40px;
-         line-height: 1.45;
-         position: relative;
-         color: #383838;
-     }
+    cite.op {
+        color: #ffffff;
+        font-size: 12px;
+        display: block;
+        margin-top: 5px;
+        background-color: #0078E7;
+    }
+
+    blockquote {
+        font-family: Georgia, serif;
+        font-size: 16px;
+        font-style: italic;
+        /*width: 400px;*/
+        margin: 0.25em 0;
+        padding: 0.25em 40px;
+        line-height: 1.45;
+        position: relative;
+        color: #383838;
+    }
 
     blockquote:before {
         display: block;
@@ -75,325 +83,118 @@
     }
 </style>
 
-    <!--<script type="text/javascript">
-        $(function () {
-            // using default options
-            $("#treeDiv").fancytree();
-        });
-    </script>-->
-
-    <script src="js/jsrender.js" type="text/javascript"></script>
-    <script src="js/async.js"></script>
-    <!--<script src="fancytree/jquery.js" type="text/javascript"></script>-->
-    <script src="fancytree/jquery-ui.custom.js" type="text/javascript"></script>
-<link href="fancytree/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css">
-    <style type="text/css">
-        
-        /*span.fancytree-node {
-            -moz-display: flex;
-            -webkit-display: flex;
-            -ms-display: flex;
-            display: flex;
+    <style>
+        #feedback {
+            font-size: 1.4em;
         }
 
-        span.fancytree-title {
-            white-space: normal;
-            border: 3px solid grey;
-            border-radius: 25px
-        }*/
-        span.fancytree-node {
-            -moz-display: flex;
-            -webkit-display: flex;
-            -ms-display: flex;
-            display: flex;
+        #selectable .ui-selecting {
+            background: #FECA40;
         }
-        span.fancytree-title {
-            white-space: normal;
+
+        #selectable .ui-selected {
+            background: #F39814;
+            color: white;
+        }
+
+        #selectable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #selectable li {
+            margin: 3px;
+            padding: 0.4em;
+            font-size: 1em;
+        }
+
+
+        #selectableComment .ui-selecting {
+            background: #FECA40;
+        }
+
+        #selectableComment .ui-selected {
+            background: #F39814;
+        }
+
+        #selectableComment {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #selectableComment li {
+            margin: 3px;
+            padding: 0.4em;
+            font-size: 1em;
         }
     </style>
-<script src="fancytree/jquery.fancytree.js" type="text/javascript"></script>
-<script type="text/javascript">
-    
-    function displaySentencesDiv() {
-        $("#sentencesDiv").show();
-        $("#usersDiv").hide();
-        $("#keywordsDiv").hide();
-    }
-    
-    function displayUsersDiv() {
-        $("#sentencesDiv").hide();
-        $("#usersDiv").show();
-        $("#keywordsDiv").hide();
+    <script src="js/jsrender.js" type="text/javascript"></script>
+    <script src="js/async.js"></script>
+    <script src="fancytree/jquery-ui.custom.js" type="text/javascript"></script>
+    <link href="fancytree/skin-xp/ui.fancytree.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+    span.fancytree-node {
+        -moz-display: flex;
+        -webkit-display: flex;
+        -ms-display: flex;
+        display: flex;
     }
 
-    function displayKeywordsDiv() {
-        $("#sentencesDiv").hide();
-        $("#usersDiv").hide();
-        $("#keywordsDiv").show();
+    span.fancytree-title {
+        white-space: normal;
     }
-
-    function enableLinks() {
-        // Load native UI library
-        var nw = require('nw.gui');
-
-        // Create an empty menu
-        var menu = new nw.Menu();
-        // Add an item with label
-        menu.append(new nw.MenuItem({
-            label: 'open in browser',
-            click: function (e) {
-                nw.Shell.openExternal('http://google.com');
-            }
-        }));
-        // Listen for a right click on link
-        var elm = document.getElementsByTagName('a');
-        for (var i = 0; i < elm.length; i++) {
-            elm[i].addEventListener('contextmenu', function (e) {
-                e.preventDefault();
-                menu.popup(e.x, e.y);
-            });
-        }
-    }
-
-    function displayStories() {
-        var stories = [];
-        top100Function(100, function (error, result) {
-            try {
-                if (error) console.log(error);
-                result.forEach(function (entry) {
-                    var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
-                    stories.push(story);
-                });
-            } catch (ex) {
-                alert(ex.toString());
-            }
-        });
-        render(stories);
-    }
-
-    function displayArchive() {
-        var stories = [];
-        getArchiveFunction(100, function (error, result) {
-            try {
-                if (error) console.log(error);
-                result.forEach(function (entry) {
-                    var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
-                    stories.push(story);
-                });
-            } catch (ex) {
-                alert(ex.toString());
-            }
-        });
-        renderArchive(stories);
-    }
-
-    function renderArchive(stories) {
-        $("#archiveStories").html(
-            $("#archiveStoryTemplate").render(stories)
-        );
-        $("#stories").hide();
-        $("#individualStories").hide();
-        $("#archiveStories").show();
-        $("#storyButtons").show();
-    }
-
-    function showStories() {
-        $("#stories").show();
-        $("#individualStories").show();
-        $("#archiveStories").hide();
-    }
-
-    function render(stories) {
-        $("#stories").html(
-            $("#storyTemplate").render(stories)
-        );
-        $("#stories").show();
-        $("#archiveStories").hide();
-        $("#storyButtons").show();
-    }
-
-    function renderSingleStory(stories) {
-        $("#individualStories").prepend(
-            $("#individualStoryTemplate").render(stories)
-        );
-        $("#storyButtons").show();
-    }
-
-    $(document).ready(function () {
-        $("#btnUpdate").click(displayStories);
-    });
-
-    function getStory() {
-        try {
-            var stories = [];
-            var storytext = $('#inputStoryId').val();
-            var storyidtext = storytext.split('=')[1];
-            var storyidval = parseInt(storyidtext);
-            storyFunction(storyidval, function (error, result) {
-                try {
-                    if (error) console.log(error);
-                    result.forEach(function (entry) {
-                        var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
-                        stories.push(story);
+</style>
+    <script>
+    $(function () {
+        $("#selectable").selectable({
+            stop: function () {
+                $(".ui-selected", this).each(function () {
+                    //var index = $("#selectable li").index(this);
+                    var author = $(this).html().split("<")[0];
+                    $("#selectableComment").children("li").each(function() {
+                        var element = $(this);
+                        element.hide();
+                        var id = element.attr("id");
+                        //console.log('id = '+id);
+                        var authorFromId = id.split(":")[2];
+                        if (authorFromId === author) {
+                            element.show();
+                        }
                     });
-                } catch (ex) {
-                    alert(ex.toString());
+                });
+            }
+        });
+        $(function () {
+            $("#selectableComment").selectable({
+                stop:function() {
+                    $(".ui-selected", this).each(function() {
+                        var element = $(this);
+                        var id = element.attr("id");
+                        var commentId = id.split(":")[0];
+                        var storyId = id.split(":")[1];
+                        var idtuple = commentId + ":" + storyId;
+                        loadTreeForUserComment(idtuple);
+                    });
                 }
             });
-            renderSingleStory(stories);
-        } catch (ex) {
-            console.log(ex.toString());
-        }
-    }
-
-    function loadStoryOnRefresh() {
-        var storyidval = parseInt($("#hdnStoryId").html());
-        loadStory(storyidval);
-    }
-
-    function archiveStory() {
-        var storyidval = parseInt($("#hdnStoryId").html());
-        archive(storyidval);
-    }
-
-    function getTreeFromJson(json) {
-        // preserve newlines, etc - use valid JSON
-        json = json.replace(/\\n/g, "\\n")
-            .replace(/\\'/g, "\\'")
-            .replace(/\\"/g, '\\"')
-            .replace(/\\&/g, "\\&")
-            .replace(/\\r/g, "\\r")
-            .replace(/\\t/g, "\\t")
-            .replace(/\\b/g, "\\b")
-            .replace(/\\f/g, "\\f");
-        // remove non-printable and other non-valid JSON chars
-        json = json.replace(/[\u0000-\u0019]+/g, "");
-        //console.log(json);
-        var arr = JSON.parse(json);
-        return arr;
-    }
-
-    function loadStory(storyidval) {
-        try {
-            tagCloudFunction(storyidval, function (error, result) {
-                if (error) console.log('error:' + error);
-                var json = result['Json'];
-                var arr = getTreeFromJson(json);
-                var dict = result['Comments'];
-                var sentences = result['Sentences'];
-                loadSentences(sentences);
-                loadTree(arr);
-                addLoadCommentEvent(dict);
-                expandFullTree();
-            });
-        } catch (ex) {
-            alert(ex);
-        }
-    }
-
-    function loadTree(tree) {
-        console.log(tree);
-        try {
-            var tree1 = $("#treeDiv").fancytree('getTree');
-            tree1.reload(tree);
-        } catch (ex) {
-            //console.log(ex);
-            $("#treeDiv").fancytree({
-                source: tree
-            });
-        }
-        var treeNodes = $("#treeDiv").fancytree("getTree");
-        treeNodes.visit(function (node) {
-            node.tooltip = htmlDecode("Parent: "+node.parent.data.text).substring(0,100);
         });
-    }
+    });
+    </script>
+    <script src="fancytree/jquery.fancytree.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        
 
-    function htmlDecode(value) {
-        return $('<div/>').html(value).text();
-    }
-
-    function clicked(item) {
-        $("#commentDiv").html('');
-        var storyidval = parseInt($(item).attr("id"));
-        $("#hdnStoryId").html(storyidval);
-        loadStory(storyidval);
-        $("#list").children("div").children("div").each(function () {
-            var element = $(this);
-            console.log("inside the list div for div = "+element.attr("id"));
-            if (element.hasClass("email-item-selected")) {
-                element.removeClass("email-item-selected");
-            }
+        $(document).ready(function () {
+            $("#btnUpdate").click(displayStories);
         });
-        $(item).addClass("email-item-selected");
-    }
 
-    function loadSentenceTree(item) {
-        var idtuple = $(item).attr("id");
-        console.log(idtuple);
-        sentenceCommentTreeFunction(idtuple, function(error, result) {
-            var treestr = result;
-            var tree = JSON.parse('['+treestr+']');
-            console.log(tree);
-            loadTree(tree);
-            expandFullTree();
-        });
-    }
-
-    function expandFullTree() {
-        var treeNodes = $("#treeDiv").fancytree("getTree");
-        treeNodes.visit(function (node) {
-            node.setExpanded(true);
-        });
-    }
-
-    function loadSentences(sentences) {
-        $("#sentencesDiv").html('');
-        var k = 1;
-        $.each(sentences, function (key, value) {
-            var sentenceHtml = "<div style='word-wrap: break-word;' id='" + value['Id'] + ":" + value['StoryId'] + "' onclick='loadSentenceTree(this);'><div id='hidden" + k + "' style='display: none;'>" + value['SentenceCommentTree'] + "</div><blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote></div>";
-            $("#sentencesDiv").append(sentenceHtml);
-            k++;
-        });
-    }
-
-    function addLoadCommentEvent(dict) {
-        var textdict = {};
-        $.each(dict, function (key, value) {
-            textdict[value['Id']] = value['Text'];
-        });
-        for (var property in textdict) {
-            if (textdict.hasOwnProperty(property)) {
-                    
-            }
-        }
-    }
-
-    function loadComment(textdict, key) {
-        $("#commentDiv").html('');
-        $("#commentDiv").html(textdict[key]);
-    }
-
-    function openurl(url) {
-        var gui = require('nw.gui');
-        gui.Shell.openExternal(url);
-        if (!e) var e = window.event;
-        e.cancelBubble = true;
-        if (e.stopPropagation) e.stopPropagation();
-    }
-</script>
-
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="css/layouts/email-old-ie.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
+        
+    </script>
     <link rel="stylesheet" href="css/layouts/email.css">
-    <!--<link rel="stylesheet" href="css/layouts/blog.css" />-->
-    <!--<![endif]-->
-    <!--[if lt IE 9]>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
-    <![endif]-->
-
     <script type="text/javascript" src="reader.js"></script>
+    <script type="text/javascript" src="edgeclient.js"></script>
 </head>
 <body>
     <div id="layout" class="content pure-g">
@@ -595,10 +396,14 @@
                         <div class="pure-u-12-24">
                             <!--<div id="sentencesDiv" style="white-space: pre-wrap; overflow: auto">-->
                             <div id="sentencesDiv">
-                            </div>    
+                            </div>
                             <div id="usersDiv">
-
-                            </div>                        
+                                <div class="pure-u-8-24">
+                                    <div style="height: 600px;overflow: auto"><ol id="selectable"></ol></div>
+                                </div>
+                                <div class="pure-u-15-24">
+                                    <div style="height: 600px;overflow: auto"><ol id="selectableComment"></ol></div></div>
+                            </div>
                             <div id="keywordsDiv"></div>
                         </div>
                         <div class="pure-u-1-24"></div>
@@ -608,7 +413,7 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
