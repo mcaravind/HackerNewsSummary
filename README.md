@@ -12,7 +12,7 @@ See the different users who have commented and see their comments for a given st
 
 Installation:
 
-Supported platforms: Win64
+Supported platforms: Win64  
 Not yet supported: Win32, MacOSX, Linux
 
 Currently the app works on Windows 64 bit machines but does not work on 32 bit machines. I have not been able to verify if it works on Mac or Linux. Getting the projects to work on the unsupported platforms is, at least on paper, only as complex as getting the correct edge.node files in place under the node_modules folder. Any help getting the node_modules fixed so that the app can become truly cross-platform would be greatly appreciated.
