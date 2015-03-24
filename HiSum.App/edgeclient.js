@@ -182,7 +182,14 @@ function loadUserComments(comments,storyid) {
         var user = value['User'];
         var commentList = value['Comments'];
         var numComments = commentList.length;
-        htmlUsers += "<li>" + user + "<span class='pure-badge-info'>"+numComments+"</span></li>";
+        var styleInfo = "color:black";
+        if (numComments >= 5) {
+            styleInfo = "color:#00FF00;font-weight:bold";
+        }
+        if (numComments >= 10) {
+            styleInfo = "color:red;font-weight:bold";
+        }
+        htmlUsers += "<li style='"+styleInfo+"'>" + user + "<span class='pure-badge-info'>"+numComments+"</span></li>";
         //<span class="pure-badge-info">{{>count}}</span>
         $.each(commentList, function(key1, value1) {
             htmlUserComments += "<li style='display:none;' id='"+value1['Id']+ ":"+storyid+":"+user+"'>"+ value1['Text'] + "<hr></li>";
