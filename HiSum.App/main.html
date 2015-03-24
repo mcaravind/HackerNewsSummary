@@ -84,7 +84,7 @@
 </style>
 
     <style>
-        #feedback {
+        /*#feedback {
             font-size: 1.4em;
         }
 
@@ -107,8 +107,13 @@
             margin: 3px;
             padding: 0.4em;
             font-size: 1em;
-        }
+        }*/
 
+        #feedback { font-size: 1.4em; }
+  #selectable .ui-selecting { background: #FECA40; }
+  #selectable .ui-selected { background: #F39814; color: white; }
+  #selectable { list-style-type: none; margin: 0; padding: 0; width: 450px; }
+  #selectable li { margin: 3px; padding: 1px; float: left; font-size: 1em; text-align: center; }
 
         #selectableComment .ui-selecting {
             background: #FECA40;
@@ -125,8 +130,7 @@
         }
 
         #selectableComment li {
-            margin: 3px;
-            padding: 0.4em;
+            /*margin: 3px;*/
             font-size: 1em;
         }
     </style>
@@ -398,16 +402,19 @@
                             <div id="sentencesDiv">
                             </div>
                             <div id="usersDiv">
-                                <div class="pure-u-8-24">
-                                    <div style="height: 600px;overflow: auto"><ol id="selectable"></ol></div>
+                                <div class="pure-u-24-24">
+                                    <div style="max-height: 350px; overflow: auto"><ol id="selectable"></ol>
+                                    </div>
                                 </div>
-                                <div class="pure-u-15-24">
-                                    <div style="height: 600px;overflow: auto"><ol id="selectableComment"></ol></div></div>
+                                <br/><br/>
+                                <div class="pure-u-24-24">
+                                    <div style="height: 350px;overflow: auto"><ol id="selectableComment"></ol></div>
+                                </div>
                             </div>
                             <div id="keywordsDiv"></div>
                         </div>
-                        <div class="pure-u-1-24"></div>
-                        <div class="pure-u-11-24">
+                        
+                        <div class="pure-u-12-24">
                             <div id="treeContainer" style="overflow: auto">
                                 <div id="treeDiv">
                                 </div>

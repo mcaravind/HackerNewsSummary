@@ -185,7 +185,7 @@ function loadUserComments(comments,storyid) {
         htmlUsers += "<li>" + user + "<span class='pure-badge-info'>"+numComments+"</span></li>";
         //<span class="pure-badge-info">{{>count}}</span>
         $.each(commentList, function(key1, value1) {
-            htmlUserComments += "<li style='display:none;' id='"+value1['Id']+ ":"+storyid+":"+user+"'><div style='border:2px solid #a1a1a1;margin-top:20px;font-size:15px;background:#dddddd;width:100%;border-radius:8px;'>"+ value1['Text'] + "</div></li>";
+            htmlUserComments += "<li style='display:none;' id='"+value1['Id']+ ":"+storyid+":"+user+"'>"+ value1['Text'] + "<hr></li>";
         });
     });
     $("#selectable").html(htmlUsers);
