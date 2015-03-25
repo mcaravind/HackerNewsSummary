@@ -2,6 +2,7 @@
     $("#sentencesDiv").show();
     $("#usersDiv").hide();
     $("#keywordsDiv").hide();
+    $("#btnUp").show();
 }
 
 function displayUsersDiv() {
@@ -14,6 +15,29 @@ function displayKeywordsDiv() {
     $("#sentencesDiv").hide();
     $("#usersDiv").hide();
     $("#keywordsDiv").show();
+}
+
+function up() {
+    console.log('inside up');
+    var currRootNode = $("#treeDiv").fancytree("getTree").getRootNode().getFirstChild();
+    console.log(currRootNode);
+    var currRootNodeKey = currRootNode.key;
+    console.log(currRootNodeKey);
+    var rootNodeHidden = $("#hiddenTreeDiv").fancytree("getTree").getNodeByKey(currRootNodeKey);
+    console.log(rootNodeHidden);
+    var parentNode = rootNodeHidden.getParent();
+    console.log(parentNode);
+    var parentKey = parentNode.key;
+    console.log(parentKey);
+    loadTreeByKey(parentKey);
+}
+
+function loadTreeByKey(key) {
+    console.log('inside loadtreebykey');
+    var dict = $("#hiddenTreeDiv").fancytree("getTree").getNodeByKey(key).toDict(true);
+    $("#treeDiv").fancytree("getTree").getRootNode().removeChildren();
+    $("#treeDiv").fancytree("getTree").getRootNode().addNode(dict);
+    expandFullTree();
 }
 
 function enableLinks() {
@@ -165,7 +189,9 @@ function loadStory(storyidval) {
             var userComments = result['UserComments'];
             loadUserComments(userComments,storyidval);
             loadSentences(sentences);
-            loadTree(arr);
+            var arr2 = $.extend(true, {}, arr);
+            loadFullTree(arr);
+            loadFullTree2(arr2);
             addLoadCommentEvent(dict);
             expandFullTree();
             displaySentencesDiv();
@@ -205,11 +231,39 @@ function loadTree(tree) {
         var tree1 = $("#treeDiv").fancytree('getTree');
         tree1.reload(tree);
     } catch (ex) {
-        //console.log(ex);
         $("#treeDiv").fancytree({
             source: tree
         });
     }
+    expandFullTree();
+}
+
+function loadFullTree(tree) {
+    console.log(tree);
+    try {
+        var tree1 = $("#treeDiv").fancytree('getTree');
+        tree1.reload(tree);
+    } catch (ex) {
+        $("#treeDiv").fancytree({
+            source: tree
+        });
+    }
+    expandFullTree();
+}
+
+function loadFullTree2(tree) {
+    console.log(tree);
+    try {
+        var tree2 = $("#hiddenTreeDiv").fancytree('getTree');
+        tree2.reload(tree);
+    } catch (ex) {
+        $("#hiddenTreeDiv").fancytree({
+            source: tree
+        });
+    }
+}
+
+function expandFullTree() {
     var treeNodes = $("#treeDiv").fancytree("getTree");
     treeNodes.visit(function (node) {
         node.tooltip = htmlDecode("Parent: " + node.parent.data.text).substring(0, 100);
@@ -240,7 +294,7 @@ function loadSentenceTree(item) {
     console.log(idtuple);
     sentenceCommentTreeFunction(idtuple, function (error, result) {
         var treestr = result;
-        var tree = JSON.parse('[' + treestr + ']');
+        var tree = JSON.parse(treestr);
         console.log(tree);
         loadTree(tree);
         expandFullTree();
