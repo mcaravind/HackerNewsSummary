@@ -299,13 +299,9 @@ function loadSentenceTree(item) {
 
 function loadTreeForUserComment(idtuple) {
     console.log(idtuple);
-    sentenceCommentTreeFunction(idtuple, function (error, result) {
-        var treestr = result;
-        var tree = JSON.parse('[' + treestr + ']');
-        console.log(tree);
-        loadTree(tree);
-        expandFullTree();
-    });
+    var key = idtuple.split(":")[0];
+    console.log(key);
+    loadTreeByKey(key);
 }
 
 function expandFullTree() {
