@@ -292,13 +292,9 @@ function clicked(item) {
 function loadSentenceTree(item) {
     var idtuple = $(item).attr("id");
     console.log(idtuple);
-    sentenceCommentTreeFunction(idtuple, function (error, result) {
-        var treestr = result;
-        var tree = JSON.parse(treestr);
-        console.log(tree);
-        loadTree(tree);
-        expandFullTree();
-    });
+    var key = idtuple.split(":")[0];
+    console.log(key);
+    loadTreeByKey(key);
 }
 
 function loadTreeForUserComment(idtuple) {
