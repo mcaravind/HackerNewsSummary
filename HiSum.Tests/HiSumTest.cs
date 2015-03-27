@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HiSum;
+using NLTKSharp;
 
 namespace HiSum.Tests
 {
@@ -21,12 +22,14 @@ namespace HiSum.Tests
         [TestMethod]
         public void TestGetAnchorWords()
         {
-            FullStory fs = FullStoryFactory.GetFullStory(9163782);
+            FullStory fs = FullStoryFactory.GetFullStory(9272275);
             //Dictionary<string, HashSet<int>> wordMapping = fs.WordIDMapping;
-            List<string> top5Sentences = fs.GetAnchorWords(10);//fs.GetTopSentences(5);
-            children node = fs.GetNodeById(9164398);
-            List<string> top5Anchors = fs.GetAnchorWords(node, 5);
-            Assert.AreEqual(top5Sentences.Count > 1, true);
+            //List<string> top5Sentences = fs.GetAnchorWords(10);//fs.GetTopSentences(5);
+            //children node = fs.GetNodeById(9271331);
+            List<string> topAnchors = fs.GetAnchorWords(10);
+            List<string> topNamedObjects = fs.GetNamedObjects(30);
+            //List<string> top5Anchors = fs.GetAnchorWords(node, 5);
+            Assert.AreEqual(topNamedObjects.Count > 1, true);
         }
 
 

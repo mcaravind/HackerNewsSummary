@@ -151,7 +151,7 @@ namespace HiSum
             foreach (string word in allWords)
             {
                 if(stopWords.Contains(word.ToLower())) continue;
-                if (word.Length < 3) continue;
+                if (word.Length < 3 && word.Any(c=>char.IsLower(c))) continue;
                 string stem = Stemmer.GetStem(word);
                 if (!wordIDMapping.ContainsKey(stem))
                 {
@@ -180,12 +180,18 @@ namespace HiSum
         private Dictionary<string, string> GetStemParentDictionary(string[] allWords)
         {
             Dictionary<string,string> stemParentDictionary = new Dictionary<string, string>();
+            Dictionary<string,int> parentWordCount = new Dictionary<string, int>();
             foreach (string word in allWords)
             {
                 string stem = Stemmer.GetStem(word);
+                if (!parentWordCount.ContainsKey(word))
+                {
+                    parentWordCount[word] = 0;
+                }
+                parentWordCount[word] += 1;
                 if (stemParentDictionary.ContainsKey(stem))
                 {
-                    if (word.Length > stemParentDictionary[stem].Length)
+                    if (parentWordCount[word] > parentWordCount[stemParentDictionary[stem]])
                     {
                         stemParentDictionary[stem] = word;
                     }
@@ -404,8 +410,86 @@ namespace HiSum
                 }
                 WordLCAList[stemParentDictionary.ContainsKey(kvp.Key)? stemParentDictionary[kvp.Key]:kvp.Key] = currLCAList;
             }
-            anchorWords = WordLCAList.OrderByDescending(x => x.Value.Count).Select(x => x.Key).Take(N).ToList();
+            anchorWords = WordLCAList
+                .OrderByDescending(x => x.Value.Count)
+                .Select(x => x.Key)
+                .Where(y => CommonWords.GetFrequency(y) < 20)
+                .Where(z=>!(z.EndsWith("n't") || z.EndsWith("'m")||(z.EndsWith("'ll"))||(z.EndsWith("'d"))||z.EndsWith("'ve")||z.EndsWith("'re")||z.EndsWith("'s")))
+                .Take(N)
+                .ToList();
             return anchorWords;
+        }
+
+        public List<string> GetNamedObjects(int N)
+        {
+            StringBuilder sbAllWords = new StringBuilder();
+            foreach (children child in children)
+            {
+                sbAllWords.Append(child.SubtreeText);
+                sbAllWords.Append(" ");
+            }
+            string[] allWords = GetAllWords(sbAllWords.ToString());
+            Dictionary<string, string> stemParentDictionary = GetStemParentDictionary(allWords);
+            List<string> namedObjects = new List<string>();
+            children rootNode = new children();
+            List<HashSet<int>> rootChildIDs = new List<HashSet<int>>();
+            foreach (children child in children)
+            {
+                GetChildIDHashSetList(child);
+                HashSet<int> currChildIDs = new HashSet<int>();
+                currChildIDs.Add(child.id);
+                foreach (var item in child.ChildIDList)
+                {
+                    currChildIDs.UnionWith(item);
+                }
+                rootChildIDs.Add(currChildIDs);
+            }
+            rootNode.ChildIDList = rootChildIDs;
+            NodeList = new List<children>();
+            NodeList.Add(rootNode);
+            foreach (children child in children)
+            {
+                PopulateNodeList(child);
+            }
+            Dictionary<string, HashSet<int>> wordIDMapping = GetWordIDMapping();
+            //Dictionary<string, double> WordTreeScore = new Dictionary<string, double>();
+            Dictionary<string, List<children>> WordLCAList = new Dictionary<string, List<children>>();
+            foreach (var kvp in wordIDMapping)
+            {
+                List<children> currLCAList = new List<children>();
+                int numLCAs = 0;
+                foreach (children node in NodeList)
+                {
+
+                    int numBranchesWithWord = 0;
+                    foreach (var childIDBranch in node.ChildIDList)
+                    {
+                        if (childIDBranch.Intersect(kvp.Value).Count() > 0)
+                        {
+                            numBranchesWithWord += 1;
+                        }
+                    }
+                    if ((numBranchesWithWord == 1 && node.ChildIDList.Count == 1) || numBranchesWithWord > 1)
+                    {
+                        currLCAList.Add(node);
+                    }
+                }
+                WordLCAList[stemParentDictionary.ContainsKey(kvp.Key) ? stemParentDictionary[kvp.Key] : kvp.Key] = currLCAList;
+            }
+            namedObjects = WordLCAList
+                .OrderByDescending(x => x.Value.Count)
+                .Select(x => x.Key)
+                .Where(y => CommonWords.GetFrequency(y) < 20)
+                .Where(a=>char.IsUpper(a[0]))
+                .Where(z => !(z.EndsWith("n't") || z.EndsWith("'m") || (z.EndsWith("'ll")) || (z.EndsWith("'d")) || z.EndsWith("'ve") || z.EndsWith("'re") || z.EndsWith("'s")))
+                .Take(N)
+                .ToList();
+            List<string> namedObjectsWithCount = new List<string>();
+            foreach (string namedObject in namedObjects)
+            {
+                namedObjectsWithCount.Add(WordLCAList[namedObject].Count+":"+namedObject);
+            }
+            return namedObjectsWithCount;
         }
 
         public children GetNodeById(int nodeid)
@@ -468,7 +552,7 @@ namespace HiSum
                 }
                 WordLCAList[stemParentDictionary.ContainsKey(kvp.Key) ? stemParentDictionary[kvp.Key] : kvp.Key] = currLCAList;
             }
-            anchorWords = WordLCAList.OrderByDescending(x => x.Value.Count).Select(x => x.Key).Take(N).ToList();
+            anchorWords = WordLCAList.OrderByDescending(x => x.Value.Count).Select(x => x.Key).Where(y=>CommonWords.GetFrequency(y)<20).Take(N).ToList();
             return anchorWords;
         }
 

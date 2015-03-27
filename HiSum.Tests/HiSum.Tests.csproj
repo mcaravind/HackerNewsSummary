@@ -54,6 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NLTKSharp\NLTKSharp\NLTKSharp\NLTKSharp.csproj">
+      <Project>{6c08285f-75da-4b15-b841-e453fe031072}</Project>
+      <Name>NLTKSharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HiSum\HiSum.csproj">
       <Project>{1de00789-6d8a-4f18-81b9-af50ae8221f2}</Project>
       <Name>HiSum</Name>
