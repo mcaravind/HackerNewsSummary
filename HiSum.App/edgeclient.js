@@ -187,7 +187,9 @@ function loadStory(storyidval) {
             var dict = result['Comments'];
             var sentences = result['Sentences'];
             var userComments = result['UserComments'];
-            loadUserComments(userComments,storyidval);
+            var keywordComments = result['KeywordComments'];
+            loadUserComments(userComments, storyidval);
+            loadKeywordComments(keywordComments, storyidval);
             loadSentences(sentences);
             var arr2 = $.extend(true, {}, arr);
             loadFullTree(arr);
@@ -224,6 +226,32 @@ function loadUserComments(comments,storyid) {
     $("#selectable").html(htmlUsers);
     $("#selectableComment").html(htmlUserComments);
 }
+
+
+function loadKeywordComments(comments, storyid) {
+    var htmlUsers = '';
+    var htmlUserComments = '';
+    $.each(comments, function (key, value) {
+        var user = value['Keyword'];
+        var commentList = value['Comments'];
+        var numComments = commentList.length;
+        var styleInfo = "color:black";
+        if (numComments >= 5) {
+            styleInfo = "color:#00FF00;font-weight:bold";
+        }
+        if (numComments >= 10) {
+            styleInfo = "color:red;font-weight:bold";
+        }
+        htmlUsers += "<li style='" + styleInfo + "'>" + user + "<span class='pure-badge-info'>" + numComments + "</span></li>";
+        //<span class="pure-badge-info">{{>count}}</span>
+        $.each(commentList, function (key1, value1) {
+            htmlUserComments += "<li style='display:none;' id='" + value1['Id'] + ":" + storyid + ":" + user + "'>" + value1['Text'] + "<hr></li>";
+        });
+    });
+    $("#selectableKeyword").html(htmlUsers);
+    $("#selectableKeywordComment").html(htmlUserComments);
+}
+
 
 function loadTree(tree) {
     console.log(tree);

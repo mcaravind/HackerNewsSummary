@@ -27,9 +27,9 @@ namespace HiSum.Tests
             //List<string> top5Sentences = fs.GetAnchorWords(10);//fs.GetTopSentences(5);
             //children node = fs.GetNodeById(9271331);
             List<string> topAnchors = fs.GetAnchorWords(10);
-            List<string> topNamedObjects = fs.GetNamedObjects(30);
+            //List<string> topNamedObjects = fs.GetNamedObjects(30);
             //List<string> top5Anchors = fs.GetAnchorWords(node, 5);
-            Assert.AreEqual(topNamedObjects.Count > 1, true);
+            //Assert.AreEqual(topNamedObjects.Count > 1, true);
         }
 
 
@@ -70,6 +70,7 @@ namespace HiSum.Tests
         {
             Reader reader = new Reader();
             Task<object> result = reader.GetFullStory(9220468);
+            Assert.AreNotEqual(result,null);
         }
 
         [TestMethod]

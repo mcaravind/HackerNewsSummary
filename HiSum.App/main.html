@@ -115,6 +115,12 @@
   #selectable { list-style-type: none; margin: 0; padding: 0; width: 450px; }
   #selectable li { margin: 3px; padding: 1px; float: left; /*font-size: 1em;*/ text-align: center; }
 
+
+  #selectableKeyword .ui-selecting { background: #FECA40; }
+  #selectableKeyword .ui-selected { background: #F39814; color: white; }
+  #selectableKeyword { list-style-type: none; margin: 0; padding: 0; width: 450px; }
+  #selectableKeyword li { margin: 3px; padding: 1px; float: left; /*font-size: 1em;*/ text-align: center; }
+
         #selectableComment .ui-selecting {
             background: #FECA40;
         }
@@ -130,6 +136,26 @@
         }
 
         #selectableComment li {
+            /*margin: 3px;*/
+            font-size: 1em;
+        }
+
+
+        #selectableKeywordComment .ui-selecting {
+            background: #FECA40;
+        }
+
+        #selectableKeywordComment .ui-selected {
+            background: #F39814;
+        }
+
+        #selectableKeywordComment {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #selectableKeywordComment li {
             /*margin: 3px;*/
             font-size: 1em;
         }
@@ -170,10 +196,46 @@
                 });
             }
         });
+
+        $("#selectableKeyword").selectable({
+            stop: function () {
+                $(".ui-selected", this).each(function () {
+                    //var index = $("#selectable li").index(this);
+                    var author = $(this).html().split("<")[0];
+                    $("#selectableKeywordComment").children("li").each(function () {
+                        var element = $(this);
+                        element.hide();
+                        var id = element.attr("id");
+                        //console.log('id = '+id);
+                        var authorFromId = id.split(":")[2];
+                        if (authorFromId === author) {
+                            element.show();
+                        }
+                    });
+                });
+            }
+        });
+
         $(function () {
             $("#selectableComment").selectable({
                 stop:function() {
                     $(".ui-selected", this).each(function() {
+                        var element = $(this);
+                        var id = element.attr("id");
+                        var commentId = id.split(":")[0];
+                        var storyId = id.split(":")[1];
+                        var idtuple = commentId + ":" + storyId;
+                        loadTreeForUserComment(idtuple);
+                    });
+                }
+            });
+        });
+
+
+        $(function () {
+            $("#selectableKeywordComment").selectable({
+                stop: function () {
+                    $(".ui-selected", this).each(function () {
                         var element = $(this);
                         var id = element.attr("id");
                         var commentId = id.split(":")[0];
@@ -411,7 +473,17 @@
                                     <div style="height: 350px;overflow: auto"><ol id="selectableComment"></ol></div>
                                 </div>
                             </div>
-                            <div id="keywordsDiv"></div>
+                            <div id="keywordsDiv">
+                                <div class="pure-u-24-24">
+                                    <div style="max-height: 350px; overflow: auto">
+                                        <ol id="selectableKeyword"></ol>
+                                    </div>
+                                </div>
+                                <br /><br />
+                                <div class="pure-u-24-24">
+                                    <div style="height: 350px;overflow: auto"><ol id="selectableKeywordComment"></ol></div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="pure-u-12-24">

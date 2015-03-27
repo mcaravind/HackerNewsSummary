@@ -420,7 +420,7 @@ namespace HiSum
             return anchorWords;
         }
 
-        public List<string> GetNamedObjects(int N)
+        public Dictionary<string, List<CommentObj>> GetNamedObjects(int N)
         {
             StringBuilder sbAllWords = new StringBuilder();
             foreach (children child in children)
@@ -460,7 +460,6 @@ namespace HiSum
                 int numLCAs = 0;
                 foreach (children node in NodeList)
                 {
-
                     int numBranchesWithWord = 0;
                     foreach (var childIDBranch in node.ChildIDList)
                     {
@@ -484,12 +483,23 @@ namespace HiSum
                 .Where(z => !(z.EndsWith("n't") || z.EndsWith("'m") || (z.EndsWith("'ll")) || (z.EndsWith("'d")) || z.EndsWith("'ve") || z.EndsWith("'re") || z.EndsWith("'s")))
                 .Take(N)
                 .ToList();
-            List<string> namedObjectsWithCount = new List<string>();
+            //namedObjects.Sort();
+            Dictionary<string,List<CommentObj>> namedObjectDictionary = new Dictionary<string, List<CommentObj>>();
             foreach (string namedObject in namedObjects)
             {
-                namedObjectsWithCount.Add(WordLCAList[namedObject].Count+":"+namedObject);
+                List<CommentObj> commentObjsForWord = new List<CommentObj>();
+                string stem = Stemmer.GetStem(namedObject);
+                HashSet<int> idsWithWord = wordIDMapping[stem];
+                foreach (int id in idsWithWord)
+                {
+                    children child = GetNodeById(id);
+                    CommentObj commentObj = new CommentObj(){Id = id,Text = child.text};
+                    commentObjsForWord.Add(commentObj);
+                }
+                namedObjectDictionary[namedObject] = commentObjsForWord;
             }
-            return namedObjectsWithCount;
+            var ordered = namedObjectDictionary.Keys.OrderByDescending(x => namedObjectDictionary[x].Count).ToList().ToDictionary(x=>x,x=>namedObjectDictionary[x]);
+            return ordered;
         }
 
         public children GetNodeById(int nodeid)
