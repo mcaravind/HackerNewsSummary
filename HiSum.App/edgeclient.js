@@ -180,7 +180,7 @@ function getTreeFromJson(json) {
 
 function loadStory(storyidval) {
     try {
-        tagCloudFunction(storyidval, function (error, result) {
+        fullStoryFunction(storyidval, function (error, result) {
             if (error) console.log('error:' + error);
             var json = result['Json'];
             var arr = getTreeFromJson(json);
@@ -294,7 +294,11 @@ function loadFullTree2(tree) {
 function expandFullTree() {
     var treeNodes = $("#treeDiv").fancytree("getTree");
     treeNodes.visit(function (node) {
+        node.setExpanded(true);
+    });
+    treeNodes.visit(function (node) {
         node.tooltip = htmlDecode("Parent: " + node.parent.data.text).substring(0, 100);
+        console.log(node.parent.data.text);
     });
 }
 
@@ -332,12 +336,7 @@ function loadTreeForUserComment(idtuple) {
     loadTreeByKey(key);
 }
 
-function expandFullTree() {
-    var treeNodes = $("#treeDiv").fancytree("getTree");
-    treeNodes.visit(function (node) {
-        node.setExpanded(true);
-    });
-}
+
 
 function loadSentences(sentences) {
     $("#sentencesDiv").html('');

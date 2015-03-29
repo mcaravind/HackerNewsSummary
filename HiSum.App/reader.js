@@ -36,7 +36,7 @@ var getArchiveFunction = edge.func(
     methodName: 'GetArchivedStories'
 });
 
-var tagCloudFunction = edge.func(
+var fullStoryFunction = edge.func(
 {
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
     typeName: 'HiSum.Reader',

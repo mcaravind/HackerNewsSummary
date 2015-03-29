@@ -69,7 +69,7 @@ namespace HiSum.Tests
         public void TestGetTagCloudTree()
         {
             Reader reader = new Reader();
-            Task<object> result = reader.GetFullStory(9220468);
+            Task<object> result = reader.GetFullStory(9283249);
             Assert.AreNotEqual(result,null);
         }
 
@@ -85,6 +85,13 @@ namespace HiSum.Tests
         {
             Reader reader = new Reader();
             int count = reader.GetStoryCommentCount(9112885);
+        }
+
+        [TestMethod]
+        public void GetFrequency()
+        {
+            int freq = CommonWords.GetFrequency("curious");
+            Console.WriteLine(freq);
         }
     }
 }

@@ -179,6 +179,7 @@
     <script>
     $(function () {
         $("#selectable").selectable({
+            filter: 'li',//for performance
             stop: function () {
                 $(".ui-selected", this).each(function () {
                     //var index = $("#selectable li").index(this);
@@ -198,6 +199,7 @@
         });
 
         $("#selectableKeyword").selectable({
+            filter: 'li',//for performance
             stop: function () {
                 $(".ui-selected", this).each(function () {
                     //var index = $("#selectable li").index(this);
@@ -218,6 +220,7 @@
 
         $(function () {
             $("#selectableComment").selectable({
+                filter: 'li',//for performance
                 stop:function() {
                     $(".ui-selected", this).each(function() {
                         var element = $(this);
@@ -234,6 +237,7 @@
 
         $(function () {
             $("#selectableKeywordComment").selectable({
+                filter: 'li',//for performance
                 stop: function () {
                     $(".ui-selected", this).each(function () {
                         var element = $(this);
@@ -351,7 +355,6 @@
             </div>
         </script>
         <script id="storyTemplate" type="text/x-jsrender">
-
             <div id={{>storyid}} class="email-item pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
                 <div class="pure-u-7-8">
@@ -367,7 +370,6 @@
                                 margin: 0;
                                 list-style-type: none;
                             }
-
                             li {
                                 display: inline;
                             }

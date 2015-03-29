@@ -92,6 +92,8 @@ namespace HiSum
                                     }
                                 }
                             }
+                            //add some weighting so that longer sentences have more weight
+                            weightedScore = weightedScore*(1 - (1/(Math.Pow(1.25, allWords.Length))));
                             double avgScore = weightedScore / allWords.Length;
                             if (avgScore > currMax)
                             {
@@ -478,7 +480,7 @@ namespace HiSum
             namedObjects = WordLCAList
                 .OrderByDescending(x => x.Value.Count)
                 .Select(x => x.Key)
-                .Where(y => CommonWords.GetFrequency(y) < 20)
+                .Where(y => CommonWords.GetFrequency(y) < 1)
                 .Where(a=>char.IsUpper(a[0]))
                 .Where(z => !(z.EndsWith("n't") || z.EndsWith("'m") || (z.EndsWith("'ll")) || (z.EndsWith("'d")) || z.EndsWith("'ve") || z.EndsWith("'re") || z.EndsWith("'s")))
                 .Take(N)
