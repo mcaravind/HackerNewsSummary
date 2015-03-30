@@ -188,6 +188,13 @@ function loadStory(storyidval) {
             var sentences = result['Sentences'];
             var userComments = result['UserComments'];
             var keywordComments = result['KeywordComments'];
+            var commentCount = result['TotalComments'];
+            if ($("#" + storyidval).length > 0) {
+                console.log('found div '+storyidval);
+                var badge = $("#" + storyidval).find("span.pure-badge-info");
+                console.log('found badge '+badge);
+                badge.html(commentCount);
+            }
             loadUserComments(userComments, storyidval);
             loadKeywordComments(keywordComments, storyidval);
             loadSentences(sentences);

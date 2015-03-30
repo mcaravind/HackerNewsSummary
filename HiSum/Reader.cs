@@ -154,7 +154,8 @@ namespace HiSum
             {
                 keywordComments.Add(new KeywordCommentObj(){Keyword = kvp.Key,Comments = kvp.Value});
             }
-            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments};
+            
+            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments};
             return fullStoryObj;
         }
 
@@ -215,10 +216,11 @@ namespace HiSum
         class FullStoryObj
         {
             public string Json { get; set; }
+            public int TotalComments { get; set; }
             public List<CommentObj> Comments { get; set; }
             public List<SentenceObj> Sentences { get; set; }
             public List<UserCommentObj> UserComments { get; set; }
-            public List<KeywordCommentObj> KeywordComments { get; set; } 
+            public List<KeywordCommentObj> KeywordComments { get; set; }
         }
 
         class UserCommentObj
