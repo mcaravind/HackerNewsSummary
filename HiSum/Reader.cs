@@ -30,6 +30,20 @@ namespace HiSum
             return string.Empty;
         }
 
+        public async Task<object> DeleteStory(int id)
+        {
+            try
+            {
+                string fileName = Path.Combine("archive", id + ".json");
+                File.Delete(fileName);
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+            return string.Empty;
+        }
+
         public async Task<object> GetArchivedStories(int id)
         {
             try
@@ -154,7 +168,6 @@ namespace HiSum
             {
                 keywordComments.Add(new KeywordCommentObj(){Keyword = kvp.Key,Comments = kvp.Value});
             }
-            
             FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments};
             return fullStoryObj;
         }

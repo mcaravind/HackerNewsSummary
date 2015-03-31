@@ -69,7 +69,7 @@ function displayStories() {
         try {
             if (error) console.log(error);
             result.forEach(function (entry) {
-                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
+                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId:'btnDelete_'+entry['StoryId'],count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
                 stories.push(story);
             });
         } catch (ex) {
@@ -85,7 +85,7 @@ function displayArchive() {
         try {
             if (error) console.log(error);
             result.forEach(function (entry) {
-                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
+                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
                 stories.push(story);
             });
         } catch (ex) {
@@ -137,7 +137,7 @@ function getStory() {
             try {
                 if (error) console.log(error);
                 result.forEach(function (entry) {
-                    var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
+                    var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
                     stories.push(story);
                 });
             } catch (ex) {
@@ -343,7 +343,21 @@ function loadTreeForUserComment(idtuple) {
     loadTreeByKey(key);
 }
 
-
+function deleteStory(item) {
+    if (confirm('Are you sure?')) {
+        var storyidval = parseInt($(item).attr("id").split('_')[1]);
+        console.log("going to delete " + storyidval);
+        storyDeleteFunction(storyidval, function (error, result) {
+            try {
+                if (error) console.log(error);
+                console.log(result);
+            } catch (ex) {
+                alert(ex.toString());
+            }
+        });
+        displayArchive();
+    }
+}
 
 function loadSentences(sentences) {
     $("#sentencesDiv").html('');

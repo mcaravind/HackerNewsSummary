@@ -344,9 +344,6 @@
                                 <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
                             </li>
                             <li>
-                                <button id="btnRefreshStory" class="button-xsmall pure-button" onclick=" loadStoryOnRefresh(); ">Refresh</button>
-                            </li>
-                            <li>
                                 <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
                             </li>
                         </ul>
@@ -383,9 +380,6 @@
                                 <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
                             </li>
                             <li>
-                                <button id="btnRefreshStory" class="button-xsmall pure-button" onclick=" loadStoryOnRefresh(); ">Refresh</button>
-                            </li>
-                            <li>
                                 <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
                             </li>
                         </ul>
@@ -394,8 +388,7 @@
             </div>
         </script>
 
-        <script id="archiveStoryTemplate" type="text/x-jsrender">
-
+    <script id="archiveStoryTemplate" type="text/x-jsrender">
             <div id={{>storyid}} class="email-item pure-g" onclick="clicked(this);">
                 <div id="{{>hdnstoryid}}" style="display: none;">{{>storyurl}}</div>
                 <div class="pure-u-7-8">
@@ -425,10 +418,10 @@
                                 <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
                             </li>
                             <li>
-                                <button id="btnRefreshStory" class="button-xsmall pure-button" onclick=" loadStoryOnRefresh(); ">Refresh</button>
+                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
                             </li>
                             <li>
-                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
+                                <button id={{>btnDeleteStoryId}} class="button-xsmall pure-button" onclick='deleteStory(this); event.stopPropagation;'>Delete</button>
                             </li>
                         </ul>
                     </div>
