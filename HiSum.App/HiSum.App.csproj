@@ -55,6 +55,7 @@
     <Content Include="fancytree\skin-xp\ui.fancytree.min.css" />
     <Content Include="fancytree\skin-xp\vline-rtl.gif" />
     <Content Include="fancytree\skin-xp\vline.gif" />
+    <Content Include="icon.png" />
     <Content Include="img\common\andrew-avatar.png" />
     <Content Include="img\common\ericf-avatar.png" />
     <Content Include="img\common\reid-avatar.png" />

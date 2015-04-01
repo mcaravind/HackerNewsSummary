@@ -2,6 +2,7 @@
     "name": "example-app",
     "main": "main.html",
     "window": {
+        "icon": "icon.png",
         "toolbar": true
     }
 }
