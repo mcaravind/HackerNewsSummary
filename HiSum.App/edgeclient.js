@@ -1,4 +1,6 @@
-﻿function displaySentencesDiv() {
+﻿
+
+function displaySentencesDiv() {
     $("#sentencesDiv").show();
     $("#usersDiv").hide();
     $("#keywordsDiv").hide();
@@ -357,6 +359,40 @@ function deleteStory(item) {
         });
         displayArchive();
     }
+}
+
+function getUpdates() {
+    var ids = [];
+    $('#stories .email-item').each(function() {
+        ids.push(this.id);
+    });
+    console.log(ids);
+    var payload = {
+        idList: ids
+    };
+    var stories = [];
+    displayStories();
+    checkForUpdatesFunction(payload, function (error, result) {
+        try {
+            if (error) console.log(error);
+            console.log('inside checkupdates');
+            var numNewStories = result.length;
+            console.log(numNewStories + ' new stories');
+            tempAlert("You have " + numNewStories + " new stories", 1000);
+        } catch (ex) {
+            alert(ex.toString());
+        }
+    });
+}
+
+function tempAlert(msg, duration) {
+    var el = document.createElement("div");
+    el.setAttribute("style", "position:absolute;top:40%;left:20%;background-color:white;");
+    el.innerHTML = msg;
+    setTimeout(function () {
+        el.parentNode.removeChild(el);
+    }, duration);
+    document.body.appendChild(el);
 }
 
 function loadSentences(sentences) {

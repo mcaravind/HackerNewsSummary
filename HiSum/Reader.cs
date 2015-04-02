@@ -44,6 +44,37 @@ namespace HiSum
             return string.Empty;
         }
 
+        public async Task<object> CheckForUpdates(dynamic input)
+        {
+            List<int> top30Ids = GetTop100(30);
+            List<int> currentList = new List<int>();
+            object[] idList = (object[]) input.idList;
+            foreach (object id in idList)
+            {
+                currentList.Add(Convert.ToInt32((string)id));
+            }
+            List<int> newIds = top30Ids.Except(currentList).ToList();
+            List<StoryObj> newStories = new List<StoryObj>();
+            foreach (int id in newIds)
+            {
+                try
+                {
+                    FullStory fs = FullStoryFactory.GetFullStory(id);
+                    int commentCount = fs.TotalComments;
+                    string commentUrl = "https://news.ycombinator.com/item?id=" + id;
+                    StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = commentCount };
+                    newStories.Add(so);
+                }
+                catch (Exception ex)
+                {
+                    //Sometimes algolia api throws an error, just move
+                    //on to the next item
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+            return newStories;
+        }
+
         public async Task<object> GetArchivedStories(int id)
         {
             try

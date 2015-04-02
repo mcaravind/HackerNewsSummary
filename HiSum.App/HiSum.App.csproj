@@ -26,6 +26,8 @@
     <Content Include="css\layouts\email.css" />
     <Content Include="css\layouts\menus.css" />
     <Content Include="css\tabs.css" />
+    <Content Include="desktopNotification.html" />
+    <Content Include="desktopNotification.js" />
     <Content Include="dll\HiSum.dll" />
     <Content Include="dll\Newtonsoft.Json.dll" />
     <Content Include="edgeclient.js" />

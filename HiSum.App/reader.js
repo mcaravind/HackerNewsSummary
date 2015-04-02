@@ -36,6 +36,13 @@ var storyDeleteFunction = edge.func(
     methodName: 'DeleteStory'
 });
 
+var checkForUpdatesFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'CheckForUpdates'
+});
+
 var getArchiveFunction = edge.func(
 {
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
