@@ -301,13 +301,10 @@
 
                 <div class="pure-menu pure-menu-open">
                     <ul>
-
                         <li><a href="#" onclick="showStories();">Stories</a></li>
                         <li><a href="#" onclick="displayArchive();">Archive</a></li>
                         <li><a href="#">Users</a></li>
                         <li><a href="#">WatchWords</a></li>
-                        <li><a href="#" onclick="getUpdates();">Update</a></li>
-                        <li><a href="#">Trash</a></li>
                     </ul>
                 </div>
             </div>
@@ -370,7 +367,7 @@
                                 <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
                             </li>
                             <li>
-                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
+                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); event.stopPropagation;">Archive</button>
                             </li>
                         </ul>
                     </div>

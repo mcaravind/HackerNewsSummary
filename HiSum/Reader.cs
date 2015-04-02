@@ -79,12 +79,12 @@ namespace HiSum
         {
             try
             {
-                string[] files =
-                    Directory.GetFiles("archive","*.json");
+                var directory = new DirectoryInfo("archive");
+                var files = directory.GetFiles().OrderByDescending(x => x.LastWriteTime).Where(y => y.Extension == ".json").ToList();
                 List<StoryObj> storyObjList = new List<StoryObj>();
-                foreach (string file in files)
+                foreach (var file in files)
                 {
-                    string fileText = File.ReadAllText(file);
+                    string fileText = File.ReadAllText(file.FullName);
                     FullStory fs = JsonConvert.DeserializeObject<FullStory>(fileText);
                     string commentUrl = "https://news.ycombinator.com/item?id=" + fs.id;
                     StoryObj so = new StoryObj() { StoryId = fs.id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = fs.TotalComments,ArchivedOn = fs.ArchivedOn};

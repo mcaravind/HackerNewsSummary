@@ -25,7 +25,6 @@ namespace HiSum
         public int points { get; set; }
         [JsonIgnore]
         public int? parent_id { get; set; }
-        [JsonIgnore]
         public DateTime ArchivedOn { get; set; }
         public List<children> children { get; set; }
         string[] stopWords = { "he", "his", "which", "want", "do", "would", "more", "like", "you", "your", "very", "me", "get", "has", "i", "over", "could", "have", "what", "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "such", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with" };

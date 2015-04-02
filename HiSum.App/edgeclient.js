@@ -158,9 +158,12 @@ function loadStoryOnRefresh() {
     loadStory(storyidval);
 }
 
-function archiveStory() {
+function archiveStory(e) {
     var storyidval = parseInt($("#hdnStoryId").html());
     archive(storyidval);
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
 }
 
 function getTreeFromJson(json) {
