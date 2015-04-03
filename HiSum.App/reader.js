@@ -36,6 +36,20 @@ var storyDeleteFunction = edge.func(
     methodName: 'DeleteStory'
 });
 
+var followUserFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'FollowUser'
+});
+
+var unfollowUserFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'UnfollowUser'
+});
+
 var checkForUpdatesFunction = edge.func(
 {
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',

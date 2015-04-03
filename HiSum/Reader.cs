@@ -98,6 +98,43 @@ namespace HiSum
             }
         }
 
+        public async Task<Object> FollowUser(string userName)
+        {
+            try
+            {
+                Directory.CreateDirectory("data");
+                string fileName = Path.Combine("data", "following.txt");
+                File.AppendAllText(fileName, userName+Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                //Sometimes algolia api throws an error, just move
+                //on to the next item
+                Console.WriteLine(ex.ToString());
+                return ex.ToString();
+            }
+            return string.Empty;
+        }
+
+        public async Task<Object> UnfollowUser(string userName)
+        {
+            try
+            {
+                Directory.CreateDirectory("data");
+                string fileName = Path.Combine("data", "following.txt");
+                var lines = File.ReadAllLines(fileName).Where(arg => arg!=userName);
+                File.WriteAllLines(fileName,lines);
+            }
+            catch (Exception ex)
+            {
+                //Sometimes algolia api throws an error, just move
+                //on to the next item
+                Console.WriteLine(ex.ToString());
+                return ex.ToString();
+            }
+            return string.Empty;
+        }
+
         public async Task<Object> GetStory(int id)
         {
             List<StoryObj> storyObjList = new List<StoryObj>();
@@ -144,24 +181,33 @@ namespace HiSum
         {
             List<int> top100Ids = GetTop100(30);
             List<StoryObj> storyObjList = new List<StoryObj>();
-            foreach (int id in top100Ids)
+            Parallel.ForEach(top100Ids, currentId =>
             {
-                try
+                StoryObj so = GetFullStoryObj(currentId);
+                if (so != null)
                 {
-                    FullStory fs = FullStoryFactory.GetFullStory(id);
-                    int commentCount = fs.TotalComments;
-                    string commentUrl = "https://news.ycombinator.com/item?id=" + id;
-                    StoryObj so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl,StoryComments = commentCount };
                     storyObjList.Add(so);
                 }
-                catch (Exception ex)
-                {
-                    //Sometimes algolia api throws an error, just move
-                    //on to the next item
-                    Console.WriteLine(ex.ToString());
-                }
-            }
+            });
             return storyObjList;
+        }
+
+        private StoryObj GetFullStoryObj(int id)
+        {
+            StoryObj so = new StoryObj();
+            try
+            {
+                FullStory fs = FullStoryFactory.GetFullStory(id);
+                int commentCount = fs.TotalComments;
+                string commentUrl = "https://news.ycombinator.com/item?id=" + id;
+                so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = commentCount };
+                return so;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return so;
         }
 
         public async Task<object> GetCommentTreeForId(string idTuple)
@@ -199,7 +245,11 @@ namespace HiSum
             {
                 keywordComments.Add(new KeywordCommentObj(){Keyword = kvp.Key,Comments = kvp.Value});
             }
-            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments};
+            Directory.CreateDirectory("data");
+            string fileName = Path.Combine("data", "following.txt");
+            string[] following = File.ReadAllLines(fileName);
+            string csv = string.Join(",", following);
+            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments,AllFollowing = csv};
             return fullStoryObj;
         }
 
@@ -265,6 +315,7 @@ namespace HiSum
             public List<SentenceObj> Sentences { get; set; }
             public List<UserCommentObj> UserComments { get; set; }
             public List<KeywordCommentObj> KeywordComments { get; set; }
+            public string AllFollowing { get; set; }
         }
 
         class UserCommentObj

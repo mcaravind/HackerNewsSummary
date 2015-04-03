@@ -217,6 +217,15 @@
                         var authorFromId = id.split(":")[2];
                         if (authorFromId === author) {
                             element.show();
+                            $("#hdnUser").html(authorFromId);
+                            var following = $("#hdnFollowing").html().split(',');
+                            console.log('writing following');
+                            console.log(following);
+                            if ($.inArray(authorFromId,following)>-1) {
+                                $("#btnFollowUser").text("Unfollow " + authorFromId);
+                            } else {
+                                $("#btnFollowUser").text("Follow " + authorFromId);
+                            }
                         }
                     });
                 });
@@ -303,7 +312,10 @@
                     <ul>
                         <li><a href="#" onclick="showStories();">Stories</a></li>
                         <li><a href="#" onclick="displayArchive();">Archive</a></li>
-                        <li><a href="#">Users</a></li>
+                        <li>
+                            <a href="#">Following</a>
+                            <div id="divFollowing"></div>
+                        </li>
                         <li><a href="#">WatchWords</a></li>
                     </ul>
                 </div>
@@ -486,7 +498,11 @@
                                     <div style="max-height: 350px; overflow: auto"><ol id="selectable"></ol>
                                     </div>
                                 </div>
-                                <br/><br/>
+                                <br/>
+                                <button id="btnFollowUser" onclick=" followUserToggle(); " class="button-small pure-button pure-button-primary">Follow this user</button>
+                                <div id="hdnUser" style="display: none"></div>
+                                <div id="hdnFollowing" style="display: none"></div>
+                                <br/>
                                 <div class="pure-u-24-24">
                                     <div style="height: 350px;overflow: auto"><ol id="selectableComment"></ol></div>
                                 </div>

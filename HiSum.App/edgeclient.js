@@ -20,22 +20,15 @@ function displayKeywordsDiv() {
 }
 
 function up() {
-    console.log('inside up');
     var currRootNode = $("#treeDiv").fancytree("getTree").getRootNode().getFirstChild();
-    console.log(currRootNode);
     var currRootNodeKey = currRootNode.key;
-    console.log(currRootNodeKey);
     var rootNodeHidden = $("#hiddenTreeDiv").fancytree("getTree").getNodeByKey(currRootNodeKey);
-    console.log(rootNodeHidden);
     var parentNode = rootNodeHidden.getParent();
-    console.log(parentNode);
     var parentKey = parentNode.key;
-    console.log(parentKey);
     loadTreeByKey(parentKey);
 }
 
 function loadTreeByKey(key) {
-    console.log('inside loadtreebykey');
     var dict = $("#hiddenTreeDiv").fancytree("getTree").getNodeByKey(key).toDict(true);
     $("#treeDiv").fancytree("getTree").getRootNode().removeChildren();
     $("#treeDiv").fancytree("getTree").getRootNode().addNode(dict);
@@ -158,6 +151,43 @@ function loadStoryOnRefresh() {
     loadStory(storyidval);
 }
 
+function followUserToggle() {
+    if ($("#btnFollowUser").text().indexOf("Unfollow") > -1) {
+        var username = $("#hdnUser").html();
+        unfollowUser(username, function (error, result) {
+            try {
+                if (error) console.log(error);
+                //console.log(result);
+            } catch (ex) {
+                alert(ex.toString());
+            }
+        });
+    } else {
+        var username = $("#hdnUser").html();
+        followUserFunction(username, function (error, result) {
+            try {
+                if (error) console.log(error);
+                //console.log(result);
+            } catch (ex) {
+                alert(ex.toString());
+            }
+        });
+    }
+    
+}
+
+function unfollowUser() {
+    var username = $("#hdnUser").html();
+    unfollowUserFunction(username, function (error, result) {
+        try {
+            if (error) console.log(error);
+            //console.log(result);
+        } catch (ex) {
+            alert(ex.toString());
+        }
+    });
+}
+
 function archiveStory(e) {
     var storyidval = parseInt($("#hdnStoryId").html());
     archive(storyidval);
@@ -194,13 +224,12 @@ function loadStory(storyidval) {
             var userComments = result['UserComments'];
             var keywordComments = result['KeywordComments'];
             var commentCount = result['TotalComments'];
+            var allFollowing = result['AllFollowing'];
             if ($("#" + storyidval).length > 0) {
-                console.log('found div '+storyidval);
                 var badge = $("#" + storyidval).find("span.pure-badge-info");
-                console.log('found badge '+badge);
                 badge.html(commentCount);
             }
-            loadUserComments(userComments, storyidval);
+            loadUserComments(userComments, storyidval,allFollowing);
             loadKeywordComments(keywordComments, storyidval);
             loadSentences(sentences);
             var arr2 = $.extend(true, {}, arr);
@@ -215,9 +244,10 @@ function loadStory(storyidval) {
     }
 }
 
-function loadUserComments(comments,storyid) {
+function loadUserComments(comments,storyid,allFollowing) {
     var htmlUsers = '';
     var htmlUserComments = '';
+    $("#hdnFollowing").html(allFollowing);
     $.each(comments, function (key, value) {
         var user = value['User'];
         var commentList = value['Comments'];
@@ -266,7 +296,6 @@ function loadKeywordComments(comments, storyid) {
 
 
 function loadTree(tree) {
-    console.log(tree);
     try {
         var tree1 = $("#treeDiv").fancytree('getTree');
         tree1.reload(tree);
@@ -279,7 +308,6 @@ function loadTree(tree) {
 }
 
 function loadFullTree(tree) {
-    console.log(tree);
     try {
         var tree1 = $("#treeDiv").fancytree('getTree');
         tree1.reload(tree);
@@ -292,7 +320,6 @@ function loadFullTree(tree) {
 }
 
 function loadFullTree2(tree) {
-    console.log(tree);
     try {
         var tree2 = $("#hiddenTreeDiv").fancytree('getTree');
         tree2.reload(tree);
@@ -310,7 +337,6 @@ function expandFullTree() {
     });
     treeNodes.visit(function (node) {
         node.tooltip = htmlDecode("Parent: " + node.parent.data.text).substring(0, 100);
-        console.log(node.parent.data.text);
     });
 }
 
@@ -325,7 +351,6 @@ function clicked(item) {
     loadStory(storyidval);
     $("#list").children("div").children("div").each(function () {
         var element = $(this);
-        console.log("inside the list div for div = " + element.attr("id"));
         if (element.hasClass("email-item-selected")) {
             element.removeClass("email-item-selected");
         }
@@ -335,27 +360,21 @@ function clicked(item) {
 
 function loadSentenceTree(item) {
     var idtuple = $(item).attr("id");
-    console.log(idtuple);
     var key = idtuple.split(":")[0];
-    console.log(key);
     loadTreeByKey(key);
 }
 
 function loadTreeForUserComment(idtuple) {
-    console.log(idtuple);
     var key = idtuple.split(":")[0];
-    console.log(key);
     loadTreeByKey(key);
 }
 
 function deleteStory(item) {
     if (confirm('Are you sure?')) {
         var storyidval = parseInt($(item).attr("id").split('_')[1]);
-        console.log("going to delete " + storyidval);
         storyDeleteFunction(storyidval, function (error, result) {
             try {
-                if (error) console.log(error);
-                console.log(result);
+                if (error) console.log(error);                
             } catch (ex) {
                 alert(ex.toString());
             }
@@ -369,7 +388,6 @@ function getUpdates() {
     $('#stories .email-item').each(function() {
         ids.push(this.id);
     });
-    console.log(ids);
     var payload = {
         idList: ids
     };
@@ -378,9 +396,7 @@ function getUpdates() {
     checkForUpdatesFunction(payload, function (error, result) {
         try {
             if (error) console.log(error);
-            console.log('inside checkupdates');
             var numNewStories = result.length;
-            console.log(numNewStories + ' new stories');
             tempAlert("You have " + numNewStories + " new stories", 1000);
         } catch (ex) {
             alert(ex.toString());
