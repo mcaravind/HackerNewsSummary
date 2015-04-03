@@ -177,6 +177,15 @@ namespace HiSum
             return storyObjList;
         }
 
+        public async Task<object> GetAllFollowing(int id)
+        {
+            Directory.CreateDirectory("data");
+            string fileName = Path.Combine("data", "following.txt");
+            string[] following = File.ReadAllLines(fileName);
+            return following.ToList();
+        }
+
+
         public async Task<object> GetFrontPage(object input)
         {
             List<int> top100Ids = GetTop100(30);
@@ -200,8 +209,14 @@ namespace HiSum
                 FullStory fs = FullStoryFactory.GetFullStory(id);
                 int commentCount = fs.TotalComments;
                 string commentUrl = "https://news.ycombinator.com/item?id=" + id;
-                so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = commentCount };
-                return so;
+                var usercommentObjList = new List<UserCommentObj>();
+                var dictComments = fs.GetUserComments();
+                foreach (var kvp in dictComments)
+                {
+                    UserCommentObj userCommentObj = new UserCommentObj(){User = kvp.Key,Comments = kvp.Value,StoryId = id};
+                    usercommentObjList.Add(userCommentObj);
+                }
+                so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = commentCount,AllUserComments = usercommentObjList};
             }
             catch (Exception ex)
             {
@@ -299,6 +314,7 @@ namespace HiSum
             public string CommentUrl { get; set; }
             public int StoryComments { get; set; }
             public DateTime ArchivedOn { get; set; }
+            public List<UserCommentObj> AllUserComments { get; set; } 
         }
 
         class WordObj
@@ -321,7 +337,8 @@ namespace HiSum
         class UserCommentObj
         {
             public string User { get; set; }
-            public List<CommentObj> Comments { get; set; } 
+            public List<CommentObj> Comments { get; set; }
+            public int StoryId { get; set; }
         }
 
         class KeywordCommentObj

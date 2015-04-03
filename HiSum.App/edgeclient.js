@@ -58,20 +58,103 @@ function enableLinks() {
     }
 }
 
-function displayStories() {
+function fetchFrontPage() {
     var stories = [];
+    var allUsersInFrontPage = [];
+    var allUsersFollowing = [];
+    getFollowingFunction(100, function(error, result) {
+        $.each(result, function(key,value) {
+            allUsersFollowing.push(value);
+        });
+    });
     top100Function(100, function (error, result) {
         try {
             if (error) console.log(error);
             result.forEach(function (entry) {
-                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId:'btnDelete_'+entry['StoryId'],count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
+                if (!(entry['Url']) || entry['Url']==='') {
+                    entry['Url'] = entry['CommentUrl'];
+                }
+                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'', allUserComments: entry['AllUserComments'] };
+                $.each(entry["AllUserComments"], function(key, value) {
+                    allUsersInFrontPage.push(value);
+                });
                 stories.push(story);
             });
         } catch (ex) {
             alert(ex.toString());
         }
     });
+    showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing);
     render(stories);
+}
+
+function findIndex(object,value) {
+    var i = 0;
+    for (i = 0; i < object.length; i++) {
+        if (object[i].user === value) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+function updateData(object, keyValue, dataKeyValue) {
+    var indexVal = findIndex(object, keyValue);
+    if (indexVal === 0) {
+        object.push({ 'user': keyValue, 'idlist': dataKeyValue });
+    } else {
+        object[indexVal].idlist = dataKeyValue;
+    }
+}
+
+function showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing) {
+    var uniqueUsersInFrontPage = [];
+    var htmlFollowing = '';
+    $.each(allUsersInFrontPage, function (key, value) {
+        var storyIdArray = [];
+        var existingArray = [];
+        existingArray = _.map(
+            _.where(uniqueUsersInFrontPage, { user: value['User'] }),
+            function (item) {
+                return { idlist: item.idlist };
+            }
+            );
+        if (existingArray.length > 0) {
+            storyIdArray.push.apply(storyIdArray, existingArray[0].idlist);
+        }
+        storyIdArray.push(value['StoryId']);
+        storyIdArray = _.uniq(storyIdArray);
+        updateData(uniqueUsersInFrontPage, value['User'], storyIdArray);
+        //uniqueUsersInFrontPage.push({ 'user': value['User'], 'idlist': storyIdArray });
+    });
+    _.sortBy(uniqueUsersInFrontPage, function (obj) { return -1 * obj.idlist.length });
+    $.each(uniqueUsersInFrontPage, function (key, value) {
+        if ($.inArray(value['user'], allUsersFollowing) > -1) {
+            htmlFollowing += "<input onclick='showFollowingStories();' type='checkbox' name='cbx_" + value['user'] + "' value='" + value['idlist'].join(',') + "'>" + value['user']+'('+ value['idlist'].length+')' + "<br/>";
+        }
+    });
+    $("#divFollowing").html(htmlFollowing);
+}
+
+function showFollowingStories() {
+    var selectedUsers = [];
+    $("#divFollowing input").each(function (key, itm) {
+        if (itm.checked) {
+            selectedUsers.push(itm.value.split(','));
+        }
+    });
+    if (selectedUsers.length === 0) {
+        //remove all filters from storyDiv
+        $("#stories .email-item").show();
+        $("#stories .email-item-selected").show();
+    } else {
+        //add filters to storyDiv
+        $("#stories .email-item").hide();
+        $("#stories .email-item-selected").hide();
+        $.each(selectedUsers, function (key, value) {
+            $.each(value, function (key1, value1) { $('#' + value1).show(); });
+        });
+    }
 }
 
 function displayArchive() {
@@ -122,7 +205,7 @@ function renderSingleStory(stories) {
     $("#storyButtons").show();
 }
 
-function getStory() {
+function getSingleStory() {
     try {
         var stories = [];
         var storytext = $('#inputStoryId').val();
@@ -132,6 +215,9 @@ function getStory() {
             try {
                 if (error) console.log(error);
                 result.forEach(function (entry) {
+                    if (!(entry['Url']) || entry['Url'] === '') {
+                        entry['Url'] = entry['CommentUrl'];
+                    }
                     var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
                     stories.push(story);
                 });
@@ -152,8 +238,9 @@ function loadStoryOnRefresh() {
 }
 
 function followUserToggle() {
+    var username = $("#hdnUser").html();
     if ($("#btnFollowUser").text().indexOf("Unfollow") > -1) {
-        var username = $("#hdnUser").html();
+        
         unfollowUser(username, function (error, result) {
             try {
                 if (error) console.log(error);
@@ -163,7 +250,6 @@ function followUserToggle() {
             }
         });
     } else {
-        var username = $("#hdnUser").html();
         followUserFunction(username, function (error, result) {
             try {
                 if (error) console.log(error);
@@ -173,7 +259,6 @@ function followUserToggle() {
             }
         });
     }
-    
 }
 
 function unfollowUser() {
@@ -188,7 +273,7 @@ function unfollowUser() {
     });
 }
 
-function archiveStory(e) {
+function archiveStory() {
     var storyidval = parseInt($("#hdnStoryId").html());
     archive(storyidval);
     if (!e) var e = window.event;
@@ -231,7 +316,7 @@ function loadStory(storyidval) {
             }
             loadUserComments(userComments, storyidval,allFollowing);
             loadKeywordComments(keywordComments, storyidval);
-            loadSentences(sentences);
+            loadSentencesForLoadStory(sentences);
             var arr2 = $.extend(true, {}, arr);
             loadFullTree(arr);
             loadFullTree2(arr2);
@@ -259,10 +344,10 @@ function loadUserComments(comments,storyid,allFollowing) {
         if (numComments >= 10) {
             styleInfo = "color:red;font-weight:bold";
         }
-        htmlUsers += "<li style='"+styleInfo+"'>" + user + "<span class='pure-badge-info'>"+numComments+"</span></li>";
+        htmlUsers += "<li style='" + styleInfo + "'>" + user + "<span class='pure-badge-info'>" + numComments + "</span></li>";
         //<span class="pure-badge-info">{{>count}}</span>
-        $.each(commentList, function(key1, value1) {
-            htmlUserComments += "<li style='display:none;' id='"+value1['Id']+ ":"+storyid+":"+user+"'>"+ value1['Text'] + "<hr></li>";
+        $.each(commentList, function (key1, value1) {
+            htmlUserComments += "<li style='display:none;' id='" + value1['Id'] + ":" + storyid + ":" + user + "'>" + value1['Text'] + "<hr></li>";
         });
     });
     $("#selectable").html(htmlUsers);
@@ -285,13 +370,18 @@ function loadKeywordComments(comments, storyid) {
             styleInfo = "color:red;font-weight:bold";
         }
         htmlUsers += "<li style='" + styleInfo + "'>" + user + "<span class='pure-badge-info'>" + numComments + "</span></li>";
-        //<span class="pure-badge-info">{{>count}}</span>
         $.each(commentList, function (key1, value1) {
-            htmlUserComments += "<li style='display:none;' id='" + value1['Id'] + ":" + storyid + ":" + user + "'>" + value1['Text'] + "<hr></li>";
+            var li = $('<li />', {
+                style: 'display:none',
+                id: value1['Id'] + ":" + storyid + ":" + user,
+                html: value1['Text']
+            });
+            var hr = $('<hr>');
+            li.append(hr);
+            $("#selectableKeywordComment").append(li);
         });
     });
     $("#selectableKeyword").html(htmlUsers);
-    $("#selectableKeywordComment").html(htmlUserComments);
 }
 
 
@@ -340,6 +430,12 @@ function expandFullTree() {
     });
 }
 
+function htmlEncode(value) {
+    //create a in-memory div, set it's inner text(which jQuery automatically encodes)
+    //then grab the encoded contents back out.  The div never exists on the page.
+    return $('<div/>').text(value).html();
+}
+
 function htmlDecode(value) {
     return $('<div/>').html(value).text();
 }
@@ -358,7 +454,7 @@ function clicked(item) {
     $(item).addClass("email-item-selected");
 }
 
-function loadSentenceTree(item) {
+function loadSentenceTreeWhenSentenceClicked(item) {
     var idtuple = $(item).attr("id");
     var key = idtuple.split(":")[0];
     loadTreeByKey(key);
@@ -392,7 +488,7 @@ function getUpdates() {
         idList: ids
     };
     var stories = [];
-    displayStories();
+    fetchFrontPage();
     checkForUpdatesFunction(payload, function (error, result) {
         try {
             if (error) console.log(error);
@@ -414,11 +510,11 @@ function tempAlert(msg, duration) {
     document.body.appendChild(el);
 }
 
-function loadSentences(sentences) {
+function loadSentencesForLoadStory(sentences) {
     $("#sentencesDiv").html('');
     var k = 1;
     $.each(sentences, function (key, value) {
-        var sentenceHtml = "<div style='word-wrap: break-word;' id='" + value['Id'] + ":" + value['StoryId'] + "' onclick='loadSentenceTree(this);'><div id='hidden" + k + "' style='display: none;'>" + value['SentenceCommentTree'] + "</div><blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote></div>";
+        var sentenceHtml = "<div style='word-wrap: break-word;' id='" + value['Id'] + ":" + value['StoryId'] + "' onclick='loadSentenceTreeWhenSentenceClicked(this);'><div id='hidden" + k + "' style='display: none;'>" + value['SentenceCommentTree'] + "</div><blockquote>" + value['Sentence'] + "<cite>" + value['Author'] + "</cite></blockquote></div>";
         $("#sentencesDiv").append(sentenceHtml);
         k++;
     });

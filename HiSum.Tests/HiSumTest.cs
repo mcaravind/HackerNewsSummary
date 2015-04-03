@@ -59,6 +59,14 @@ namespace HiSum.Tests
         }
 
         [TestMethod]
+        public void TestGetFrontPage()
+        {
+            Reader r = new Reader();
+            var result = r.GetFrontPage(10);
+            Console.WriteLine(result.ToString());
+        }
+
+        [TestMethod]
         public void TestGetStories()
         {
             Reader reader = new Reader();
