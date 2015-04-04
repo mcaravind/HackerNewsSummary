@@ -1,12 +1,16 @@
-# HackerNewsSummary
+# SkimHM
 
-Hacker News Summary is a client for Hacker News built with Node-Webkit, edge.js and C#. I am building this app to learn about Natural Language Processing.
+SkimHN is a desktop client for Hacker News built with Node-Webkit, edge.js and C#. 
 
 Features:
 
-See a preview of the important phrases in the comment thread for a given story
+- See a preview of the important phrases in the comment thread for a given story
 
-See the different users who have commented and see their comments for a given story
+- See the different users who have commented and see their comments for a given story
+
+- See the top keywords in the current story
+
+- Follow users. When you choose to follow users, on fetching front page you will be able to filter by users you are following who have posted a comment in the top articles.
 
 ![Screenshot](screenshot.png?raw=true "Hacker News Summary")
 
@@ -23,3 +27,5 @@ https://github.com/tjanczuk/edge/issues/61
 To install and run the app:
 
 Download the Zip file for the project, navigate to the folder called HiSum.App. Drag the file called app.nw and drop on the executable called nw.exe. Everything is self-contained (and thus the large install size)
+
+This is really a toy app I am building to learn about Natural Language Processing, so please approach with extremely low expectations :-)
