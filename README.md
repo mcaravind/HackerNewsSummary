@@ -1,4 +1,4 @@
-# SkimHM
+# SkimHN
 
 SkimHN is a desktop client for Hacker News built with Node-Webkit, edge.js and C#. 
 
