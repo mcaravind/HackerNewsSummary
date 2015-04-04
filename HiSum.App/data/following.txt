@@ -1,6 +1,5 @@
 Panino
 toast0
-tptacek
 tracker1
 AceJohnny2
 patio11
@@ -8,4 +7,4 @@ Scarbutt
 java-man
 IndianAstronaut
 theandrewbailey
-JoeAltmaier
+dom96

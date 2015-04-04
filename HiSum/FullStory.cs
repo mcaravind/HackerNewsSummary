@@ -481,6 +481,7 @@ namespace HiSum
                 .Select(x => x.Key)
                 .Where(y => CommonWords.GetFrequency(y) < 1)
                 .Where(a=>char.IsUpper(a[0]))
+                .Where(b => b.Length>1)
                 .Where(z => !(z.EndsWith("n't") || z.EndsWith("'m") || (z.EndsWith("'ll")) || (z.EndsWith("'d")) || z.EndsWith("'ve") || z.EndsWith("'re") || z.EndsWith("'s")))
                 .Take(N)
                 .ToList();

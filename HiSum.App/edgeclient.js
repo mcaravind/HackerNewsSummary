@@ -5,6 +5,7 @@ function displaySentencesDiv() {
     $("#usersDiv").hide();
     $("#keywordsDiv").hide();
     $("#btnUp").show();
+    $("#btnFollowUser").show();
 }
 
 function displayUsersDiv() {
@@ -241,9 +242,13 @@ function followUserToggle() {
     var username = $("#hdnUser").html();
     if ($("#btnFollowUser").text().indexOf("Unfollow") > -1) {
         
-        unfollowUser(username, function (error, result) {
+        unfollowUserFunction(username, function (error, result) {
             try {
-                if (error) console.log(error);
+                if (error) {
+                    console.log(error);
+                } else {
+                    $("#btnFollowUser").text("Follow " + username);
+                }
                 //console.log(result);
             } catch (ex) {
                 alert(ex.toString());
@@ -252,13 +257,18 @@ function followUserToggle() {
     } else {
         followUserFunction(username, function (error, result) {
             try {
-                if (error) console.log(error);
+                if (error) {
+                    console.log(error);
+                } else {
+                    $("#btnFollowUser").text("Unfollow " + username);
+                }
                 //console.log(result);
             } catch (ex) {
                 alert(ex.toString());
             }
         });
     }
+    refreshFollowingHiddenFieldList();
 }
 
 function unfollowUser() {
@@ -352,6 +362,17 @@ function loadUserComments(comments,storyid,allFollowing) {
     });
     $("#selectable").html(htmlUsers);
     $("#selectableComment").html(htmlUserComments);
+}
+
+function refreshFollowingHiddenFieldList() {
+    getFollowingFunction(-1, function (error, result) {
+        try {
+            if (error) console.log(error);
+            $("#hdnFollowing").html(result.join(','));
+        } catch (ex) {
+            alert(ex.toString());
+        }
+    });
 }
 
 

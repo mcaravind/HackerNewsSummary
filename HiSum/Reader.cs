@@ -182,7 +182,7 @@ namespace HiSum
             Directory.CreateDirectory("data");
             string fileName = Path.Combine("data", "following.txt");
             string[] following = File.ReadAllLines(fileName);
-            return following.ToList();
+            return following;
         }
 
 
