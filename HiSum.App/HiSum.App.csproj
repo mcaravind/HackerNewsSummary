@@ -25,6 +25,7 @@
     <Content Include="css\layouts\email-old-ie.css" />
     <Content Include="css\layouts\email.css" />
     <Content Include="css\layouts\menus.css" />
+    <Content Include="css\pure-min.css" />
     <Content Include="css\tabs.css" />
     <Content Include="desktopNotification.html" />
     <Content Include="desktopNotification.js" />

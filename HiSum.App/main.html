@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>SkimHN &ndash; Quick Summary for Hacker News &ndash; Pure</title>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" href="css/pure-min.css">
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.6.0/menus-min.css">
     <link rel="stylesheet" type="text/css" href="https://rawgithub.com/tilomitra/cssextras/master/css/pure-extras.css">
     <link rel="stylesheet" href="css/layouts/menus.css" />
@@ -307,7 +307,7 @@
             <a href="#" class="nav-menu-button">Menu</a>
 
             <div class="nav-inner">
-                <button id="btnUpdate" class="primary-button pure-button">HN Front Page</button>
+                <button id="btnUpdate" class="primary-button pure-button">Get Front Page</button>
 
                 <div class="pure-menu pure-menu-open">
                     <ul>
@@ -315,7 +315,7 @@
                         <li><a href="#" onclick="displayArchive();">Archive</a></li>
                         <li>
                             <a href="#">Following</a>
-                            <div id="divFollowing" style="width: 50%; margin: 0 auto; color: white;font-size: 10px"></div>
+                            <div id="divFollowing" style="width: 90%; color: white; font-size: 10px;"></div>
                         </li>
                         <li><a href="#">WatchWords</a></li>
                     </ul>
@@ -323,20 +323,12 @@
             </div>
         </div>
         <div id="list" class="pure-u-1">
-            <!--<div class="email-item email-item-selected pure-g">
-                <div class="pure-u-3-4">
-                    <h5 class="email-name">Author</h5>
-                    <h4 class="email-subject">Title</h4>
-                    <p class="email-desc">
-                        Text
-                    </p>
-                </div>
-            </div>-->
             <div id="divGetStory" class="email-item">
                 <form class="pure-form">
                     <fieldset>
                         <legend>Get Individual story</legend>
-                        <input id="inputStoryId" type="email" placeholder="Type URL from HackerNews" value="https://news.ycombinator.com/item?id=7568675">
+                        <input id="inputStoryId" style="width: 90%" type="email" placeholder="Type URL from HackerNews" value="https://news.ycombinator.com/item?id=7568675">
+                        <br/>
                         <button type="submit" class="button-small pure-button" onclick=" getSingleStory(); ">Get Story</button>
                     </fieldset>
                 </form>
@@ -380,7 +372,7 @@
                                 <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
                             </li>
                             <li>
-                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); event.stopPropagation;">Archive</button>
+                                <button id="{{>archiveButtonId}}" class="button-xsmall pure-button" onclick=" archiveStory(this); event.stopPropagation;">Archive</button>
                             </li>
                         </ul>
                     </div>
@@ -416,7 +408,7 @@
                                 <button onclick='openurl({{>commenturlwithquotes}});event.stopPropagation;' class="button-xsmall pure-button">Comments</button>
                             </li>
                             <li>
-                                <button id="btnArchive" class="button-xsmall pure-button" onclick=" archiveStory(); ">Archive</button>
+                                <button id="{{>archiveButtonId}}" class="button-xsmall pure-button" onclick=" archiveStory(this); ">Archive</button>
                             </li>
                         </ul>
                     </div>
@@ -481,59 +473,65 @@
                         <button class="secondary-button pure-button">Move to</button>
                     </div>
                 </div>-->
-                <div class="email-content-body">
-                    <br />
-                    <div id="storyButtons" style="display:none;">
-                        <button onclick="displaySentencesDiv();" class="button-small pure-button pure-button-primary">Summary</button>
-                        <button onclick="displayUsersDiv();" class="button-small pure-button pure-button-primary">Users</button>
-                        <button onclick="displayKeywordsDiv();" class="button-small pure-button pure-button-primary">Keywords</button>
-                    </div>
-                    <br />
-                    <div class="pure-g">
-                        <div class="pure-u-12-24">
-                            <!--<div id="sentencesDiv" style="white-space: pre-wrap; overflow: auto">-->
-                            <div id="sentencesDiv">
-                            </div>
-                            <div id="usersDiv">
-                                <div class="pure-u-24-24">
-                                    <div style="max-height: 350px; overflow: auto"><ol id="selectable"></ol>
-                                    </div>
-                                </div>
-                                <br/>
-                                <button id="btnFollowUser" onclick=" followUserToggle(); " class="button-small pure-button pure-button-primary" style="display: none">Follow this user</button>
-                                <div id="hdnUser" style="display: none"></div>
-                                <div id="hdnFollowing" style="display: none"></div>
-                                <br/>
-                                <div class="pure-u-24-24">
-                                    <div style="height: 350px;overflow: auto"><ol id="selectableComment"></ol></div>
-                                </div>
-                            </div>
-                            <div id="keywordsDiv">
-                                <div class="pure-u-24-24">
-                                    <div style="max-height: 350px; overflow: auto">
-                                        <ol id="selectableKeyword"></ol>
-                                    </div>
-                                </div>
-                                <br /><br />
-                                <div class="pure-u-24-24">
-                                    <div style="height: 350px;overflow: auto"><ol id="selectableKeywordComment"></ol></div>
-                                </div>
-                            </div>
+                <div id="divShow">
+                    <div id="divBody" class="email-content-body">
+                        <br/>
+                        <div id="storyButtons" style="display: none;">
+                            <button onclick=" displaySentencesDiv(); " class="button-small pure-button pure-button-primary">Summary</button>
+                            <button onclick=" displayUsersDiv(); " class="button-small pure-button pure-button-primary">Users</button>
+                            <button onclick=" displayKeywordsDiv(); " class="button-small pure-button pure-button-primary">Keywords</button>
                         </div>
+                        <br/>
+                        <div class="pure-g">
+                            <div class="pure-u-12-24">
+                                <!--<div id="sentencesDiv" style="white-space: pre-wrap; overflow: auto">-->
+                                <div id="sentencesDiv">
+                                </div>
+                                <div id="usersDiv">
+                                    <div class="pure-u-24-24">
+                                        <div style="max-height: 350px; overflow: auto">
+                                            <ol id="selectable"></ol>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <button id="btnFollowUser" onclick=" followUserToggle(); " class="button-small pure-button pure-button-primary" style="display: none">Follow this user</button>
+                                    <div id="hdnUser" style="display: none"></div>
+                                    <div id="hdnFollowing" style="display: none"></div>
+                                    <br/>
+                                    <div class="pure-u-24-24">
+                                        <div style="height: 350px; overflow: auto"><ol id="selectableComment"></ol>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="keywordsDiv">
+                                    <div class="pure-u-24-24">
+                                        <div style="max-height: 350px; overflow: auto">
+                                            <ol id="selectableKeyword"></ol>
+                                        </div>
+                                    </div>
+                                    <br/><br/>
+                                    <div class="pure-u-24-24">
+                                        <div style="height: 350px; overflow: auto"><ol id="selectableKeywordComment"></ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="pure-u-12-24">
-                            <button id="btnUp" style="display: none;" onclick="up();">Up</button>
-                            <div id="treeContainer" style="overflow: auto">
-                                <div id="treeDiv">
-                                </div>
-                                <div style="display: none;" id="hiddenTreeDiv">
+                            <div class="pure-u-12-24">
+                                <button id="btnUp" style="display: none;" onclick=" up(); ">Up</button>
+                                <div id="treeContainer" style="overflow: auto">
+                                    <div id="treeDiv">
+                                    </div>
+                                    <div style="display: none;" id="hiddenTreeDiv">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div id="divEmpty" class="email-content-body">No user comments for this story</div>
                 </div>
             </div>
-        </div>
+        </div>  
     </div>
 
     <script src="http://yui.yahooapis.com/3.17.2/build/yui/yui-min.js"></script>

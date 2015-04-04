@@ -75,7 +75,7 @@ function fetchFrontPage() {
                 if (!(entry['Url']) || entry['Url']==='') {
                     entry['Url'] = entry['CommentUrl'];
                 }
-                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'', allUserComments: entry['AllUserComments'] };
+                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'', allUserComments: entry['AllUserComments'], archiveButtonId: 'archive_' + entry['StoryId'] };
                 $.each(entry["AllUserComments"], function(key, value) {
                     allUsersInFrontPage.push(value);
                 });
@@ -131,7 +131,7 @@ function showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing) {
     _.sortBy(uniqueUsersInFrontPage, function (obj) { return -1 * obj.idlist.length });
     $.each(uniqueUsersInFrontPage, function (key, value) {
         if ($.inArray(value['user'], allUsersFollowing) > -1) {
-            htmlFollowing += "<input onclick='showFollowingStories();' type='checkbox' name='cbx_" + value['user'] + "' value='" + value['idlist'].join(',') + "'>" + value['user']+'('+ value['idlist'].length+')' + "<br/>";
+            htmlFollowing += "<label for='remember' class='pure-checkbox'><input onclick='showFollowingStories();' type='checkbox' name='cbx_" + value['user'] + "' value='" + value['idlist'].join(',') + "'>" + value['user']+'('+ value['idlist'].length+')' + "</label><br/>";
         }
     });
     $("#divFollowing").html(htmlFollowing);
@@ -164,7 +164,7 @@ function displayArchive() {
         try {
             if (error) console.log(error);
             result.forEach(function (entry) {
-                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
+                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'', archiveButtonId: 'archive_' + entry['StoryId'] };
                 stories.push(story);
             });
         } catch (ex) {
@@ -219,7 +219,7 @@ function getSingleStory() {
                     if (!(entry['Url']) || entry['Url'] === '') {
                         entry['Url'] = entry['CommentUrl'];
                     }
-                    var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'' };
+                    var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'', archiveButtonId: 'archive_' + entry['StoryId'] };
                     stories.push(story);
                 });
             } catch (ex) {
@@ -283,8 +283,8 @@ function unfollowUser() {
     });
 }
 
-function archiveStory() {
-    var storyidval = parseInt($("#hdnStoryId").html());
+function archiveStory(item) {
+    var storyidval = parseInt(item.id.split('_')[1]);
     archive(storyidval);
     if (!e) var e = window.event;
     e.cancelBubble = true;
@@ -333,6 +333,14 @@ function loadStory(storyidval) {
             addLoadCommentEvent(dict);
             expandFullTree();
             displaySentencesDiv();
+            //hide div for empty stories
+            if (result['UserComments'].length === 0) {
+                $("#divBody").hide();
+                $("#divEmpty").show();
+            } else {
+                $("#divBody").show();
+                $("#divEmpty").hide();
+            }
         });
     } catch (ex) {
         alert(ex);
