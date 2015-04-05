@@ -43,6 +43,13 @@ var getFollowingFunction = edge.func(
     methodName: 'GetAllFollowing'
 });
 
+var getWatchingFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'GetAllWatching'
+});
+
 var followUserFunction = edge.func(
 {
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
@@ -55,6 +62,20 @@ var unfollowUserFunction = edge.func(
     assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
     typeName: 'HiSum.Reader',
     methodName: 'UnfollowUser'
+});
+
+var watchKeywordFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'WatchKeyword'
+});
+
+var unwatchKeywordFunction = edge.func(
+{
+    assemblyFile: path.dirname(process.execPath) + '/dll/HiSum.dll',
+    typeName: 'HiSum.Reader',
+    methodName: 'UnwatchKeyword'
 });
 
 var checkForUpdatesFunction = edge.func(

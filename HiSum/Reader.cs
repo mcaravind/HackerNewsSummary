@@ -108,8 +108,6 @@ namespace HiSum
             }
             catch (Exception ex)
             {
-                //Sometimes algolia api throws an error, just move
-                //on to the next item
                 Console.WriteLine(ex.ToString());
                 return ex.ToString();
             }
@@ -127,8 +125,39 @@ namespace HiSum
             }
             catch (Exception ex)
             {
-                //Sometimes algolia api throws an error, just move
-                //on to the next item
+                Console.WriteLine(ex.ToString());
+                return ex.ToString();
+            }
+            return string.Empty;
+        }
+
+        public async Task<Object> WatchKeyword(string keyword)
+        {
+            try
+            {
+                Directory.CreateDirectory("data");
+                string fileName = Path.Combine("data", "watching.txt");
+                File.AppendAllText(fileName, keyword + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return ex.ToString();
+            }
+            return string.Empty;
+        }
+
+        public async Task<Object> UnwatchKeyword(string keyword)
+        {
+            try
+            {
+                Directory.CreateDirectory("data");
+                string fileName = Path.Combine("data", "watching.txt");
+                var lines = File.ReadAllLines(fileName).Where(arg => arg != keyword);
+                File.WriteAllLines(fileName, lines);
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.ToString());
                 return ex.ToString();
             }
@@ -185,20 +214,28 @@ namespace HiSum
             return following;
         }
 
-
-        public async Task<object> GetFrontPage(object input)
+        public async Task<object> GetAllWatching(int id)
         {
-            List<int> top100Ids = GetTop100(30);
+            Directory.CreateDirectory("data");
+            string fileName = Path.Combine("data", "watching.txt");
+            string[] following = File.ReadAllLines(fileName);
+            return following;
+        }
+
+        public async Task<object> GetFrontPage(int pageNum)
+        {
+            List<int> top100Ids = GetTop100(100).Skip((pageNum-1)*30).Take(30).ToList();
             List<StoryObj> storyObjList = new List<StoryObj>();
             Parallel.ForEach(top100Ids, currentId =>
             {
                 StoryObj so = GetFullStoryObj(currentId);
+                so.StoryRank = top100Ids.IndexOf(currentId);
                 if (so != null)
                 {
                     storyObjList.Add(so);
                 }
             });
-            return storyObjList;
+            return storyObjList.OrderBy(x=>x.StoryRank).ToList();
         }
 
         private StoryObj GetFullStoryObj(int id)
@@ -216,7 +253,14 @@ namespace HiSum
                     UserCommentObj userCommentObj = new UserCommentObj(){User = kvp.Key,Comments = kvp.Value,StoryId = id};
                     usercommentObjList.Add(userCommentObj);
                 }
-                so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = commentCount,AllUserComments = usercommentObjList};
+                var keywordComments = fs.GetNamedObjects(20);
+                List<KeywordCommentObj> keywordCommentObjList = new List<KeywordCommentObj>();
+                foreach (var kvp in keywordComments)
+                {
+                    KeywordCommentObj keywordCommentObj = new KeywordCommentObj(){Keyword = kvp.Key,Comments = kvp.Value,StoryId = id};
+                    keywordCommentObjList.Add(keywordCommentObj);
+                }
+                so = new StoryObj() { StoryId = id, StoryTitle = fs.title, Author = fs.author, StoryText = fs.text, Url = fs.url ?? commentUrl, CommentUrl = commentUrl, StoryComments = commentCount,AllUserComments = usercommentObjList,AllKeywordComments = keywordCommentObjList};
             }
             catch (Exception ex)
             {
@@ -262,9 +306,20 @@ namespace HiSum
             }
             Directory.CreateDirectory("data");
             string fileName = Path.Combine("data", "following.txt");
+            if (!File.Exists(fileName))
+            {
+                File.Create(fileName);
+            }
             string[] following = File.ReadAllLines(fileName);
             string csv = string.Join(",", following);
-            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments,AllFollowing = csv};
+            string fileNameWatching = Path.Combine("data", "watching.txt");
+            if (!File.Exists(fileNameWatching))
+            {
+                File.Create(fileNameWatching);
+            }
+            string[] watching = File.ReadAllLines(fileNameWatching);
+            string csvWatching = string.Join(",", watching);
+            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments,AllFollowing = csv, AllWatching = csvWatching};
             return fullStoryObj;
         }
 
@@ -314,7 +369,9 @@ namespace HiSum
             public string CommentUrl { get; set; }
             public int StoryComments { get; set; }
             public DateTime ArchivedOn { get; set; }
-            public List<UserCommentObj> AllUserComments { get; set; } 
+            public List<UserCommentObj> AllUserComments { get; set; }
+            public List<KeywordCommentObj> AllKeywordComments { get; set; }
+            public int StoryRank { get; set; }
         }
 
         class WordObj
@@ -332,6 +389,7 @@ namespace HiSum
             public List<UserCommentObj> UserComments { get; set; }
             public List<KeywordCommentObj> KeywordComments { get; set; }
             public string AllFollowing { get; set; }
+            public string AllWatching { get; set; }
         }
 
         class UserCommentObj
@@ -345,6 +403,7 @@ namespace HiSum
         {
             public string Keyword { get; set; }
             public List<CommentObj> Comments { get; set; }
+            public int StoryId { get; set; }
         }
     }
 }

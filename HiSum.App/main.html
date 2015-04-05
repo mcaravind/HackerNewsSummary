@@ -244,9 +244,19 @@
                         element.hide();
                         var id = element.attr("id");
                         //console.log('id = '+id);
-                        var authorFromId = id.split(":")[2];
-                        if (authorFromId === author) {
+                        var keywordFromId = id.split(":")[2];
+                        if (keywordFromId === author) {
                             element.show();
+                            $("#hdnKeyword").html(keywordFromId);
+                            var watching = $("#hdnWatching").html().split(',');
+                            console.log('writing watching');
+                            console.log(watching);
+                            if ($.inArray(keywordFromId, watching) > -1) {
+                                $("#btnWatchKeyword").text("Unwatch " + keywordFromId);
+                            } else {
+                                $("#btnWatchKeyword").text("Watch " + keywordFromId);
+                            }
+
                         }
                     });
                 });
@@ -292,7 +302,9 @@
         
 
         $(document).ready(function () {
-            $("#btnUpdate").click(fetchFrontPage);
+            $("#btnUpdate").click(function (){fetchFrontPage(1)});
+            $("#btnUpdate2").click(function () { fetchFrontPage(2) });
+            $("#btnUpdate3").click(function () { fetchFrontPage(3) });
         });
 
         
@@ -307,8 +319,9 @@
             <a href="#" class="nav-menu-button">Menu</a>
 
             <div class="nav-inner">
-                <button id="btnUpdate" class="primary-button pure-button">Get Front Page</button>
-
+                <button id="btnUpdate" class="button-small pure-button pure-button-primary">Page 1</button><br/><br/>
+                <button id="btnUpdate2" class="button-small pure-button pure-button-primary">Page 2</button><br/><br/>
+                <button id="btnUpdate3" class="button-small pure-button pure-button-primary">Page 3</button><br/><br/>
                 <div class="pure-menu pure-menu-open">
                     <ul>
                         <li><a href="#" onclick="showStories();">Stories</a></li>
@@ -317,7 +330,10 @@
                             <a href="#">Following</a>
                             <div id="divFollowing" style="width: 90%; color: white; font-size: 10px;"></div>
                         </li>
-                        <li><a href="#">WatchWords</a></li>
+                        <li>
+                            <a href="#">Watching</a>
+                            <div id="divWatching" style="width: 90%; color: white; font-size: 10px;"></div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -509,7 +525,12 @@
                                             <ol id="selectableKeyword"></ol>
                                         </div>
                                     </div>
-                                    <br/><br/>
+                                    <br/>
+                                    <button id="btnWatchKeyword" onclick=" watchKeywordToggle(); " class="button-small pure-button pure-button-primary" style="display: none">Watch this keyword</button>
+                                    <div id="hdnKeyword" style="display: none"></div>
+                                    <div id="hdnWatching" style="display: none"></div>
+
+                                    <br/>
                                     <div class="pure-u-24-24">
                                         <div style="height: 350px; overflow: auto"><ol id="selectableKeywordComment"></ol>
                                         </div>

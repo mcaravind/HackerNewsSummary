@@ -6,6 +6,7 @@ function displaySentencesDiv() {
     $("#keywordsDiv").hide();
     $("#btnUp").show();
     $("#btnFollowUser").show();
+    $("#btnWatchKeyword").show();
 }
 
 function displayUsersDiv() {
@@ -59,16 +60,24 @@ function enableLinks() {
     }
 }
 
-function fetchFrontPage() {
+function fetchFrontPage(pageNum) {
+    pageNum = typeof pageNum !== 'undefined' ? pageNum : 1;
     var stories = [];
     var allUsersInFrontPage = [];
     var allUsersFollowing = [];
-    getFollowingFunction(100, function(error, result) {
+    var allKeywordsInFrontPage = [];
+    var allKeywordsWatching = [];
+    getFollowingFunction(pageNum, function(error, result) {
         $.each(result, function(key,value) {
             allUsersFollowing.push(value);
         });
     });
-    top100Function(100, function (error, result) {
+    getWatchingFunction(pageNum, function (error, result) {
+        $.each(result, function (key, value) {
+            allKeywordsWatching.push(value);
+        });
+    });
+    top100Function(pageNum, function (error, result) {
         try {
             if (error) console.log(error);
             result.forEach(function (entry) {
@@ -79,6 +88,9 @@ function fetchFrontPage() {
                 $.each(entry["AllUserComments"], function(key, value) {
                     allUsersInFrontPage.push(value);
                 });
+                $.each(entry["AllKeywordComments"], function (key, value) {
+                    allKeywordsInFrontPage.push(value);
+                });
                 stories.push(story);
             });
         } catch (ex) {
@@ -86,6 +98,7 @@ function fetchFrontPage() {
         }
     });
     showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing);
+    showWatchingOnFrontPage(allKeywordsInFrontPage, allKeywordsWatching);
     render(stories);
 }
 
@@ -108,6 +121,50 @@ function updateData(object, keyValue, dataKeyValue) {
     }
 }
 
+function showWatchingOnFrontPage(allKeywordsInFrontPage, allKeywordsWatching) {
+    var uniqueKeywordsInFrontPage = [];
+    var htmlWatching = '';
+    $.each(allKeywordsInFrontPage, function (key, value) {
+        var storyIdArray = [];
+        var existingArray = [];
+        existingArray = _.map(
+            _.where(uniqueKeywordsInFrontPage, { user: value['Keyword'] }),
+            function (item) {
+                return { idlist: item.idlist };
+            }
+            );
+        if (existingArray.length > 0) {
+            storyIdArray.push.apply(storyIdArray, existingArray[0].idlist);
+        }
+        storyIdArray.push(value['StoryId']);
+        storyIdArray = _.uniq(storyIdArray);
+        updateData(uniqueKeywordsInFrontPage, value['Keyword'], storyIdArray);
+    });
+    uniqueKeywordsInFrontPage = _.sortBy(uniqueKeywordsInFrontPage, function (obj) {
+        return obj.idlist.length
+    }).reverse();
+    $.each(uniqueKeywordsInFrontPage, function (key, value) {
+        if ($.inArray(value['user'], allKeywordsWatching) > -1) {
+            var label = $('<label/>', {
+                for: 'remember',
+                class: 'pure-checkbox'
+            });
+            var inp = $('<input/>', {
+                onclick: showStoriesForSelectedFilters(),
+                type: 'checkbox',
+                name: 'cbx_' + value['user'],
+                value: value['idlist'].join(','),
+                text: value['user'] + '(' + value['idlist'].length + ')'
+            });
+            var br = $('<br/>');
+            htmlWatching += "<label for='remember' class='pure-checkbox'><input onclick='showStoriesForSelectedFilters();' type='checkbox' name='cbx_" + value['user'] + "' value='" + value['idlist'].join(',') + "'>" + value['user'] + '(' + value['idlist'].length + ')' + "</label><br/>";
+            label.append(inp);
+            label.append(br);
+        }
+    });
+    $("#divWatching").html(htmlWatching);
+}
+
 function showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing) {
     var uniqueUsersInFrontPage = [];
     var htmlFollowing = '';
@@ -126,25 +183,46 @@ function showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing) {
         storyIdArray.push(value['StoryId']);
         storyIdArray = _.uniq(storyIdArray);
         updateData(uniqueUsersInFrontPage, value['User'], storyIdArray);
-        //uniqueUsersInFrontPage.push({ 'user': value['User'], 'idlist': storyIdArray });
     });
-    _.sortBy(uniqueUsersInFrontPage, function (obj) { return -1 * obj.idlist.length });
+    uniqueUsersInFrontPage=_.sortBy(uniqueUsersInFrontPage, function (obj) {
+        return obj.idlist.length
+    }).reverse();
     $.each(uniqueUsersInFrontPage, function (key, value) {
         if ($.inArray(value['user'], allUsersFollowing) > -1) {
-            htmlFollowing += "<label for='remember' class='pure-checkbox'><input onclick='showFollowingStories();' type='checkbox' name='cbx_" + value['user'] + "' value='" + value['idlist'].join(',') + "'>" + value['user']+'('+ value['idlist'].length+')' + "</label><br/>";
+            var label = $('<label/>', {
+                for: 'remember',
+                class:'pure-checkbox'
+            });
+            var inp = $('<input/>', {
+                onclick: showStoriesForSelectedFilters(),
+                type: 'checkbox',
+                name: 'cbx_' + value['user'],
+                value: value['idlist'].join(','),
+                text: value['user'] + '(' + value['idlist'].length + ')'
+            });
+            var br = $('<br/>');
+            htmlFollowing += "<label for='remember' class='pure-checkbox'><input onclick='showStoriesForSelectedFilters();' type='checkbox' name='cbx_" + value['user'] + "' value='" + value['idlist'].join(',') + "'>" + value['user'] + '(' + value['idlist'].length + ')' + "</label><br/>";
+            label.append(inp);
+            label.append(br);
         }
     });
     $("#divFollowing").html(htmlFollowing);
 }
 
-function showFollowingStories() {
+function showStoriesForSelectedFilters() {
+    var selectedKeywords = [];
+    $("#divWatching input").each(function (key, itm) {
+        if (itm.checked) {
+            selectedKeywords.push(itm.value.split(','));
+        }
+    });
     var selectedUsers = [];
     $("#divFollowing input").each(function (key, itm) {
         if (itm.checked) {
             selectedUsers.push(itm.value.split(','));
         }
     });
-    if (selectedUsers.length === 0) {
+    if (selectedKeywords.length === 0 && selectedUsers.length === 0) {
         //remove all filters from storyDiv
         $("#stories .email-item").show();
         $("#stories .email-item-selected").show();
@@ -152,6 +230,9 @@ function showFollowingStories() {
         //add filters to storyDiv
         $("#stories .email-item").hide();
         $("#stories .email-item-selected").hide();
+        $.each(selectedKeywords, function (key, value) {
+            $.each(value, function (key1, value1) { $('#' + value1).show(); });
+        });
         $.each(selectedUsers, function (key, value) {
             $.each(value, function (key1, value1) { $('#' + value1).show(); });
         });
@@ -238,6 +319,39 @@ function loadStoryOnRefresh() {
     loadStory(storyidval);
 }
 
+function watchKeywordToggle() {
+    var keyword = $("#hdnKeyword").html();
+    if ($("#btnWatchKeyword").text().indexOf("Unwatch") > -1) {
+        unwatchKeywordFunction(keyword, function (error, result) {
+            try {
+                if (error) {
+                    console.log(error);
+                } else {
+                    $("#btnWatchKeyword").text("Watch " + keyword);
+                }
+                //console.log(result);
+            } catch (ex) {
+                alert(ex.toString());
+            }
+        });
+    } else {
+        watchKeywordFunction(keyword, function (error, result) {
+            try {
+                if (error) {
+                    console.log(error);
+                } else {
+                    $("#btnWatchKeyword").text("Unwatch " + keyword);
+                }
+                //console.log(result);
+            } catch (ex) {
+                alert(ex.toString());
+            }
+        });
+
+    }
+    refreshWatchingHiddenFieldList();
+}
+
 function followUserToggle() {
     var username = $("#hdnUser").html();
     if ($("#btnFollowUser").text().indexOf("Unfollow") > -1) {
@@ -320,12 +434,13 @@ function loadStory(storyidval) {
             var keywordComments = result['KeywordComments'];
             var commentCount = result['TotalComments'];
             var allFollowing = result['AllFollowing'];
+            var allWatching = result['AllWatching'];
             if ($("#" + storyidval).length > 0) {
                 var badge = $("#" + storyidval).find("span.pure-badge-info");
                 badge.html(commentCount);
             }
             loadUserComments(userComments, storyidval,allFollowing);
-            loadKeywordComments(keywordComments, storyidval);
+            loadKeywordComments(keywordComments, storyidval,allWatching);
             loadSentencesForLoadStory(sentences);
             var arr2 = $.extend(true, {}, arr);
             loadFullTree(arr);
@@ -383,12 +498,23 @@ function refreshFollowingHiddenFieldList() {
     });
 }
 
+function refreshWatchingHiddenFieldList() {
+    getWatchingFunction(-1, function (error, result) {
+        try {
+            if (error) console.log(error);
+            $("#hdnWatching").html(result.join(','));
+        } catch (ex) {
+            alert(ex.toString());
+        }
+    });
+}
 
-function loadKeywordComments(comments, storyid) {
-    var htmlUsers = '';
-    var htmlUserComments = '';
+
+function loadKeywordComments(comments, storyid, allWatching) {
+    var htmlKeywords = '';
+    $("#hdnWatching").html(allWatching);
     $.each(comments, function (key, value) {
-        var user = value['Keyword'];
+        var keyword = value['Keyword'];
         var commentList = value['Comments'];
         var numComments = commentList.length;
         var styleInfo = "color:black";
@@ -398,11 +524,11 @@ function loadKeywordComments(comments, storyid) {
         if (numComments >= 10) {
             styleInfo = "color:red;font-weight:bold";
         }
-        htmlUsers += "<li style='" + styleInfo + "'>" + user + "<span class='pure-badge-info'>" + numComments + "</span></li>";
+        htmlKeywords += "<li style='" + styleInfo + "'>" + keyword + "<span class='pure-badge-info'>" + numComments + "</span></li>";
         $.each(commentList, function (key1, value1) {
             var li = $('<li />', {
                 style: 'display:none',
-                id: value1['Id'] + ":" + storyid + ":" + user,
+                id: value1['Id'] + ":" + storyid + ":" + keyword,
                 html: value1['Text']
             });
             var hr = $('<hr>');
@@ -410,7 +536,7 @@ function loadKeywordComments(comments, storyid) {
             $("#selectableKeywordComment").append(li);
         });
     });
-    $("#selectableKeyword").html(htmlUsers);
+    $("#selectableKeyword").html(htmlKeywords);
 }
 
 

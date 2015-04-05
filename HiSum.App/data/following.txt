@@ -9,3 +9,6 @@ IndianAstronaut
 theandrewbailey
 dom96
 ChuckMcM
+natfriedman
+tptacek
+jeresig

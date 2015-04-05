@@ -67,13 +67,6 @@ namespace HiSum.Tests
         }
 
         [TestMethod]
-        public void TestGetStories()
-        {
-            Reader reader = new Reader();
-            Task<object> result = reader.GetFrontPage(null);
-        }
-
-        [TestMethod]
         public void TestGetTagCloudTree()
         {
             Reader reader = new Reader();
