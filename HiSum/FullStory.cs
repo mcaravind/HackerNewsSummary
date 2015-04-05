@@ -120,6 +120,7 @@ namespace HiSum
                 };
                 topSentenceObjs.Add(sentenceObj);   
             }
+            topSentenceObjs = topSentenceObjs.OrderByDescending(x => GetChildCount(GetNodeById(x.Id))).ToList();
             return topSentenceObjs;
         }
 
