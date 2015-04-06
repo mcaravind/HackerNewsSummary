@@ -32,7 +32,7 @@ Installation:
 Supported platforms: Win64  
 Not yet supported: Win32, MacOSX, Linux
 
-Currently the app works on Windows 64 bit machines but does not work on 32 bit machines. I have not been able to verify if it works on Mac or Linux. _Getting the projects to work on the unsupported platforms is, at least on paper, only as complex as getting the correct edge.node files in place under the node_modules folder._ Any help getting the node_modules fixed so that the app can become truly cross-platform would be greatly appreciated.
+Currently the app works on Windows 64 bit machines but does not work on 32 bit machines. I have not been able to verify if it works on Mac or Linux. __Getting the projects to work on the unsupported platforms is, at least on paper, only as complex as getting the correct edge.node files in place under the node_modules folder.__ Any help getting the node_modules fixed so that the app can become truly cross-platform would be greatly appreciated.
 
 See this issue:
 https://github.com/tjanczuk/edge/issues/61
@@ -43,6 +43,6 @@ Download the Zip file for the project, navigate to the folder called HiSum.App. 
 
 Notes:
 
-On clicking the big blue buttons to fetch the front pages, it will take a good 10 seconds to fetch all the stories.
+On clicking the big blue buttons to fetch the front pages, __it will take a good 10 seconds to fetch all the stories.__
 
 This is really a toy app I am building to learn about Natural Language Processing, so please approach with low expectations :-)
