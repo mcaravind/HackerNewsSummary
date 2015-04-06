@@ -46,6 +46,20 @@ namespace HiSum
             }
         }
 
+        public int TotalWords
+        {
+            get
+            {
+                int count = 0;
+                foreach (children child in this.children)
+                {
+                    string[] allWords = GetAllWords(child.SubtreeText);
+                    count += allWords.Length;
+                }
+                return count;
+            }
+        }
+
         /*
          * This method sentence-tokenizes all top level comments
          * The best sentences are those where the words in the sentence

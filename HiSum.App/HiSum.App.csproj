@@ -20,6 +20,7 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="app.js" />
+    <Content Include="css\jquery.countdown.css" />
     <Content Include="css\layouts\blog-old-ie.css" />
     <Content Include="css\layouts\blog.css" />
     <Content Include="css\layouts\email-old-ie.css" />
@@ -68,6 +69,8 @@
     <Content Include="img\common\yui-avatar.png" />
     <Content Include="index.html" />
     <Content Include="js\async.js" />
+    <Content Include="js\jquery.countdown.js" />
+    <Content Include="js\jquery.plugin.js" />
     <Content Include="js\jsrender.js" />
     <Content Include="js\tabs.js" />
     <Content Include="js\underscore-min.js" />

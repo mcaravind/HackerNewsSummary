@@ -7,6 +7,7 @@ function displaySentencesDiv() {
     $("#btnUp").show();
     $("#btnFollowUser").show();
     $("#btnWatchKeyword").show();
+    $("#divTime").show();
 }
 
 function displayUsersDiv() {
@@ -435,6 +436,12 @@ function loadStory(storyidval) {
             var commentCount = result['TotalComments'];
             var allFollowing = result['AllFollowing'];
             var allWatching = result['AllWatching'];
+            var totalWords = parseInt(result['TotalWords']);
+            var totalSeconds = totalWords / 5;
+            var MS_PER_SECOND = 1000;
+            var endAt = new Date((new Date()).getTime() + (totalSeconds * MS_PER_SECOND));
+            $("#divTimeSaved").countdown('destroy');
+            $("#divTimeSaved").countdown({until:endAt,compact:true});
             if ($("#" + storyidval).length > 0) {
                 var badge = $("#" + storyidval).find("span.pure-badge-info");
                 badge.html(commentCount);

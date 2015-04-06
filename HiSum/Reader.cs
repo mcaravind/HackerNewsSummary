@@ -319,7 +319,7 @@ namespace HiSum
             }
             string[] watching = File.ReadAllLines(fileNameWatching);
             string csvWatching = string.Join(",", watching);
-            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments,AllFollowing = csv, AllWatching = csvWatching};
+            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments,AllFollowing = csv, AllWatching = csvWatching,TotalWords = fs.TotalWords};
             return fullStoryObj;
         }
 
@@ -372,6 +372,7 @@ namespace HiSum
             public List<UserCommentObj> AllUserComments { get; set; }
             public List<KeywordCommentObj> AllKeywordComments { get; set; }
             public int StoryRank { get; set; }
+            public int TotalWords { get; set; }
         }
 
         class WordObj
@@ -390,6 +391,7 @@ namespace HiSum
             public List<KeywordCommentObj> KeywordComments { get; set; }
             public string AllFollowing { get; set; }
             public string AllWatching { get; set; }
+            public int TotalWords { get; set; }
         }
 
         class UserCommentObj
