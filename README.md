@@ -6,23 +6,23 @@ Features:
 
 - See a preview of the important phrases in the comment thread for a given story
 
-![Summary](screenshot_summary.png?raw=true "Hacker News Summary")
+![Summary](screenshot_summary.PNG?raw=true "Sentence summary")
 
 - See the different users who have commented and see their comments for a given story
 
-![Commenters](screenshot_commenters.png?raw=true "Hacker News Summary")
+![Commenters](screenshot_commenters.png?raw=true "See all commenters")
 
 - See the top keywords in the current story
 
-![Keywords](screenshot_keywords.png?raw=true "Hacker News Summary")
+![Keywords](screenshot_keywords.PNG?raw=true "Keywords in the story")
 
 - Follow users and keywords. When you choose to follow users, fetching a page will automatically notify you if any user you are following has made a comment in one of the stories on that page. (and similarly for keywords you are watching)
 
-![Filters](screenshot_filters.png?raw=true "Hacker News Summary")
+![Filters](screenshot_filters.PNG?raw=true "Follow, Watch, Filter")
 
 - Get quick summary for individual stories
 
-![Individual Stories](screenshot_individualstory.png?raw=true "Hacker News Summary")
+![Individual Stories](screenshot_individualstory.PNG?raw=true "Individual stories")
 
 Installation:
 
