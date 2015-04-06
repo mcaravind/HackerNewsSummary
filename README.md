@@ -10,7 +10,7 @@ Features:
 
 - See the different users who have commented and see their comments for a given story
 
-![Commenters](screenshot_commenters.png?raw=true "See all commenters")
+![Commenters](screenshot_commenters.PNG?raw=true "See all commenters")
 
 - See the top keywords in the current story
 
