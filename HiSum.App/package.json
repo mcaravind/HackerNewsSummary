@@ -1,8 +1,67 @@
-﻿{
-    "name": "SkimHN",
-    "main": "main.html",
+{
+    "nodejs": true, 
+    "additional_trust_anchors": "", 
+    "inject-js-end": "", 
+    "node-remote": "", 
+    "keywords": [], 
+    "devDependencies": {}, 
+    "author": "Aravind", 
+    "user-agent": "", 
     "window": {
-        "icon": "icon.png",
-        "toolbar": true
-    }
+        "fullscreen": false, 
+        "resizable": true, 
+        "title": "SkimHN", 
+        "always-on-top": false, 
+        "frame": true, 
+        "width": 640, 
+        "height": 480, 
+        "exe_icon": "icon.png", 
+        "visible": true, 
+        "as_desktop": false, 
+        "position": "mouse", 
+        "show_in_taskbar": true, 
+        "mac_icon": "", 
+        "transparent": false, 
+        "toolbar": true, 
+        "icon": "icon.png"
+    }, 
+    "version": "0.8.4", 
+    "inject-js-start": "", 
+    "main": "main.html", 
+    "node-main": "", 
+    "webexe_settings": {
+        "linux-x32": false, 
+        "windows-x64": true, 
+        "download_dir": "C:\\Users\\aravindmc\\Desktop\\Web2ExeWin\\downloads", 
+        "nw_compression_level": 5, 
+        "mac-x32": false, 
+        "windows-x32": true, 
+        "mac-x64": false, 
+        "nw_version": "0.8.4", 
+        "force_download": false, 
+        "linux-x64": false
+    }, 
+    "description": "SkimHN", 
+    "repository": {
+        "url": "grunt", 
+        "type": "git"
+    }, 
+    "dependencies": {
+        "grunt-cli": "^0.1.13", 
+        "edge": "^0.9.3"
+    }, 
+    "scripts": {
+        "start": "node server.js"
+    }, 
+    "webkit": {
+        "page-cache": false, 
+        "java": false, 
+        "plugin": false
+    }, 
+    "js-flags": "", 
+    "name": "SkimHN", 
+    "license": "ISC", 
+    "single-instance": true, 
+    "snapshot": "", 
+    "chromium-args": ""
 }

@@ -69,7 +69,9 @@
     <Content Include="img\common\yui-avatar.png" />
     <Content Include="index.html" />
     <Content Include="js\async.js" />
+    <Content Include="js\jquery-ui.js" />
     <Content Include="js\jquery.countdown.js" />
+    <Content Include="js\jquery.min.js" />
     <Content Include="js\jquery.plugin.js" />
     <Content Include="js\jsrender.js" />
     <Content Include="js\tabs.js" />

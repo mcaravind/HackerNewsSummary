@@ -4,6 +4,10 @@ SkimHN is a desktop client for Hacker News built with Node-Webkit, edge.js and C
 
 For each story, you can also see the time you are saving (based on average reading speed) with a countdown timer.
 
+__Installation__
+
+Download the Zip file for the project, navigate to the folder called HiSum.App. Click on nw.exe. That's it.
+
 Features:
 
 - See a preview of the important phrases in the comment thread for a given story
@@ -37,9 +41,6 @@ Currently the app works on Windows 64 bit machines but does not work on 32 bit m
 See this issue:
 https://github.com/tjanczuk/edge/issues/61
 
-To install and run the app:
-
-Download the Zip file for the project, navigate to the folder called HiSum.App. Drag the file called app.nw and drop on the executable called nw.exe. Everything is self-contained (and thus the large install size)
 
 Notes:
 

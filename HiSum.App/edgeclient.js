@@ -62,45 +62,49 @@ function enableLinks() {
 }
 
 function fetchFrontPage(pageNum) {
-    pageNum = typeof pageNum !== 'undefined' ? pageNum : 1;
-    var stories = [];
-    var allUsersInFrontPage = [];
-    var allUsersFollowing = [];
-    var allKeywordsInFrontPage = [];
-    var allKeywordsWatching = [];
-    getFollowingFunction(pageNum, function(error, result) {
-        $.each(result, function(key,value) {
-            allUsersFollowing.push(value);
-        });
-    });
-    getWatchingFunction(pageNum, function (error, result) {
-        $.each(result, function (key, value) {
-            allKeywordsWatching.push(value);
-        });
-    });
-    top100Function(pageNum, function (error, result) {
-        try {
-            if (error) console.log(error);
-            result.forEach(function (entry) {
-                if (!(entry['Url']) || entry['Url']==='') {
-                    entry['Url'] = entry['CommentUrl'];
-                }
-                var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'', allUserComments: entry['AllUserComments'], archiveButtonId: 'archive_' + entry['StoryId'] };
-                $.each(entry["AllUserComments"], function(key, value) {
-                    allUsersInFrontPage.push(value);
-                });
-                $.each(entry["AllKeywordComments"], function (key, value) {
-                    allKeywordsInFrontPage.push(value);
-                });
-                stories.push(story);
+    try {
+        pageNum = typeof pageNum !== 'undefined' ? pageNum : 1;
+        var stories = [];
+        var allUsersInFrontPage = [];
+        var allUsersFollowing = [];
+        var allKeywordsInFrontPage = [];
+        var allKeywordsWatching = [];
+        getFollowingFunction(pageNum, function (error, result) {
+            $.each(result, function (key, value) {
+                allUsersFollowing.push(value);
             });
-        } catch (ex) {
-            alert(ex.toString());
-        }
-    });
-    showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing);
-    showWatchingOnFrontPage(allKeywordsInFrontPage, allKeywordsWatching);
-    render(stories);
+        });
+        getWatchingFunction(pageNum, function (error, result) {
+            $.each(result, function (key, value) {
+                allKeywordsWatching.push(value);
+            });
+        });
+        top100Function(pageNum, function (error, result) {
+            try {
+                if (error) console.log(error);
+                result.forEach(function (entry) {
+                    if (!(entry['Url']) || entry['Url'] === '') {
+                        entry['Url'] = entry['CommentUrl'];
+                    }
+                    var story = { author: entry['Author'], title: entry['StoryTitle'], text: entry['StoryText'] ? entry['StoryText'].substring(1, 100) : '', storyid: entry['StoryId'], storyurl: entry['Url'], hdnstoryid: 'hdn' + entry['StoryId'], btnDeleteStoryId: 'btnDelete_' + entry['StoryId'], count: entry['StoryComments'], commentUrl: entry['CommentUrl'], storyurlwithquotes: '\'' + entry['Url'] + '\'', commenturlwithquotes: '\'' + entry['CommentUrl'] + '\'', allUserComments: entry['AllUserComments'], archiveButtonId: 'archive_' + entry['StoryId'] };
+                    $.each(entry["AllUserComments"], function (key, value) {
+                        allUsersInFrontPage.push(value);
+                    });
+                    $.each(entry["AllKeywordComments"], function (key, value) {
+                        allKeywordsInFrontPage.push(value);
+                    });
+                    stories.push(story);
+                });
+            } catch (ex) {
+                alert(ex.toString());
+            }
+        });
+        showFollowingOnFrontPage(allUsersInFrontPage, allUsersFollowing);
+        showWatchingOnFrontPage(allKeywordsInFrontPage, allKeywordsWatching);
+        render(stories);
+    } catch (ex) {
+        console.log(ex);
+    }
 }
 
 function findIndex(object,value) {
