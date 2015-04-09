@@ -623,6 +623,11 @@ function clicked(item) {
 function loadSentenceTreeWhenSentenceClicked(item) {
     var idtuple = $(item).attr("id");
     var key = idtuple.split(":")[0];
+    $("#sentencesDiv").children("div").each(function() {
+        var element = $(this);
+        element.css('background-color','white');
+    });
+    $(item).css('background-color', 'lightgrey');
     loadTreeByKey(key);
 }
 
