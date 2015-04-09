@@ -12,7 +12,7 @@ __Supported platforms__
 
 Windows 64-bit
 
-Features:
+__Features:__
 
 - See a preview of the important phrases in the comment thread for a given story
 
