@@ -8,6 +8,10 @@ __Installation__
 
 Download the Zip file for the project, navigate to the folder called HiSum.App. Click on nw.exe. That's it.
 
+__Supported platforms__
+
+Windows 64-bit
+
 Features:
 
 - See a preview of the important phrases in the comment thread for a given story
