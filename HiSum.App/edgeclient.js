@@ -4,6 +4,7 @@ function displaySentencesDiv() {
     $("#sentencesDiv").show();
     $("#usersDiv").hide();
     $("#keywordsDiv").hide();
+    $("#tagCloudDiv").hide();
     $("#btnUp").show();
     $("#btnFollowUser").show();
     $("#btnWatchKeyword").show();
@@ -14,12 +15,21 @@ function displayUsersDiv() {
     $("#sentencesDiv").hide();
     $("#usersDiv").show();
     $("#keywordsDiv").hide();
+    $("#tagCloudDiv").hide();
 }
 
 function displayKeywordsDiv() {
     $("#sentencesDiv").hide();
     $("#usersDiv").hide();
     $("#keywordsDiv").show();
+    $("#tagCloudDiv").hide();
+}
+
+function displayTagCloudDiv() {
+    $("#sentencesDiv").hide();
+    $("#usersDiv").hide();
+    $("#keywordsDiv").hide();
+    $("#tagCloudDiv").show();
 }
 
 function up() {
@@ -432,6 +442,8 @@ function loadStory(storyidval) {
         fullStoryFunction(storyidval, function (error, result) {
             if (error) console.log('error:' + error);
             var json = result['Json'];
+            var tagCloudJson = result['TagCloudJson'];
+            var tgArr = getTreeFromJson(tagCloudJson);
             var arr = getTreeFromJson(json);
             var dict = result['Comments'];
             var sentences = result['Sentences'];
@@ -454,6 +466,7 @@ function loadStory(storyidval) {
             loadKeywordComments(keywordComments, storyidval,allWatching);
             loadSentencesForLoadStory(sentences);
             var arr2 = $.extend(true, {}, arr);
+            loadTagCloudTree(tgArr);
             loadFullTree(arr);
             loadFullTree2(arr2);
             addLoadCommentEvent(dict);
@@ -561,6 +574,17 @@ function loadTree(tree) {
         });
     }
     expandFullTree();
+}
+
+function loadTagCloudTree(tree) {
+    try {
+        var tree1 = $("#tagCloudTreeDiv").fancytree('getTree');
+        tree1.reload(tree);
+    } catch (ex) {
+        $("#tagCloudTreeDiv").fancytree({
+            source: tree
+        });
+    }
 }
 
 function loadFullTree(tree) {

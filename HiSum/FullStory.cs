@@ -257,6 +257,57 @@ namespace HiSum
             return commentTree;
         }
 
+        public TagCloudNode GetTagCloudTreeString(children children)
+        {
+            Dictionary<string, int> topNWordsRoot = children.GetTopNWordsDictionary(10);
+            string topNWords = GetTagCloudFromDictionary(topNWordsRoot);
+            TagCloudNode tgnRoot = new TagCloudNode();
+            tgnRoot.id = children.id;
+            tgnRoot.key = children.key;
+            tgnRoot.text = topNWords;
+            tgnRoot.title = topNWords;
+            
+            tgnRoot.children = new List<TagCloudNode>();
+            children.Children = children.Children.OrderByDescending(x => x.created_at).ToList();
+            foreach (children child in children.Children)
+            {
+                if (!string.IsNullOrWhiteSpace(child.SubtreeText))
+                {
+                    TagCloudNode tgnChild = GetTagCloudTreeString(child);
+                    tgnRoot.children.Add(tgnChild);
+                }
+            }
+            return tgnRoot;
+        }
+
+        public string GetTagCloudTreeString()
+        {
+            FullStory fs = this;
+            Dictionary<string, int> topNWordsRoot = fs.GetTopNWordsDictionary(10);
+            TagCloudNode tgnRoot = new TagCloudNode();
+            string topNWords = GetTagCloudFromDictionary(topNWordsRoot);
+            tgnRoot.id = fs.id;
+            tgnRoot.key = fs.id;
+            tgnRoot.text = topNWords;
+            tgnRoot.title = topNWords;
+            
+            tgnRoot.children = new List<TagCloudNode>();
+            //sort like HN
+            //fs.children =
+            //    fs.children.OrderByDescending(x => (x.score - 1)/Math.Pow((DateTime.Now.Subtract(x.created_at).TotalHours+2),1.5))
+            //        .ToList();
+            fs.children = fs.children.OrderByDescending(x => x.created_at).ToList();
+            foreach (children child in fs.children)
+            {
+                if (!string.IsNullOrWhiteSpace(child.SubtreeText))
+                {
+                    TagCloudNode tgnChild = GetTagCloudTreeString(child);
+                    tgnRoot.children.Add(tgnChild);
+                }
+            }
+            return JsonConvert.SerializeObject(tgnRoot);
+        }
+
         public string GetCommentTreeString()
         {
             FullStory fs = this;
@@ -350,7 +401,7 @@ namespace HiSum
             {
                 double fontSize = ((Math.Min(item.Value, 10) + 5) * 100) / 10;
                 sb.Append("<span style='font-size:");
-                sb.Append(fontSize);
+                sb.Append(fontSize * 1.5);
                 sb.Append("%'>");
                 sb.Append(item.Key);
                 sb.Append("</span>&nbsp;");

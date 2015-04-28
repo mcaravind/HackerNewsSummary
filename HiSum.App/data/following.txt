@@ -12,3 +12,7 @@ ChuckMcM
 natfriedman
 tptacek
 jeresig
+michaelochurch
+pbsd
+tzs
+carbocation

@@ -94,5 +94,23 @@ namespace HiSum.Tests
             int freq = CommonWords.GetFrequency("curious");
             Console.WriteLine(freq);
         }
+
+        [TestMethod]
+        public List<string> NamedObjectMethod(string text)
+        {
+            string[] separators = { " ", ".", ",", ";", "-", "(", ")", "[", "]", "*", "#", "$", "%", "\"", "?", "!", ":", "\n", "\r" };
+            List<string> namedEntities = text
+                .Split(separators,StringSplitOptions.RemoveEmptyEntries)
+                .ToList()
+                .Where(x => CommonWords.GetFrequency(x) < 1)
+                .Where(a => char.IsUpper(a[0]))
+                .Where(b => b.Length > 1)
+                .Where(
+                    z =>
+                        !(z.EndsWith("n't") || z.EndsWith("'m") || (z.EndsWith("'ll")) || (z.EndsWith("'d")) ||
+                          z.EndsWith("'ve") || z.EndsWith("'re") || z.EndsWith("'s")))
+                .ToList();
+            return namedEntities;
+        }
     }
 }

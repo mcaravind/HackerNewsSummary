@@ -285,6 +285,7 @@ namespace HiSum
         {
             FullStory fs = FullStoryFactory.GetFullStory(storyid);
             string json = fs.GetCommentTreeString();
+            string tagCloudJson = fs.GetTagCloudTreeString();
             Dictionary<int, string> commentDictionary = GetCommentDictionary(fs);
             List<CommentObj> comments = new List<CommentObj>();
             List<SentenceObj> topSentenceObjs = fs.GetTopSentences(5);
@@ -319,7 +320,7 @@ namespace HiSum
             }
             string[] watching = File.ReadAllLines(fileNameWatching);
             string csvWatching = string.Join(",", watching);
-            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments,AllFollowing = csv, AllWatching = csvWatching,TotalWords = fs.TotalWords};
+            FullStoryObj fullStoryObj = new FullStoryObj() { Json = json, TagCloudJson = tagCloudJson,TotalComments = commentDictionary.Count,Comments = comments,Sentences = topSentenceObjs,UserComments = userComments,KeywordComments = keywordComments,AllFollowing = csv, AllWatching = csvWatching,TotalWords = fs.TotalWords};
             return fullStoryObj;
         }
 
@@ -384,6 +385,7 @@ namespace HiSum
         class FullStoryObj
         {
             public string Json { get; set; }
+            public string TagCloudJson { get; set; }
             public int TotalComments { get; set; }
             public List<CommentObj> Comments { get; set; }
             public List<SentenceObj> Sentences { get; set; }
