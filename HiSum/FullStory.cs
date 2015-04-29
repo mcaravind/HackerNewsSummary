@@ -400,11 +400,19 @@ namespace HiSum
             foreach (var item in dict)
             {
                 double fontSize = ((Math.Min(item.Value, 10) + 5) * 100) / 10;
-                sb.Append("<span style='font-size:");
-                sb.Append(fontSize * 1.5);
-                sb.Append("%'>");
-                sb.Append(item.Key);
-                sb.Append("</span>&nbsp;");
+                string[] separators = { "n't", "'m", "'ll", "'d", "'ve", "'re", "'s" };
+                string actualWord = item.Key.Split(separators, StringSplitOptions.None)[0];
+                double weight = Math.Log(item.Value, 2);
+                double frequencyLog = Math.Log(CommonWords.GetFrequency(actualWord),2);
+                double actualFontSize = fontSize*(1.5 - (frequencyLog*1.0/25));
+                if (actualFontSize > 0)
+                {
+                    sb.Append("<span style='font-size:");
+                    sb.Append(actualFontSize);
+                    sb.Append("%'>");
+                    sb.Append(item.Key);
+                    sb.Append("</span>&nbsp;");
+                }
             }
             return sb.ToString();
         }

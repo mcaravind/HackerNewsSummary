@@ -582,7 +582,11 @@ function loadTagCloudTree(tree) {
         tree1.reload(tree);
     } catch (ex) {
         $("#tagCloudTreeDiv").fancytree({
-            source: tree
+            source: tree,
+            click:function(event, data) {
+                var node = data.node;
+                loadTreeByKey(node.key);
+            }
         });
     }
 }
