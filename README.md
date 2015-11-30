@@ -1,5 +1,7 @@
 # SkimHN
 
+[If you like this app, you might also be interested in a Google Chrome extension I built with some overlapping functionality. Check out https://chrome.google.com/webstore/detail/hngist/jigimhmnilghciamfcdlogbaaokpakim?hl=en-US]
+
 SkimHN is a desktop client for Hacker News built with Node-Webkit, edge.js and C#. SkimHN fetches the front page stories and also gives you a quick summary of selected stories. The purpose of SkimHN is to get a quick preview of a story before deciding to read it on the HackerNews website. 
 
 For each story, you can also see the time you are saving (based on average reading speed) with a countdown timer.
